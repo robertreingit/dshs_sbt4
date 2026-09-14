@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>11&nbsp; Messfehler und Reliabilität – Skriptum - Fortgeschrittene Statistik</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./ed_factorial.html" rel="next">
+<link href="./ed_causal_inference.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-631496449bf32ff9b0bb69a6bfd9195d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Keine Treffer",
+    "search-matching-documents-text": "Treffer",
+    "search-copy-link-title": "Link in die Suche kopieren",
+    "search-hide-matches-text": "Zusätzliche Treffer verbergen",
+    "search-more-match-text": "weitere Treffer in diesem Dokument",
+    "search-more-matches-text": "weitere Treffer in diesem Dokument",
+    "search-clear-button-title": "Zurücksetzen",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Abbrechen",
+    "search-submit-button-title": "Abschicken",
+    "search-label": "Suchen"
+  }
+}</script>
+<script>
+
+  MathJax = {
+
+    tex: {
+
+      tags: 'ams'  // should be 'ams', 'none', or 'all'
+
+    }
+
+  };
+
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ed_title.html">Experimentelles Design</a></li><li class="breadcrumb-item"><a href="./ed_reliability.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Messfehler und Reliabilität</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Suchen" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Skriptum - Fortgeschrittene Statistik</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Suchen"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vorwort</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./stats_title.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Statistik - Die Grundlagen</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./stats_basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Eine kleine Welt der Unsicherheit</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./stats_significance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Statistische Signifikanz</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./stats_estimation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Hypothesentests</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./slm_title.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Das einfache Regressionmodell</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slm_basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Grundlagen und Inferenz</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slm_model_fit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modellfit</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./mlm_title.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Das Lineare Modell und Erweiterungen</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mlm_basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Multiple Lineare Regression</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mlm_logistic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Logistische Regression</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mlm_lmm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Gemischte Lineare Modelle</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./ed_title.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Experimentelles Design</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ed_basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Einführung</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ed_causal_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Kausale Inferenz</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ed_reliability.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Messfehler und Reliabilität</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ed_factorial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Faktorielle Untersuchungsdesigns</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ed_misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Weitere Untersuchungsdesigns</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Literatur</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Inhaltsverzeichnis</h2>
+   
+  <ul>
+  <li><a href="#genauigkeit-versus-präzision" id="toc-genauigkeit-versus-präzision" class="nav-link active" data-scroll-target="#genauigkeit-versus-präzision"><span class="header-section-number">11.1</span> Genauigkeit versus Präzision</a></li>
+  <li><a href="#übereinstimmung-versus-reliabilität" id="toc-übereinstimmung-versus-reliabilität" class="nav-link" data-scroll-target="#übereinstimmung-versus-reliabilität"><span class="header-section-number">11.2</span> Übereinstimmung versus Reliabilität</a></li>
+  <li><a href="#reliabilität" id="toc-reliabilität" class="nav-link" data-scroll-target="#reliabilität"><span class="header-section-number">11.3</span> Reliabilität</a>
+  <ul class="collapse">
+  <li><a href="#intraclass-correlation-coefficient" id="toc-intraclass-correlation-coefficient" class="nav-link" data-scroll-target="#intraclass-correlation-coefficient"><span class="header-section-number">11.3.1</span> Intraclass correlation coefficient</a></li>
+  <li><a href="#spearman-brown-prophecy-formula" id="toc-spearman-brown-prophecy-formula" class="nav-link" data-scroll-target="#spearman-brown-prophecy-formula"><span class="header-section-number">11.3.2</span> Spearman-Brown prophecy formula</a></li>
+  <li><a href="#intraclass-correlation-in-r" id="toc-intraclass-correlation-in-r" class="nav-link" data-scroll-target="#intraclass-correlation-in-r"><span class="header-section-number">11.3.3</span> Intraclass Correlation in <code>R</code></a></li>
+  </ul></li>
+  <li><a href="#messfehler-agreement" id="toc-messfehler-agreement" class="nav-link" data-scroll-target="#messfehler-agreement"><span class="header-section-number">11.4</span> Messfehler (Agreement)</a>
+  <ul class="collapse">
+  <li><a href="#standard-error-of-measurement" id="toc-standard-error-of-measurement" class="nav-link" data-scroll-target="#standard-error-of-measurement"><span class="header-section-number">11.4.1</span> Standard Error of Measurement</a></li>
+  <li><a href="#variationskoeffizient" id="toc-variationskoeffizient" class="nav-link" data-scroll-target="#variationskoeffizient"><span class="header-section-number">11.4.2</span> Variationskoeffizient</a></li>
+  <li><a href="#limits-of-agreement---bland-altman-plots" id="toc-limits-of-agreement---bland-altman-plots" class="nav-link" data-scroll-target="#limits-of-agreement---bland-altman-plots"><span class="header-section-number">11.4.3</span> Limits of Agreement - Bland-Altman Plots</a></li>
+  <li><a href="#fehlerschwellen" id="toc-fehlerschwellen" class="nav-link" data-scroll-target="#fehlerschwellen"><span class="header-section-number">11.4.4</span> Fehlerschwellen</a></li>
+  </ul></li>
+  <li><a href="#zum-nachlesen" id="toc-zum-nachlesen" class="nav-link" data-scroll-target="#zum-nachlesen"><span class="header-section-number">11.5</span> Zum Nachlesen</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ed_title.html">Experimentelles Design</a></li><li class="breadcrumb-item"><a href="./ed_reliability.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Messfehler und Reliabilität</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Messfehler und Reliabilität</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Diese Kapitel beschäftigt sich mit der Güte von Messinstrumenten. Trotzdem eigentlich ein zentrales Thema bei der Erhebung von Messdaten wird diese Thema in den vielen Fällen gar nicht oder nur unzureichend betrachtet.</p>
+<section id="genauigkeit-versus-präzision" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="genauigkeit-versus-präzision"><span class="header-section-number">11.1</span> Genauigkeit versus Präzision</h2>
+<p>Die ersten beiden wichtigen Eigenschaften eines Messinstruments sind die Genauigkeit und die Präzision. Beide sind Eigenschaften sind zentrale zur Beurteilung der Qualität eines Messinstruments. <strong>Genauigkeit</strong> beschreibt, wie nahe eine Messung am tatsächlichen oder wahren Wert liegt. Ein Messinstrument mit hoher Genauigkeit liefert Werte, die nur eine geringe Abweichung vom <em>realen Wert</em> aufweisen. Die mittlere Abweichung vom tatsächlichen Wert wird auch als <strong>bias</strong> bezeichnet. <strong>Präzision</strong> hingegen bezieht sich auf die Wiederholbarkeit von Messungen. Ein präzises Instrument liefert bei mehrfacher Messung ähnliche oder identische Werte, unabhängig davon, ob diese dem wahren Wert nahekommen. Die Streuung wird auch oft als Rauschen (engl. noise) bezeichnet. Ein Messinstrument kann also präzise, aber ungenau sein, wenn die Werte zwar eng beieinanderliegen, jedoch systematisch vom tatsächlichen Wert abweichen. Idealerweise sollte ein Messinstrument sowohl genau als auch präzise sein, um verlässliche Ergebnisse zu liefern <span class="citation" data-cites="luchette2024">(siehe auch <a href="references.html#ref-luchette2024" role="doc-biblioref">Luchette und Akhondi-Asl 2024</a>)</span>.</p>
+<p>In <a href="#fig-ed-rel-precision" class="quarto-xref">Abbildung&nbsp;<span>11.1</span></a> sind Präzision und Genauigkeit anhand einer Zielscheibe noch einmal verdeutlicht.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ed-rel-precision" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ed-rel-precision-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="ed_reliability_files/figure-html/fig-ed-rel-precision-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ed-rel-precision-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;11.1: Genauigkeit versus Präzision
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Bevor eine Messung durchgeführt werden soll, ist es daher notwendig über die Genauigkeit und die Präzision eines Messgeräts Bescheid zu wissen. In manchen Fällen kann beispielsweise eine geringere Genauigkeit eines Messgeräts weniger problematisch sein als eine geringere Präzision. Wenn zum Beispiel nur Unterschiede gemessen werden sollen, dann ist in bestimmten Fällen die absolute Genauigkeit weniger von Bedeutung da die Abweichungen vom <em>realen</em> Wert durch den Vergleich subtrahiert werden. Wird zum Beispiel eine Waage verwendet um die Veränderungen im Gewicht an Untersuchungspersonen über die Zeit verglichen werden sollen. Die Waage sei aber nicht korrekt geeicht und zeigt immer <span class="math inline">\(2\)</span> kg zu viel an. Dadurch ist der absolute, angezeigte Wert verfälscht. Werden aber die beobachteten Gewichte über die Messzeitpunkte voneinander abgezogen, dann ist der <em>Unterschied</em> zwischen den Messzeitpunkten dennoch korrekt. Die Annahme dabei ist allerdings, dass sich die Genauigkeit über den Beobachtungszeitung nicht verändert. Die Eigenschaften des <em>Messinstruments</em> können anhand zweier Eigenschaften bestimmt werden. Dies sind der Messfehler und die Reliabilität.</p>
+</section>
+<section id="übereinstimmung-versus-reliabilität" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="übereinstimmung-versus-reliabilität"><span class="header-section-number">11.2</span> Übereinstimmung versus Reliabilität</h2>
+<p>Ein Problem in der Literatur ist, dass die Eigenschaften von Messinstrumenten in verschiedenen Disziplinen entwickelt wurden und dadurch Überschneidungen in der Verwendung der Terminologie auftreten <span class="citation" data-cites="devet2006">(<a href="references.html#ref-devet2006" role="doc-biblioref">Vet u.&nbsp;a. 2006</a>)</span>.</p>
+<p>Die erste Frage die sich bei der Behandlung von Messinstrumenten stellt ist die Frage ob ein gegebenes Instrument bezüglich der Übereinstimmung (engl. agreement) oder bezüglich der Reliabilität (engl. reliability) untersucht werden soll <span class="citation" data-cites="kottner2011 devet2006">(<a href="references.html#ref-kottner2011" role="doc-biblioref">Kottner und Streiner 2011</a>; <a href="references.html#ref-devet2006" role="doc-biblioref">Vet u.&nbsp;a. 2006</a>)</span>. Unter agreement stellt sich die Frage: Wie nahe beieinander sind wiederholte Messungen am gleichen Objekt? Im Gegensatz dazu beschäftigt sich die Reliabilität mit der Frage: Wie gut können Objekte voneinander unterschieden werden.</p>
+<p>In <a href="#fig-ed-reliability-terminology" class="quarto-xref">Abbildung&nbsp;<span>11.2</span></a> ist ein schematischer Datensatz abgebildet an dem der Unterschied zwischen agreement und reliability veranschaulicht werden kann.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ed-reliability-terminology" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ed-reliability-terminology-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="ed_reliability_files/figure-html/fig-ed-reliability-terminology-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ed-reliability-terminology-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;11.2: Drei wiederholte Messungen an drei Versuchspersonen.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Es wurden drei Personen dreimal gemessen. Zwischen den Personen sind Unterschiede in den Messwerten zu erkennen aber auch innerhalb einer Person sind Schwankungen zu sehen. Die Übereinstimmung (agreement) der Messung wird durch die Schwankung innerhalb <strong>einer Person</strong> beschrieben. Dies ist der Messfehler des Instruments. Dagegen beschreibt die <strong>Reliabilität</strong> das <strong>Verhältnis</strong> der Schwankung innerhalb einer Person zur Schwankung zwischen den Personen. D.h. die Reliabilität beschreibt wie gut das Messinstrument zwischen den Personen <strong>diskriminieren</strong> kann <span class="citation" data-cites="stratford1997">(<a href="references.html#ref-stratford1997" role="doc-biblioref">Stratford und Goldsmith 1997</a>)</span>.</p>
+<p>Die Diskriminierungsfähigkeit ist daher abhängig davon wie groß die Streuung innerhalb einer Person im Verhältnis zu der Streuung zwischen den Personen. Beispielsweise ist das Messinstrument sehr gut in der Lage zwischen den Versuchspersonen A und B bzw. A und C zu unterscheiden. Dagegen ist die Unterscheidung zwischen den Personen B und C nicht mehr so gut, da die Streuung der Messwerte innerhalb von B und C in der Größenordnung der Unterschiede zwischen den beiden Personen liegen.</p>
+<p>Bei der Beurteilung eines Messinstruments sollten daher beide Komponenten: die Reliabilität und die Übereinstimmung berücksichtigt werden <span class="citation" data-cites="berchtold2016">(<a href="references.html#ref-berchtold2016" role="doc-biblioref">Berchtold 2016</a>)</span>. Unglücklicherweise wird diese Terminologie schon nicht immer benutzt und es wird eine Unterscheidung in absolute und relative Reliabilität verwendet. Die absolute Reliabilität bezeichnet dabei die Übereinstimmung (agreement) und die relative Reliabilität die Reliabilität im eigentlichen Sinne <span class="citation" data-cites="baumgartner1989">(<a href="references.html#ref-baumgartner1989" role="doc-biblioref">Baumgartner 1989</a>)</span>. Leider wird aber auch diese Einteilung in der Literatur nicht immer stringent eingehalten. Im folgenden wird zunächst die Reliabilität untersucht.</p>
+</section>
+<section id="reliabilität" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="reliabilität"><span class="header-section-number">11.3</span> Reliabilität</h2>
+<p>Um die Herleitung der Reliabilität zu veranschaulichen wird ein konkretes Beispiel betrachtet. In <a href="#tbl-ed-rel-emg" class="quarto-xref">Tabelle&nbsp;<span>11.1</span></a> ist dazu ein Ausschnitt von EMG-Daten aus <span class="citation" data-cites="liljequist2019">Liljequist u.&nbsp;a. (<a href="references.html#ref-liljequist2019" role="doc-biblioref">2019</a>)</span> abgetragen.</p>
+<div class="cell">
+<div id="tbl-ed-rel-emg" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ed-rel-emg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;11.1: Beispieldaten von Lijequist (2019), EMG Median Frequenz (Hz), linke lumbale Rückenmuskulator über drei Tage
+</figcaption>
+<div aria-describedby="tbl-ed-rel-emg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Subject</th>
+<th style="text-align: right;">Day 1</th>
+<th style="text-align: right;">Day 2</th>
+<th style="text-align: right;">Day 3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">59.9</td>
+<td style="text-align: right;">67.7</td>
+<td style="text-align: right;">72.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">62.9</td>
+<td style="text-align: right;">66.5</td>
+<td style="text-align: right;">67.9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">58.9</td>
+<td style="text-align: right;">50.1</td>
+<td style="text-align: right;">47.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">46.8</td>
+<td style="text-align: right;">50.0</td>
+<td style="text-align: right;">53.9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">62.5</td>
+<td style="text-align: right;">67.8</td>
+<td style="text-align: right;">62.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">44.8</td>
+<td style="text-align: right;">42.7</td>
+<td style="text-align: right;">48.4</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Insgesamt wurde bei <span class="math inline">\(N = 10\)</span> Personen die Muskelaktivierung in der Rückenmuskulatur über drei Tage jeweils an der gleichen Stelle gemessen. Ziel war eine Abschätzung zu erhalten, wie stabil bzw. ähnlich die EMG-Messungen über die verschiedenen Tage sind. In <a href="#fig-ed-rel-emg" class="quarto-xref">Abbildung&nbsp;<span>11.3</span></a> sind die Daten noch einmal graphisch dargestellt.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ed-rel-emg" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ed-rel-emg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="ed_reliability_files/figure-html/fig-ed-rel-emg-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ed-rel-emg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;11.3: EMG Daten nach Liljequist et al.&nbsp;(2019). Die roten Punkte sind die Mittelwerte mit Standardabweichungen, schwarze gestrichtelte Linien sind die einzelnen Personen.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Wie in <a href="#fig-ed-rel-emg" class="quarto-xref">Abbildung&nbsp;<span>11.3</span></a> zu sehen ist, schwanken die Werte über die drei Messzeitpunkte. Einmal sind innerhalb der Personen Unterschiede zu erkennen, aber auch die Mittelwerte für die Messtage über die zehn Personen hinweg verändern sich über die Messzeitpunkte. D.h. die gewählte Messmethodik weist selbst Schwankungen auf. Die Größe der Schwankungen müssen bei der Erstellung eines Untersuchungsdesigns berücksichtigt werden. Sollen beispielsweise Unterschiede zwischen zwei Gruppen mit Hilfe dieser Messmethodik untersucht werden, aber wenn sich die zu erwartenden Unterschiede zwischen den Gruppen in der Größenordnung der Schwankungen oder möglicherweise sogar darunter, dann wird es sehr schwierig bis unmöglich werden diese Unterschiede in einem Experiment nachweisen zu können.</p>
+<p>Um den Begriff der Reliabilität klar zu definieren, ist die Erstellung eines theoretischen Modells erforderlich. Soll ein <em>Wert</em> bestimmt werden, der die Eigenschaft eines Objekts beschreibt, dann ist eine plausible Annahme das es einen <em>wahren</em> Wert gibt. Zum Beispiel ist direkt einsichtig, dass ein gegebener Holzstab eine bestimmte Länge hat. Oder eine Hantelscheibe hat ein bestimmtes Gewicht. Solange keine Manipulation an der Scheibe durchgeführt wird, sollte sich dieses Gewicht nicht ändern. Dieser Wert soll nun als <em>true-score</em> bezeichnet werden und der true-score erhält das Zeichen <span class="math inline">\(\tau\)</span>. Während <span class="math inline">\(\tau\)</span> für eine Hantelscheibe noch relativ direkt einsichtig ist, ist dies nicht mehr ganz so einfach sobald biologische Objekte ins Spiel kommen. Soll beispielsweise die Körpergröße einer Person bestimmt werden, dann ist klar das die Körpergröße keine feststehende Größe ist, sondern im Verlauf eines Tages einer Schwankung unterliegt <span class="citation" data-cites="tyrrell1985">(<a href="references.html#ref-tyrrell1985" role="doc-biblioref">Tyrrell u.&nbsp;a. 1985</a>)</span>. In <a href="#fig-ed-rel-height" class="quarto-xref">Abbildung&nbsp;<span>11.4</span></a> ist beispielsweise die Veränderung der Körperhöhe im Verlauf eines Tages abgetragen.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ed-rel-height" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ed-rel-height-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="ed_reliability_files/figure-html/fig-ed-rel-height-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ed-rel-height-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;11.4: Veränderung der Körpergröße über den Tag (adaptiert nach Tyrrell et al.&nbsp;(1985)).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Es soll nun aber davon ausgegangen werden, dass der wahre Wert <span class="math inline">\(\tau\)</span> wohldefiniert ist. Dann besteht aber nach wie vor das Problem, selbst bei der Hantelscheibe, dass dieser Wert mit Hilfe eines Messmethodik bestimmt werden muss. Zum Beispiel im Fall der Hantelscheibe muss eine Waage verändert werden um das Gewicht zu bestimmen. Diese Waage ist aber selbst unweigerlich mit <em>Messfehlern</em> behaftet. Vielleicht ist bei der Eichung was schief gegangen, vielleicht ist die Feder mit Zeit ausgeleiert, oder die Umgebungstemperatur entspricht nicht den Vorgaben usw. und sofort. Das führt dazu, dass der <em>gemessene</em> Wert nicht gleich dem wahren Wert <span class="math inline">\(\tau\)</span> entspricht. Um den gemessenen Wert vom wahren Wert zu unterscheiden wird ein weiteres Symbol <span class="math inline">\(Y\)</span> verwendet. <span class="math inline">\(Y\)</span> ist dementsprechend der <em>beobachtete</em> Wert. Die Messfehler werden weiterhin mit dem Symbol <span class="math inline">\(\epsilon\)</span> bezeichnet. Dies führt insgesamt zu folgendem Modell:</p>
+<p><span class="math display">\[\begin{equation}
+Y = \tau + \epsilon
+\label{eq-ed-reliability-model}
+\end{equation}\]</span></p>
+<p>D.h. der beobachtete Wert <span class="math inline">\(Y\)</span> setzt sich zusammen aus dem wahren Wert <span class="math inline">\(\tau\)</span> und dem Messfehler <span class="math inline">\(\epsilon\)</span>. Der Messfehler geht in diesem Modell additiv in den Wert <span class="math inline">\(Y\)</span> ein. Eine weitere Annahme soll nun dahin gehend bestehen, dass die Messfehler zufällig sind und bei wiederholter Messung im <em>Mittel</em> gleich <span class="math inline">\(0\)</span> sind. Formal ist der Erwartungswert <span class="math inline">\(E[\epsilon_0] = 0\)</span>, wie das auch schon im Rahmen der Regression verwendet wurde. Weiterhin besteht kein Zusammenhang zwischen der Größe des Messfehlers und der Größe von <span class="math inline">\(\tau\)</span>. Beispielsweise bei der Messung der Körpergröße verändert sich die Größe des Messfehlers nicht mit der Größer der Probandinnen sondern bleibt konstant. Formal führt dies zu <span class="math inline">\(\text{Cov}(\epsilon,\tau) = 0\)</span>.</p>
+<p>Werden nun mehrere bzw. <span class="math inline">\(N\)</span> Messungen durchgeführt, dann wird entsprechend nicht nur ein wiederholter, konstanter Wert beobachtet sondern eine Menge von Werten. Um diese zu unterscheiden wird entsprechend ein Index <span class="math inline">\(i\)</span> eingeführt.</p>
+<p><span class="math display">\[\begin{equation}
+Y_i = \tau_i + \epsilon_i, \quad i \in [1,\ldots,N]
+\end{equation}\]</span></p>
+<p>Um die beiden Komponenten abschätzen zu können ist es daher notwendig, dass von dem zu messenden Objekt mehrere Messungen vorliegen. Wenn mehrere Werte für jedes Objekt zur Verfügung stehen, dann kann für diese beobachteten Wert <span class="math inline">\(Y_i\)</span> eine Varianz berechnet werden und, zumindest theoretisch, auch eine Varianz für die <span class="math inline">\(\tau_i\)</span>s abgeschätzt werden. Dies ermöglicht nun auch eine formale Definition der Reliabilität unter dem gegebenen Modell.</p>
+<div id="def-reliability" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 11.1 (Reliabilität - Definition)</strong></span> Die Reliabilität ist definiert als das Verhältnis der Varianz der <em>True-Score-Variablen</em> <span class="math inline">\(\sigma_{\tau}\)</span> zur <em>Gesamtvarianz</em> der Testvariablen <span class="math inline">\(\sigma_{Y}\)</span>. <span class="citation" data-cites="moosbrugger2020">(<a href="references.html#ref-moosbrugger2020" role="doc-biblioref">Moosbrugger und Kelava 2020, p.282</a>)</span></p>
+<p><span class="math display">\[\begin{equation}
+\text{Rel} = \frac{\sigma_{\tau}^2}{\sigma_{Y}^2} = \frac{\sigma_{\tau}^2}{\sigma_{\tau}^2+\sigma_{\epsilon}^2}
+\label{eq-ed-reliability}
+\end{equation}\]</span></p>
+<p>Der Wertebereich der Reliabilität liegt in <span class="math inline">\(\text{Rel} \in [0,1]\)</span> wobei eine Wert <span class="math inline">\(0\)</span> keine Reliabilität anzeigt, während ein Wert von <span class="math inline">\(\text{Rel} = 1\)</span> auf eine perfekte Reliabilität hindeutet.</p>
+</div>
+<p>Veranschaulicht, wenn der Messfehler gleich Null ist, also <span class="math inline">\(\sigma_{\epsilon}^2 = 0\)</span> gilt, dann ist <span class="math inline">\(\text{Rel} = 1\)</span>, während wenn der Messfehler sehr groß im Verhältnis zu <span class="math inline">\(\sigma_{\tau}^2\)</span> ist, dann geht der <span class="math inline">\(\text{Rel}\)</span> gegen Null. Diese Herleitung unterstreicht noch einmal die Abhängigkeit der Reliabilität von der Varianz der Stichprobe. Für einen gegebenen Messfehler wird die Reliabilität besser wenn die Varianz der Messobjekte <span class="math inline">\(\sigma_{\tau}^2\)</span> größer wird. Andersherum, für eine gegebene Varianz <span class="math inline">\(\sigma_{\tau}^2\)</span> zwischen den Objekten wird die Reliabilität größer wenn der Messfehler <span class="math inline">\(\sigma_{\epsilon}^2\)</span> kleiner wird. Daher ist die Reliabilität eine Funktion der Streuung in der Population und eine gegebene Reliabiltät ist nicht unbedingt ein Indikator für einen guten Test <span class="citation" data-cites="tighe2010">(<a href="references.html#ref-tighe2010" role="doc-biblioref">Tighe u.&nbsp;a. 2010</a>)</span>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hinweis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Das Modell das zur Verwendung der Definition für die Reliabilität verwendet wurde mit <span class="math inline">\(Y = \tau + \epsilon\)</span> folgt der sogenannten klassischen Testtheorie (KTT). Unter der klassischen Testtheorie fließen noch weitere Annahmen in das Modell ein. So sind nicht nur die Messfehler und der wahre Wert unkorreliert <span class="math inline">\(Cov(\epsilon,\tau)=0\)</span> sondern, die Messfehler sind auch voneinander unabhängig <span class="math inline">\(Cov(\epsilon_i, \epsilon_j) = 0\)</span> und die Varianzen der Messfehler <span class="math inline">\(\sigma^2(\epsilon_i)\)</span> bleiben über Wiederholungen konstant, sprich gleich groß. Dies führt dann zu einer Aufteilung der <em>totalen</em> Varianz von <span class="math inline">\(Y\)</span> in die beiden Komponenten: Varianz der wahren Werte <span class="math inline">\(\sigma^2(\tau_i)\)</span> und Varianz der Messfehler <span class="math inline">\(\sigma^2(\epsilon_i)\)</span>.</p>
+<p><span class="math display">\[\begin{equation}
+\sigma^2(Y) = \sigma^2(\tau_i) + \sigma^2(\epsilon_i)
+\label{eq-y-tau-variance}
+\end{equation}\]</span></p>
+</div>
+</div>
+<p>Für die Interpretation der Reliabilität hat sich in der Literatur eine Kategorisierung entlang der Werte in <a href="#tbl-ed-rel-interpretation" class="quarto-xref">Tabelle&nbsp;<span>11.2</span></a> etabliert, die allerdings auch wieder nur als Orientierungshilfe zu betrachten ist.</p>
+<div id="tbl-ed-rel-interpretation" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ed-rel-interpretation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;11.2: Interpretation der Reliablität nach <span class="citation" data-cites="koo2016">Koo und Li (<a href="references.html#ref-koo2016" role="doc-biblioref">2016</a>)</span>
+</figcaption>
+<div aria-describedby="tbl-ed-rel-interpretation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Bereich</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(&lt;0.5\)</span></td>
+<td>poor</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(0.5-0.75\)</span></td>
+<td>moderate</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(0.75-0.9\)</span></td>
+<td>good</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(&gt;0.9\)</span></td>
+<td>excellent</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Es gibt unterschiedliche Arten wie die Reliabilität bestimmt werden kann <span class="citation" data-cites="baumgartner1989">(<a href="references.html#ref-baumgartner1989" role="doc-biblioref">Baumgartner 1989</a>)</span>. Die <strong>Test-Retest-Reliabilität</strong> beschreibt die Stabilität eines Tests über die Zeit, indem die gleichen Objekte zu unterschiedlichen Zeitpunkten getestet werden. Die <strong>Interrater-Reliabilität</strong> bezieht sich auf die Übereinstimmung der Bewertungen durch verschiedene Beobachter oder Rater der gleichen Objekte und wird auch als Objektivität im Rahmen der Testgütekriterien bezeichnet. Die <strong>Paralleltest-Reliabilität</strong> vergleicht die Ergebnisse zweier gleichwertiger Testformen, um die Konsistenz zu überprüfen.</p>
+<section id="intraclass-correlation-coefficient" class="level3" data-number="11.3.1">
+<h3 data-number="11.3.1" class="anchored" data-anchor-id="intraclass-correlation-coefficient"><span class="header-section-number">11.3.1</span> Intraclass correlation coefficient</h3>
+<p>Ein Maß das in der Literatur zur Bestimmung der Reliabilität sehr oft angewendet wird, ist der Intraklassen-Korrelationskoefficient (intraclass correlation coefficient) ICC. In der Literatur gibt es ein ganze Reihe von unterschiedlichen Arten den ICC zu berechnen. Es werden allerdings in den meisten Fällen einer von drei verschiedene Typen angewendet. <strong>ICC(1)</strong> basiert auf einem einfachen Modell mit nur einen zufälligen Faktor. Unter diesem Modell wird jede Bewertungseinheit von unterschiedlichen, zufällig ausgewählten Beurteilern bewertet. ICC(1) ist für die Betrachtungen hier nicht weiter von großem Interesse. <strong>ICC(2)</strong> verwendet ein komplizierteres Modell bei dem alle Beurteiler alle Bewertungsobjekte bewerten. Dabei sind sowohl Beurteiler als auch die Objekte zufällig und werden als Stichproben aus einer größeren Stichprobe angesehen. D.h. die Ergebnisse sind geeignet um über die Beobachtungsobjekte und Bewerter hinaus zu verallgemeinern. <strong>ICC(3)</strong> nutzt ebenfalls ein Zweiweg-Modell. Unter ICC(3) werden die Beurteiler als feste Objekte betrachtet. Daher kann nicht auf andere Beurteiler generalisiert werden. Der Hauptunterschied zwischen ICC(2) und ICC(3) liegt also in der Annahme, ob die Beurteiler zufällig oder fest sind <span class="citation" data-cites="wong1996">(<a href="references.html#ref-wong1996" role="doc-biblioref">McGraw und Wong 1996</a>)</span>. Daraus resultiert die folgende Systematik der ICCs (siehe <a href="#fig-ed-reliability-icc-sys" class="quarto-xref">Abbildung&nbsp;<span>11.5</span></a>)</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ed-reliability-icc-sys" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ed-reliability-icc-sys-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="pics/liljequist_2019.png" class="img-fluid figure-img" style="width:80.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ed-reliability-icc-sys-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;11.5: Adaptiert nach Liljequist et al.&nbsp;(2019)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Tatsächlich unterscheidet sich die Berechnung unter Modell 2 und Modell 3 nicht voneinander. Beide Modelle gibt es in zwei unterschiedlichen Typen: Konsistenz und Agreement. Die Agreementmodelle modellieren die Varianz zwischen den Bewertern im Gegensatz zu den Konsistenzmodellen bei denen diese Variabilität vernachlässigt wird. Die Bezeichnung <strong>agreement</strong> ist dabei <strong>nicht</strong> die Gleiche wie sie oben verwendet wurde, sondern wohl eher eine historischer Unfall. Beide Modelle sind vor Maße für die Reliabilität und nicht für die Übereinstimmung nach der Verwendung, wie nahe wiederholte Werte zusammen liegen.</p>
+<p>Um die Modellanahmen der verschiedenen Modell besser nachvollziehen zu können, ist es hilfreich das Datenmodell für die Berechnung des ICC zu konkretisieren (siehe <a href="#tbl-ed-reliability-data" class="quarto-xref">Tabelle&nbsp;<span>11.3</span></a>).</p>
+<div id="tbl-ed-reliability-data" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ed-reliability-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;11.3: Datenmodell für die Berechnung des ICC
+</figcaption>
+<div aria-describedby="tbl-ed-reliability-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Bewertungsobjekt</th>
+<th>Bewerter 1</th>
+<th>Bewerter 2</th>
+<th><span class="math inline">\(\cdots\)</span></th>
+<th>Bewerter k</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td><span class="math inline">\(x_{11}\)</span></td>
+<td><span class="math inline">\(x_{12}\)</span></td>
+<td><span class="math inline">\(\cdots\)</span></td>
+<td><span class="math inline">\(x_{1k}\)</span></td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td><span class="math inline">\(x_{21}\)</span></td>
+<td><span class="math inline">\(x_{22}\)</span></td>
+<td><span class="math inline">\(\cdots\)</span></td>
+<td><span class="math inline">\(x_{2k}\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\vdots\)</span></td>
+<td><span class="math inline">\(\vdots\)</span></td>
+<td><span class="math inline">\(\vdots\)</span></td>
+<td></td>
+<td><span class="math inline">\(\vdots\)</span></td>
+</tr>
+<tr class="even">
+<td>n</td>
+<td><span class="math inline">\(x_{n1}\)</span></td>
+<td><span class="math inline">\(x_{n2}\)</span></td>
+<td><span class="math inline">\(\cdots\)</span></td>
+<td><span class="math inline">\(x_{nk}\)</span> $</td>
+</tr>
+<tr class="odd">
+<td>Mean</td>
+<td><span class="math inline">\(M_1\)</span></td>
+<td><span class="math inline">\(M_2\)</span></td>
+<td><span class="math inline">\(\cdots\)</span></td>
+<td><span class="math inline">\(M_k\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>D.h. für jedes Bewertungsobjekt werden mehrere Bewertungen abgegeben. Die Bewerter können dabei auch unterschiedliche Messapparaturen sein und müssen nicht unbedingt Personen sein. Generell ergibt sich eine Aufteilung in <span class="math inline">\(r\)</span> Zeilen und <span class="math inline">\(c\)</span> Spalten. Daher kann auch die Streuung entlang dieser beiden Dimensionen ermittelt werden. Eine Streuung zwischen den Bewertern entlang der Zeilen <span class="math inline">\(\sigma^2_r\)</span> und eine Streuung entlang der Spalten zwischen den Objekten <span class="math inline">\(\sigma^2_c\)</span>. Daraus können die Modelle wie folgt voneinander unterschieden werden (siehe <a href="#tbl-ed-reliability-models-var" class="quarto-xref">Tabelle&nbsp;<span>11.4</span></a>}.</p>
+<div id="tbl-ed-reliability-models-var" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ed-reliability-models-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;11.4: Übersicht über die Modelle
+</figcaption>
+<div aria-describedby="tbl-ed-reliability-models-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 72%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Bezeichnung</th>
+<th>Modell</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Model 1</td>
+<td><span class="math inline">\(x_{ij} = \mu + \underbrace{r_i + e_{ij}}_{\text{zufällig}}\)</span></td>
+</tr>
+<tr class="even">
+<td>Model 2</td>
+<td><span class="math inline">\(x_{ij} = \mu + \underbrace{r_i + \overbrace{c_j}^{bias} + e_{ij}}_{\text{zufällig}}\)</span></td>
+</tr>
+<tr class="odd">
+<td>Model 3</td>
+<td><span class="math inline">\(x_{ij} = \mu + \underbrace{r_i}_{\text{zufällig}} + \overbrace{c_j}^{\text{fixed}} + \underbrace{e_{ij}}_{\text{zufällig}}\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Die Unterschied zwischen den Bewertern wird dabei als <strong>Bias</strong> bezeichnet. D.h. die Tendenz eines Bewerters eher <em>zu hohe</em> bzw. eher <em>zu niedrige</em> Werte zu geben. Dies Unterschiede können entweder zufällig sein, wenn die Bewerter als Stichprobe aus einer <em>Population von Bewertern</em> angesehen werden, oder als feste Effekte, wenn nur die Unterschiede der beobachteten Bewerter von Bedeutung sind. Daraus resultieren unterschiedliche Arten der Berechnung für den ICC in Abhängigkeit vom gewählten Modell und ob der Einfluss der Streuung zwischen den Bewertern (fälschlich als agreement bezeichnet) oder ohne diesen (consistency) berechnet werden soll.</p>
+<div id="tbl-ed-reliab-icc-calc" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ed-reliab-icc-calc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;11.5: Berechnung des ICC <span class="math inline">\(\rho\)</span> in Abhängigkeit vom gewählten Modell
+</figcaption>
+<div aria-describedby="tbl-ed-reliab-icc-calc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 23%">
+<col style="width: 23%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Modell</th>
+<th>Modell 1</th>
+<th>Modell 2</th>
+<th>Modell 3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Konsistenz</td>
+<td><span class="math inline">\(\rho_{1}=\frac{\sigma_r^2}{\sigma_r^2 + \sigma_{\epsilon}^2}\)</span></td>
+<td><span class="math inline">\(\rho_{2C} = \frac{\sigma_r^2}{\sigma_r^2 + \sigma_e^2}\)</span></td>
+<td><span class="math inline">\(\rho_{3C} = \frac{\sigma_r^2}{\sigma_r^2 + \sigma_e^2}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Übereinstimmung</td>
+<td></td>
+<td><span class="math inline">\(\rho_{2A} = \frac{\sigma_r^2}{\sigma_r^2+\sigma_c^2 + \sigma_e^2}\)</span></td>
+<td><span class="math inline">\(\rho_{3A} = \frac{\sigma_r^2}{\sigma_r^2 + \theta_c^2 + \sigma_e^2}\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Je nach Modellannahmen und intendierter Zielgröße ergeben sich somit unterschiedliche Berechnungsarten. Insbesondere sind die ICC <span class="math inline">\(\rho\)</span>-Werte für die Berechnung der Konsistenz immer mindestens so groß wie diejenigen für die Übereinstimmung, da hier die Varianz <span class="math inline">\(\sigma_r^2\)</span> zwischen den Bewertern zusätzlich durch den Faktor <span class="math inline">\(\sigma_c^2\)</span> unter Modell 2 bzw. <span class="math inline">\(\Theta_c^2\)</span> unter Modell 3 geteilt wird. Für die Dokumentation ist es daher wichtig die Art des berechneten ICCs genau anzugeben bzw. wenn ICCs aus der Literatur interpretiert werden sollen ist die Kenntnis der Berechnungsart zwingend notwendig <span class="citation" data-cites="liljequist2019 qin2019 koo2016">(<a href="references.html#ref-liljequist2019" role="doc-biblioref">Liljequist u.&nbsp;a. 2019</a>; <a href="references.html#ref-qin2019" role="doc-biblioref">Qin u.&nbsp;a. 2019</a>; <a href="references.html#ref-koo2016" role="doc-biblioref">Koo und Li 2016</a>)</span>.</p>
+<p>Dazu sei noch einmal betont, dass der ICC ein Reliabilitätsmaß ist und somit von der <strong>Streuung in der Stichprobe</strong> abhängt und als <em>absolutes</em> Maß schwierig zu interpretieren ist <span class="citation" data-cites="mueller1994">(<a href="references.html#ref-mueller1994" role="doc-biblioref">Müller und Büttner 1994</a>)</span>. Die folgende Abbildung veranschaulicht diesen Zusammenhang noch einmal anhand einer einfachen Schematik (siehe <a href="#fig-ed-reliability-icc-change" class="quarto-xref">Abbildung&nbsp;<span>11.6</span></a>).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ed-reliability-icc-change" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ed-reliability-icc-change-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="ed_reliability_files/figure-html/fig-ed-reliability-icc-change-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ed-reliability-icc-change-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;11.6: Veränderung der ICC-Werte für verschiedene Zusammenhängen zwischen Bewertung und für zwei verschiedene Bereiche.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In <a href="#fig-ed-reliability-icc-change" class="quarto-xref">Abbildung&nbsp;<span>11.6</span></a> sind sechs verschiedene synthetische Datensätze abgebildet. Die Datensätz sind unterteilt nach zwei verschiedenen <span class="math inline">\(X\)</span> Mengen und nach drei unterschiedlichen Arten wie die <span class="math inline">\(Y\)</span> Werte sich von den <span class="math inline">\(X\)</span> Werten unterscheiden. Für beide <span class="math inline">\(X\)</span> Mengen ist der ICC unter allen drei Berechnungsmethoden (zwischen Modell 3 und Modell 2 wird hier auf Grund der gleichen Berechnung nicht unterschieden) einen Wert von <span class="math inline">\(r = 1\)</span> einnehmen. Wenn die <span class="math inline">\(Y\)</span> Werte gegen <span class="math inline">\(X\)</span> um eine konstante, im Beispiel <span class="math inline">\(3\)</span> verschoben sind, ist der Konsistenzwert immer noch <span class="math inline">\(r = 1\)</span>, während der ICC(2,A) ungleich <span class="math inline">\(1\)</span> ist. Dabei besteht jedoch ein Abhängigkeit von der Streuung der <span class="math inline">\(X\)</span> Werte. Wenn die Streuung geringer ist (linke Spalte), dann resultiert ein geringerer ICC im Vergleich zu wenn die Streuung der <span class="math inline">\(X\)</span>-Werte größer ist (rechte Spalte). Der gleiche Effekt ist in der untersten Zeile für <span class="math inline">\(y = 2x\)</span> zu beobachten, wobei ICC(2,C) nun auch <span class="math inline">\(&lt;1\)</span> ist. Dies verdeutlicht nochmal, dass der ICC nicht nur eine Funktion der Streuung der Bewerter (Messinstrumete) sondern ebenfalls der Stichprobe ist.</p>
+</section>
+<section id="spearman-brown-prophecy-formula" class="level3" data-number="11.3.2">
+<h3 data-number="11.3.2" class="anchored" data-anchor-id="spearman-brown-prophecy-formula"><span class="header-section-number">11.3.2</span> Spearman-Brown prophecy formula</h3>
+<p>Eine Möglichkeit die Reliabilität eines Test zu verbessern, besteht darin, nicht nur eine einzelne Messung zu nehmen, sondern über mehrer Messungen den Mittelwert zu bestimmen. Beispielweise könnte bei einem Pre-Post Design, anstatt nur jeweils eine einzelne Messung zu den beiden Zeitpunkten mehrere <span class="math inline">\(K\)</span> Messungen genommen werden. Im Sinne der Terminologie sind diese mehrere Wiederholungen der Messung. Dies führt unter, der Annahme das die Messfehler zufällig mit einem Mittelwert von <span class="math inline">\(E[\epsilon_i] = 0]\)</span> sind, dazu, dass der der gemittelte Messwert näher am wahren Wert <span class="math inline">\(\tau_i\)</span> liegt. Der ICC für die gemittelte Testung <span class="math inline">\(\rho^*\)</span> hängt mit dem ICC für eine einzelne Testung <span class="math inline">\(\rho\)</span> über die folgende Formel die nach Spearman und Brown benannt ist:</p>
+<p><span class="math display">\[\begin{equation}
+\rho^* = \frac{K \cdot \rho}{1 + (K-1) \cdot \rho}
+\end{equation}\]</span></p>
+<p>Über diesen Zusammenhang kann einfach abgeschätzt werden zu welcher Verbesserung eine Erhöhung der Messwiederholungen führen würde <span class="citation" data-cites="baumgartner1989">(<a href="references.html#ref-baumgartner1989" role="doc-biblioref">Baumgartner 1989</a>)</span>. Die Anwendung der Spearman-Brown prophecy Formel erlaubt somit beispielsweise eine Abschätzung über die Anzahl der notwendigen Trials zu treffen bei der Erstellung eines Untersuchungsdesigns. In <a href="#fig-ed-reliability-sb-formula" class="quarto-xref">Abbildung&nbsp;<span>11.7</span></a> ist der Zusammenhang von <span class="math inline">\(\rho^*\)</span> für verschiedene <span class="math inline">\(\rho\)</span> und den Zusammenhang mit der Wiederholungszahl abgetragen.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ed-reliability-sb-formula" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ed-reliability-sb-formula-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="ed_reliability_files/figure-html/fig-ed-reliability-sb-formula-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ed-reliability-sb-formula-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;11.7: Einfluss der Wiederholungen auf die Reliabilität für verschiedene <span class="math inline">\(\rho_{xx'}\)</span>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In <a href="#fig-ed-reliability-sb-formula" class="quarto-xref">Abbildung&nbsp;<span>11.7</span></a> ist zu erkennen, dass der Zuwachs der Reliabilität ab einer Wiederholungszahl von <span class="math inline">\(K &gt; 7\)</span> für die meisten Ausgangsniveau <span class="math inline">\(\rho\)</span> nur noch sehr gering ist. Insbesondere wenn die Ausgangsreliabilität schlecht ist, dann ist selbst mit einer hohen Anzahl von Wiederholungen kein exzellentes Niveau zu erreichen.</p>
+<p>Ursprünglich ist die SB-Formel entwickelt worden um die Anzahl von Items in einem Fragebogen abzuschätzen die das gleiche Messkonstrukt abbilden, daher ist der Übertrag auf alle möglichen Kontexte in den Sportwissenschaft nicht immer gegeben. Beispielsweise scheint es angebracht, bei Performance Messungen wie Sprüngen und Shuttle runs das Ergebnis der SB-Formel eher als eine obere Grenze anzusehen <span class="citation" data-cites="baumgartner1968">(<a href="references.html#ref-baumgartner1968" role="doc-biblioref">Baumgartner 1968</a>)</span>.</p>
+<p><span class="citation" data-cites="vet2017">Vet u.&nbsp;a. (<a href="references.html#ref-vet2017" role="doc-biblioref">2017</a>)</span> und <span class="citation" data-cites="warrens2017">Warrens (<a href="references.html#ref-warrens2017" role="doc-biblioref">2017</a>)</span> haben einen interessanten Zusammenhang zwischen ICC und der Spearman-Brown-Formula gezeigt, die in zwei unterschiedlichen Disziplinen entwickelt wurden.</p>
+<p><span class="math display">\[\begin{equation*}
+\rho^*(K) = \frac{\sigma_{\tau}^2}{\sigma_{\tau}^2 + (\sigma_1^2 + \ldots + \sigma_q^2)/K}
+\end{equation*}\]</span></p>
+<p>D.h. eine direkte Umformung des ICCs in den Reliabilitätswerte, die zumindest für Modell 1 und Modell 2 zutrifft.</p>
+</section>
+<section id="intraclass-correlation-in-r" class="level3" data-number="11.3.3">
+<h3 data-number="11.3.3" class="anchored" data-anchor-id="intraclass-correlation-in-r"><span class="header-section-number">11.3.3</span> Intraclass Correlation in <code>R</code></h3>
+<p>In <code>R</code> kann der ICC relativ komfortable über das Package <code>psych</code> berechnet werden, welches die Funktion <code>ICC()</code> zur Verfügung stellt.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>icc_hat <span class="ot">&lt;-</span> psych<span class="sc">::</span><span class="fu">ICC</span>(lil[,<span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>icc_hat</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call: psych::ICC(x = lil[, -1])
+
+Intraclass correlation coefficients 
+                         type  ICC   F df1 df2     p lower bound upper bound
+Single_raters_absolute   ICC1 0.71 8.2   9  20 5e-05        0.39        0.91
+Single_random_raters     ICC2 0.71 8.7   9  18 6e-05        0.39        0.91
+Single_fixed_raters      ICC3 0.72 8.7   9  18 6e-05        0.40        0.91
+Average_raters_absolute ICC1k 0.88 8.2   9  20 5e-05        0.65        0.97
+Average_random_raters   ICC2k 0.88 8.7   9  18 6e-05        0.66        0.97
+Average_fixed_raters    ICC3k 0.89 8.7   9  18 6e-05        0.66        0.97
+
+ Number of subjects = 10     Number of Judges =  3
+See the help file for a discussion of the other 4 McGraw and Wong estimates,</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="messfehler-agreement" class="level2" data-number="11.4">
+<h2 data-number="11.4" class="anchored" data-anchor-id="messfehler-agreement"><span class="header-section-number">11.4</span> Messfehler (Agreement)</h2>
+<p>Im Folgenden werden verschiedene Maße für den Messfehler vorgestellt. Leider gibt es hier auch überschneidende Terminologie in der Literatur, die zum Teil auch in unterschiedlichen Berechnungsmethoden resultiert.</p>
+<section id="standard-error-of-measurement" class="level3" data-number="11.4.1">
+<h3 data-number="11.4.1" class="anchored" data-anchor-id="standard-error-of-measurement"><span class="header-section-number">11.4.1</span> Standard Error of Measurement</h3>
+<p>In Abschnitt zur Reliabilität wurde anhand des KTT der Messfehler <span class="math inline">\(\epsilon_i\)</span> eingeführt. Die Varianz der Messfehler <span class="math inline">\(\sigma^2(\epsilon_i)\)</span> die zur Berechnung der Reliabilität verwendet wird, charakterisiert auch schon alleine für sich genommen auch schon ein wichtiges Merkmal des Messinstruments. Die Wurzel dieser Varianz wir als der Standardfehler des Messwerts (SEM) bezeichnet. Der SEM ist ein Maß dafür, wie stark die Ergebnisse wiederholter Messungen voneinander abweichen. Sei zum Beispiel der Sprunghöhe einer Athletin 20-mal hintereinander gemessen worden, dann schätzt die Standardabweichung dieser Messwerte den SEM ab <span class="citation" data-cites="patterson1955">(<a href="references.html#ref-patterson1955" role="doc-biblioref">Patterson 1955</a>)</span>.</p>
+<p><span class="math display">\[\begin{equation*}
+SEM = \sqrt{\sigma^2(\epsilon_i)}
+\end{equation*}\]</span></p>
+<p>Der Vorteil des SEM besteht darin, dass der SEM in der gleichen Einheiten wie die Messvariable angegeben wird <span class="citation" data-cites="denegar1993">(<a href="references.html#ref-denegar1993" role="doc-biblioref">Denegar und Ball 1993</a>)</span>. Dies ermöglicht eine direkte Abschätzung der Größe des Messfehlers. Allerdings muss bemerkt werden, dass der SEM, trotzdem er einfach in der Berechnung ist, inhaltlich zu relativ viel Verwirrung in der Literatur geführt hat <span class="citation" data-cites="dudek1979 payne1989 mcmanus2012">(<a href="references.html#ref-dudek1979" role="doc-biblioref">Dudek 1979</a>; <a href="references.html#ref-payne1989" role="doc-biblioref">Payne 1989</a>; <a href="references.html#ref-mcmanus2012" role="doc-biblioref">McManus 2012</a>)</span>. So herrscht beispielsweise bei der Berechnung des <em>richtigen</em> SEM keine Einigkeit in der Literatur, sondern es existieren mehrere unterschiedliche Berechnungsarten denen leider subtile Unterschiede zugrunde liegen. Die Unterschiede hängen dabei davon ab, welcher <em>Messfehler</em> bestimmt werden soll <span class="citation" data-cites="warneke2025">(<a href="references.html#ref-warneke2025" role="doc-biblioref">Warneke u.&nbsp;a. 2025</a>)</span>. Grundsätzlich können, ähnliche der Unterscheidung beim ICC in Agreement und Consistency folgend, zwei Arten unterschieden werden nach denen der SEM berechnet wird. Wie beim ICCs je nachdem ob die systematischen Unterschiede zwischen Ratern mit einbezogen oder vernachlässigt werden sollen.</p>
+<p><span class="math display">\[\begin{align*}
+SEM_{\text{agreement}} &amp;= \sqrt{\sigma^2(\epsilon_i) + \sigma_r^2} \\
+SEM_{\text{consistency}} &amp;= \sqrt{\sigma^2(\epsilon_i)} \\
+\end{align*}\]</span></p>
+<p>Eine alternative Methode zur Berechnung des SEM beruht auf der Standardabweichung der Differenzen zwischen wiederholten Messungen. D.h. wenn für jedes Messobjekt zwei Messungen vorliegen, <span class="math inline">\(y_{i1}\)</span> und <span class="math inline">\(y_{i2}\)</span>, dann können die Differenzen <span class="math inline">\(d_i = y_{i1} - y_{i2}\)</span> berechnet werden und für diese Werte wird dann die Standardabweichung berechnet und noch mit einem Korrekturfaktor multipliziert. Der erhaltene Wert ist der <span class="math inline">\(SEM_{\text{consistency}}\)</span> Wert.</p>
+<p><span class="math display">\[\begin{equation*}
+SEM_{\text{consistency}} = \frac{SD_{\text{difference}}}{\sqrt{2}}
+\end{equation*}\]</span></p>
+<p>Eine weitere Möglichkeit den SEM zu berechnen beruht auf der algebraischen Umformung der Gleichung für die Reliabilität. Die Idee ist, anhand von Angaben in der Literatur den Wert für den ICC zu bestimmen.</p>
+<p><span class="math display">\[\begin{equation}
+SEM = \sigma_Y \sqrt{1 - \rho}
+\label{eq-ed-SEM-ICC}
+\end{equation}\]</span></p>
+<p>In dieser Formel steht <span class="math inline">\(\sigma_Y\)</span> für die Standardabweichung der Stichprobenwerte anhand derer die Reliabilität bestimmt wurde. Unglücklicherweise ist diese Formel nicht korrekt, wenn der SEM-Wert für eine eigene Stichprobenmessung berechnet werden soll und dazu Werte aus der Literatur für den ICC übernommen werden. Wie bereits diskutiert, ist die Reliabilität immer an eine bestimmte Population gekoppelt. Wenn nun die eigene Population nicht der ursprünglichen Population anhand derer der ICC abgeschätzt wurde entspricht, dann kommt es zu einer Fehlabschätzung des SEM. <span class="citation" data-cites="devet2011">De Vet u.&nbsp;a. (<a href="references.html#ref-devet2011" role="doc-biblioref">2011</a>)</span> raten daher von der Verwendung dieser Formel in solchen Fällen ab <span class="citation" data-cites="harvill1991">(p.112, vgl. auch <a href="references.html#ref-harvill1991" role="doc-biblioref">Harvill 1991</a>)</span>.</p>
+<p>Die Reliabilität ist in Formel<span class="math inline">\(\eqref{eq-ed-reliability}\)</span>, zusammen mit der Definition von <span class="math inline">\(\sigma^2_Y\)</span> in Formel <span class="math inline">\(\eqref{eq-y-tau-variance}\)</span> folgt:</p>
+<p><span class="math display">\[\begin{align*}
+SEM &amp;= \sigma_Y\sqrt{1-\rho} \\
+\Leftrightarrow SEM^2 &amp;= \sigma^2_Y(1-\rho) \\
+&amp;= \sigma^2_{Y}\left(1 - \frac{\sigma_{\tau}^2}{\sigma_{\tau}^2 + \sigma_{\epsilon}^2}\right) \\
+&amp;= (\sigma_{\tau}^2 + \sigma_{\epsilon}^2)\left(1 - \frac{\sigma_{\tau}^2}{\sigma_{\tau}^2 + \sigma_{\epsilon}^2}\right) \\
+&amp;= \sigma_{\tau}^2 + \sigma_{\epsilon}^2 - (\sigma_{\tau}^2 + \sigma_{\epsilon}^2)\frac{\sigma_{\tau}^2}{\sigma_{\tau}^2 + \sigma_{\epsilon}^2} \\
+&amp;= \sigma_{\tau}^2 + \sigma_{\epsilon}^2 - \sigma_{\tau}^2 \\
+&amp;= \sigma^2_{\epsilon} \\
+\Leftrightarrow SEM &amp;= \sigma_{\epsilon}
+\end{align*}\]</span></p>
+<p>Daher ist unter den Annahmen der klassischen Testtheorie der Standardfehler tatsächlich ein von der Population unabhängig Maß <span class="citation" data-cites="tighe2010">(vgl. auch <a href="references.html#ref-tighe2010" role="doc-biblioref">Tighe u.&nbsp;a. 2010</a>)</span>. Dazu muss allerdings die Population anhand derer die Varianz der Werte <span class="math inline">\(\sigma_Y^2\)</span> der Population des Reliabilitätskoeffizienten <span class="math inline">\(\rho\)</span> entsprechen.</p>
+<p>Eine weitere hilfreiche Einsicht die aus Formel<span class="math inline">\(\eqref{eq-ed-SEM-ICC}\)</span> folgt, ergibt sich für einen perfekten Test mit einer Reliabilität von <span class="math inline">\(\rho = 1\)</span>. In diesem Fall folgt:</p>
+<p><span class="math display">\[\begin{equation*}
+SEM = \sigma_Y^2\sqrt{1-\rho} = \sigma_Y^2\sqrt{1-1} = 0
+\end{equation*}\]</span></p>
+<p>D.h. ein perfekter Test hätte keinen Standardmessfehler <span class="citation" data-cites="harvill1991">(<a href="references.html#ref-harvill1991" role="doc-biblioref">Harvill 1991</a>)</span>. Der Standardmessfehler kann dahingehend interpretiert werden, dass er den <em>nichtreliablen Anteil der Merkmalsvarianz</em> angibt <span class="citation" data-cites="buhner2011">(<a href="references.html#ref-buhner2011" role="doc-biblioref">Bühner 2011, 193</a>)</span>.</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Vorsicht
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In der Literatur sind immer wieder fehlerhafte Zusammenhängen zwischen dem Konfidenzintervall für die wahren Werte <span class="math inline">\(\tau\)</span> und dem SEM zu finden. Der SEM gibt ist Maß für die tatsächliche Streuung der Werte. D.h. wenn der wahre Wert <span class="math inline">\(\tau_i\)</span> bekannt wäre, dann liegen <span class="math inline">\(68\%\)</span> der Werte <span class="math inline">\(\pm\)</span>SEM um diesen wahren Wert <span class="math inline">\(\tau_i\)</span>. <span class="math inline">\(tau_i\)</span> ist aber nicht bekannt <span class="citation" data-cites="mcmanus2012">(vgl. <a href="references.html#ref-mcmanus2012" role="doc-biblioref">McManus 2012</a>)</span> . Hier wird im weiteren nicht näher darauf eingegangen, da noch zusätzliche Hintergrundinformation dazu gezogen werden müsste und dass zu weit führen würde <span class="citation" data-cites="dudek1979 payne1989">(siehe auch <a href="references.html#ref-dudek1979" role="doc-biblioref">Dudek 1979</a>; <a href="references.html#ref-payne1989" role="doc-biblioref">Payne 1989</a>)</span>.</p>
+</div>
+</div>
+</section>
+<section id="variationskoeffizient" class="level3" data-number="11.4.2">
+<h3 data-number="11.4.2" class="anchored" data-anchor-id="variationskoeffizient"><span class="header-section-number">11.4.2</span> Variationskoeffizient</h3>
+<p>Ein weiteres oft verwendet Maß um eine Aussage über den Messfehler zu erhalten ist der Variationskoeffizient (CV, engl. coefficient of variation). Formal berechnet sich der CV als die Standardabweichung geteilt durch den Mittelwert der Stichprobe.</p>
+<p><span class="math display">\[\begin{equation*}
+CV = \frac{\sigma_Y}{\bar{Y}}
+\end{equation*}\]</span></p>
+<p>Der CV ist von besonderem Interesse, wenn die Daten Heteroskedastizität aufweisen. D.h. die Streuung der Daten ist mit der Größenordnung der Werte korreliert. Etwas, dass nach dem klassischen Testmodell, ausgeschlossen wird. Ein Beispiel wäre wenn die die Streuung der Wurfweite mit der Wurfweite zunimmt (siehe <a href="#fig-ed-reliability-heterosce" class="quarto-xref">Abbildung&nbsp;<span>11.8</span></a> für ein übertriebenes Beispiel).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ed-reliability-heterosce" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ed-reliability-heterosce-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="ed_reliability_files/figure-html/fig-ed-reliability-heterosce-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ed-reliability-heterosce-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;11.8: Synthetisches Beispiel für Heteroskedastizität bei Wurfweiten
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Durch die Normierung der Streuung anhand des Mittelwerts der jeweiligen Werte ist die Streuung vergleichbar. Da die Streuung und der Mittelwert die gleichen Einheiten haben, handelt es sich bei dem CV um eine Dimensionslose Größe. <span class="citation" data-cites="bland1996cv">Bland und Altman (<a href="references.html#ref-bland1996cv" role="doc-biblioref">1996</a>)</span> zeigen, dass der CV als eine logarithmische Transformation der Daten interpretiert werden kann, die zu einer Varianzstabilisierung führt.</p>
+</section>
+<section id="limits-of-agreement---bland-altman-plots" class="level3" data-number="11.4.3">
+<h3 data-number="11.4.3" class="anchored" data-anchor-id="limits-of-agreement---bland-altman-plots"><span class="header-section-number">11.4.3</span> Limits of Agreement - Bland-Altman Plots</h3>
+<p>Eine weitere Methode den Messfehler zu beurteilen sind die sogenannten Bland-Altman-Plots <span class="citation" data-cites="bland1986 bland1999">(<a href="references.html#ref-bland1986" role="doc-biblioref">Bland und Altman 1986</a>, <a href="references.html#ref-bland1999" role="doc-biblioref">1999</a>)</span>. Ein Bland-Altman-Plot ist ein grafisches Werkzeug zur Bewertung der Übereinstimmung zwischen zwei verschiedenen Messmethoden, die dasselbe quantitative Merkmal erfassen. Der Ansatz beruht darauf, systematische Unterschiede zwischen Methoden aufzudecken und die Austauschbarkeit der Verfahren zu beurteilen. Dabei wird für jedes Messpaar die Differenz <span class="math inline">\(d\)</span> zwischen den beiden Methoden berechnet und gegen deren Mittelwert abgetragen. Diese Darstellung ermöglicht es, sowohl den mittleren Unterschied (engl. <em>Bias</em>) als auch die Streuung der Differenzen visuell zu beurteilen. Der Bland-Altman Plot stellt dabei ein annerkantes Verfahren das nicht auf der Berechnung einer Signifikanz bzw. vorgegebenen Schwellenwerten beruht.</p>
+<p>Der Bland-Altman Plot erlaubt die Darstellung sogenannter <strong>Limits of Agreement</strong> (LOA) . Formal als der Mittelwert der Differenzen <span class="math inline">\(\pm 1.96\)</span>-fache Standardabweichung der Differenzen (<span class="math inline">\(s_d\)</span>). Dabei handelt es sich <span class="math inline">\(95\%\)</span> Limits of agreement (<span class="math inline">\(1.96\)</span> nach der Standardnormalverteilung). Die LOAs definieren den Bereich, innerhalb dessen die meisten Unterschiede zwischen den Messungen der beiden Methoden liegen werden und sind nicht mit einem Konfidenzintervall zu verwechseln <span class="citation" data-cites="bland1999">(<a href="references.html#ref-bland1999" role="doc-biblioref">Bland und Altman 1999, p.136</a>)</span>. Die LOAs sind eher im Sinne eines Referenzintervalls zu interpretieren <span class="citation" data-cites="atkinson2000">(<a href="references.html#ref-atkinson2000" role="doc-biblioref">Atkinson und Nevill 2000</a>)</span></p>
+<p><span class="math display">\[\begin{equation}
+\text{LOA} = \bar{d} \pm 1.96 \cdot s_d
+\end{equation}\]</span></p>
+<p>Dadurch wird ein Bereich ausgezeichnet, in dem etwa 95 % der Differenzen erwartet werden. Schmale LOAs deutet daher auf eine gute Übereinstimmung hin, während breite LOAs oder systematische Trends (z.B. zunehmende Differenzen bei höheren Werten) einen Hinweise auf mögliche methodische Probleme liefern können. In der Medizin, wo Bland-Altman-Plots weit verbreitet sind, ist diese Art der Analyse Standard, wenn ein neues Messverfahren mit einem etablierten Standard verglichen werden soll. Anhand der Plots wird entschieden, ob beide Methoden im praktischen Einsatz gegeneinander austauschbar sind.</p>
+<p>In <a href="#fig-ed-reliability-ba-01" class="quarto-xref">Abbildung&nbsp;<span>11.9</span></a> ist der Bland-Altman für die EMG-Werte aus <a href="#tbl-ed-rel-emg" class="quarto-xref">Tabelle&nbsp;<span>11.1</span></a> abgebildet.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ed-reliability-ba-01" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ed-reliability-ba-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="ed_reliability_files/figure-html/fig-ed-reliability-ba-01-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ed-reliability-ba-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;11.9: Bland-Altman Plot der EMG-Frequenzdaten (gestrichelte Linie: Bias, gepunkte Linien: Limits of Agreement).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In <a href="#fig-ed-reliability-ba-01" class="quarto-xref">Abbildung&nbsp;<span>11.9</span></a> ist für den Bias (Abstand Nullline zur gestrichtelten Linie) nur eine geringe Abweichung zu beobachten. Für die Limits of agreements ist ein Bereich von etwa <span class="math inline">\([-13,12]\)</span> ausgezeichnet. Ob diese zu erwartenden Schwankungen nun problematisch sind, hängt davon ab, welche Größe von Unterschieden als bedeutsam angesehen werden können. Da beide Werte bias und Limits of agreements nur Schätzer der <em>wahren</em> Werte sind, sind sie wie immer mit Unsicherheiten behaftet. Daher sollten auch immer Konfidenzintervalle für die Schätzer berechnet werden. Dafür können, unter der Annahme, dass die Differenzen normalverteilt sind, die folgenden Formeln verwendet werden <span class="citation" data-cites="bland1999">(<a href="references.html#ref-bland1999" role="doc-biblioref">Bland und Altman 1999</a>)</span>.</p>
+<p><span class="math display">\[\begin{align*}
+CI95\%_{\text{bias}} &amp;= \bar{d} \pm 1.96\frac{s_d}{\sqrt{n}} \\
+\text{LOA} &amp;= \bar{d}\pm 1.96\ s_d \\
+Var(\bar{d}\pm1.96\ s_d) &amp;= \left(\frac{1}{n}+\frac{1.96^2}{2(n-1)}\right)s_d^2\approx1.71^2\frac{s_d^2}{n} \\
+CI95\%_{\text{loa}} &amp;= \text{LOA}\pm q_{t,\alpha,df=n-1}\times 1.71\frac{s_d}{\sqrt{n}}
+\end{align*}\]</span></p>
+<p>Für das Beispiel der EMG-Werte resultiert dies in der folgenden Darstellung (siehe <a href="#fig-ed-reliability-ba-02" class="quarto-xref">Abbildung&nbsp;<span>11.10</span></a>)</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ed-reliability-ba-02" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ed-reliability-ba-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="ed_reliability_files/figure-html/fig-ed-reliability-ba-02-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ed-reliability-ba-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;11.10: Bland-Altman Plot mit Konfidenzintervallen (bias:rot, loa:grün)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Bei der Bewertung des Limit of Agreement gibt es keine festen Schwellenwerte, sondern, da die Werte abhängig von den verwendeten Einheiten sind erfolgt eine Abschätzung anhand der <em>relevanten</em> Fehlerschwellen. Da zwei Messungen praktisch nie zu den genau gleichen Werten führen werden ist daher die Bewertung immer abhängig von der Domäne und der intendierten Anwendung. Ein gegebenes LOAs kann in der einen Anwendungen vollkommen ausreichen sein, während es für eine andere Anwendung, bei der eine höhere Präzision notwendig ist, nicht anwendbar ist. Eine der Annahmen bei der Berechnung der LOAs ist, dass die Differenzen unabhängig von den Mittelwerten sind, d.h. es herrscht Homoskedastizität. Sollte dies nicht der Fall sein, dann sind in <span class="citation" data-cites="bland1999">Bland und Altman (<a href="references.html#ref-bland1999" role="doc-biblioref">1999</a>)</span> entsprechende Anpassungen zu finden. Weiterhin können Probleme entstehen, wenn die Varianzen der beiden Messungen sehr unterschiedlich sind. In diesem Fall kann beispielsweise durch wiederholte Messungen (repetitions) die Stabilität der Streuung verbessert werden <span class="citation" data-cites="mansournia2021">(<a href="references.html#ref-mansournia2021" role="doc-biblioref">Mansournia u.&nbsp;a. 2021</a>)</span>.</p>
+<p>In der sportwissenschaftlichen Literatur besteht eine zum Teil etwas verwirrende Diskussionen darüber, ob LOAs tatsächlich anwendbar sind <span class="citation" data-cites="hopkins2000 atkinson2000 warneke2025">(siehe <a href="references.html#ref-hopkins2000" role="doc-biblioref">Hopkins 2000</a>; <a href="references.html#ref-atkinson2000" role="doc-biblioref">Atkinson und Nevill 2000</a>; <a href="references.html#ref-warneke2025" role="doc-biblioref">Warneke u.&nbsp;a. 2025</a>)</span> bei der unglücklicherweise zum Teil auf falsche Aussagen gemacht werden. Eine gute Zusammenfassung und Antwort ist in <span class="citation" data-cites="mansournia2021">Mansournia u.&nbsp;a. (<a href="references.html#ref-mansournia2021" role="doc-biblioref">2021</a>)</span> zu finden.</p>
+</section>
+<section id="fehlerschwellen" class="level3" data-number="11.4.4">
+<h3 data-number="11.4.4" class="anchored" data-anchor-id="fehlerschwellen"><span class="header-section-number">11.4.4</span> Fehlerschwellen</h3>
+<p>Bei der Interpretation der Messfehler, sei es nach SEM, CV oder LOA ist immer eine Einordnung der Fehlergröße im Bezug auf die gewünschte Anwendung zu treffen. D.h. es werden bestimmte Fehlerschwellen definiert bei deren Überschreiten ein Messinstrument als zu unpräzise interpretiert wird. Zwei wichtige Konzepte in diesem Zusammenhang sind die Begrifflichkeiten <strong>analytical goal</strong> und <strong>smallest worthwhile effect</strong> (SWE) . Das analytical goal definiert, welche Präzision ein Messverfahren erreichen muss, um als ausreichend zuverlässig für den praktischen Einsatz zu gelten. Die Größe orientieren sich an physiologisch relevanten Veränderungen oder klinischen Entscheidungsgrenzen. Der smallest worthwhile effect, auch Minimally Clinical Important Change, dagegen beschreibt die kleinste Veränderung eines Messwertes, die als bedeutsam oder relevant angesehen wird – sei es im Hinblick auf eine Leistungsverbesserung oder eine klinische Verbesserung. Der SWE beruht dabei auf einer Abwägung der Veränderung der Messgröße, der benötigten Ressourcen, der Risiken und der Bewertung durch den Patienten <span class="citation" data-cites="ferreira2012">(vgl. <a href="references.html#ref-ferreira2012" role="doc-biblioref">Ferreira u.&nbsp;a. 2012</a>)</span>. Der SWE stammt vor allem aus dem klinischen Bereich.</p>
+<p>Liegt der Messfehler eines Verfahrens über der SWE, kann eine beobachtete Veränderung nicht sicher als real (Zufallsprodukt) oder bedeutsam interpretiert werden. Das analytical goals ist somit eher als eine Eigenschaft des Messinstruments zu verstehen, während SWE als eine praktisch relevante Größe interpretiert wird. Daher werden in vielen Fällen diese beiden Größen unterschiedlich voneinander sein. Weiterhin ist der SWE auch keine Konstante sondern verändert sich mit der untersuchten Population. Beispielsweise wäre eine Intervention die sehr viele Ressourcen benötigt aber die Mortalität in einer Population mit Krebspatientinnen anders zu beurteilen als wenn es um gesunde Probandinnen geht.</p>
+<p>In <a href="#fig-ed-reliability-swe" class="quarto-xref">Abbildung&nbsp;<span>11.11</span></a> ist ein hypothetisches Beispiel für das Zusammenspiel von analytical goal und SWE exemplarisch dargestellt.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ed-reliability-swe" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ed-reliability-swe-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="ed_reliability_files/figure-html/fig-ed-reliability-swe-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ed-reliability-swe-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;11.11: Pre-Pre-Post Design um Limits of Agreement zu bestimmen.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Es wurden drei Messzeitpunkte durchgeführt. Dabei dienen die ersten beiden Messzeitpunkte dazu die LOA zu bestimmen. Anhand der Literatur wurde eine Veränderung um zwei Einheit als relevant ermittelt. Daher gilt <span class="math inline">\(\text{SWE}=2\)</span> welcher anhand der grünen Balken in der Grafik eingezeichnet ist. Dadurch wird für die verwendet Messmethodik ein analytical goal von zwei Einheiten angegeben. Durch die Berechnung der LOA über die ersten beiden Messungen kann nun überprüft werden, ob die gewählte Methodik eine ausreichende Präzision hat um einen Unterschied in der Größenordnung des SWE aufzulösen. Wie in der Grafik zu sehen ist, sind die LOA innerhalb des SWE. D.h. die Messmethodik ist ausreichend präzise die gewünschte Veränderung zu identifizieren. Im Beispiel ist der Unterschied von Pre zu Post sogar deutlich außerhalb dieser Minimalanforderungen und es kann von einem relevanten Unterschied gesprochen werden. Ein ähnlicher Ansatz kann über den SEM erreicht werden. Im klinischen Bereich wird die kleinste unterscheidbare Größe auch als <strong>minimum detectable change</strong> bezeichnet <span class="citation" data-cites="turner2010">(<a href="references.html#ref-turner2010" role="doc-biblioref">Turner u.&nbsp;a. 2010</a>)</span>.</p>
+<p>Eine weiter im klinischen Kontext verwendete Zielgröße ist der sogenannte <strong>Minimal important change (MIC)</strong>, d.h. die kleinste, wichtige Veränderung einer Zielgröße. In der Medizin wird der MIC als die kleinste Veränderung definiert, die von Patienten als vorteilhaft angesehen wird <span class="citation" data-cites="terwee2009">(<a href="references.html#ref-terwee2009" role="doc-biblioref">Terwee u.&nbsp;a. 2009</a>)</span>. Der MIC wird vor allem im Zusammenhang mit Fragebögen verwendet die Patienten vor und nach einer Interventionsphase ausfüllen. Der MIC wird dann als der Unterschied zwischen denjenigen Personen die eine kleine Verbesserung bemerken im Vergleich zu Personen die keine Verbesserung dokumentieren. <span class="citation" data-cites="terwee2009">Terwee u.&nbsp;a. (<a href="references.html#ref-terwee2009" role="doc-biblioref">2009</a>)</span> zeigen, dass in diesem Fall der MIC viermal größer als der SEM sein muss, damit MIC vom Messfehler unterschieden werden kann.</p>
+<p>Der MIC ist dabei eine sogenannte <strong>anchor-based</strong> Schwelle <span class="citation" data-cites="norman2001">(<a href="references.html#ref-norman2001" role="doc-biblioref">Norman u.&nbsp;a. 2001</a>)</span>. Bei anchor-based Schwellen wird eine unabhängige Messmethode, ein externes Kriterium, verwendet um zu bestimmen was eine relevante Veränderung darstellt <span class="citation" data-cites="lydick1993 terwee2021">(<a href="references.html#ref-lydick1993" role="doc-biblioref">Lydick und Epstein 1993</a>; <a href="references.html#ref-terwee2021" role="doc-biblioref">Terwee u.&nbsp;a. 2021</a>)</span>. Im Falle des MIC ist dies ein externer Fragebogen der die Patienten zu ihrem Wohlbefinden befragt. Die anchor-based Schwellen sind dabei von den <strong>distribution-based</strong> Schwellen zu unterscheiden. Bei den distribution-based Schwellen wird der Unterschied in ein Verhältnis zu der Streuung der Daten, wie zum Beispiel bei Cohen’s D <span class="citation" data-cites="norman2001">(<a href="references.html#ref-norman2001" role="doc-biblioref">Norman u.&nbsp;a. 2001</a>)</span>. Schwellen basierend auf dem SEM bzw. LOA sind daher den distribution-based Schwellen zuzuordnen. In den meisten Fällen sind anchor-based Methoden den distribution-based Methoden vorzuziehen, da ein vorliegender Unterschied basierend auf der Verteilung für sich genommen keine Aussage über die Relevanz der Veränderung erlaubt <span class="citation" data-cites="turner2010">(<a href="references.html#ref-turner2010" role="doc-biblioref">Turner u.&nbsp;a. 2010</a>)</span>. Allerdings zeigte <span class="citation" data-cites="wyrwich1999">Wyrwich, Nienaber, u.&nbsp;a. (<a href="references.html#ref-wyrwich1999" role="doc-biblioref">1999</a>)</span> das zumindest für den Bereich von Herzpatienten ein Schwellenwert von <span class="math inline">\(1\times\)</span>SEM ähnlich Einschätzungen liefert wie eine expertenbasierte Schwelle <span class="citation" data-cites="wyrwich1999b">(vgl. auch <a href="references.html#ref-wyrwich1999b" role="doc-biblioref">Wyrwich, Tierney, u.&nbsp;a. 1999</a>)</span>. Insgesamt muss zu den verschiedenen Begrifflichkeiten aus dem klinischen Bereich wie MIC und MDC die Anwendungen vor allem Bereich der psychometrischen Testungen entwickelt wurden und daher nicht klar ist, wie weit dies für den sportwissenschaftlichen Bereich der Leistungserfassung ebenfalls zutrifft.</p>
+</section>
+</section>
+<section id="zum-nachlesen" class="level2" data-number="11.5">
+<h2 data-number="11.5" class="anchored" data-anchor-id="zum-nachlesen"><span class="header-section-number">11.5</span> Zum Nachlesen</h2>
+<p>Die Themen Reliabiltät und Messfehler sind hier sehr selektiv beschrieben worden, weiteführende Diskussion sind in <span class="citation" data-cites="atkinson1998">Atkinson und Nevill (<a href="references.html#ref-atkinson1998" role="doc-biblioref">1998</a>)</span> und <span class="citation" data-cites="baumgartner1989">Baumgartner (<a href="references.html#ref-baumgartner1989" role="doc-biblioref">1989</a>)</span> zu finden. Zum Limits of agreement Ansatz sind <span class="citation" data-cites="bland1999">Bland und Altman (<a href="references.html#ref-bland1999" role="doc-biblioref">1999</a>)</span> und <span class="citation" data-cites="atkinson2000">Atkinson und Nevill (<a href="references.html#ref-atkinson2000" role="doc-biblioref">2000</a>)</span> gute Quellen, während analytical goals in <span class="citation" data-cites="brown2007">Brown und O’Donoghue (<a href="references.html#ref-brown2007" role="doc-biblioref">2007</a>)</span>, <span class="citation" data-cites="atkinson1998">Atkinson und Nevill (<a href="references.html#ref-atkinson1998" role="doc-biblioref">1998</a>)</span> und <span class="citation" data-cites="fraser1990">Fraser u.&nbsp;a. (<a href="references.html#ref-fraser1990" role="doc-biblioref">1990</a>)</span> besprochen werden. Ein gute Quelle zu SEM <span class="citation" data-cites="denegar1993">Denegar und Ball (<a href="references.html#ref-denegar1993" role="doc-biblioref">1993</a>)</span> und <span class="citation" data-cites="devet2011">De Vet u.&nbsp;a. (<a href="references.html#ref-devet2011" role="doc-biblioref">2011</a>)</span>.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-atkinson2000" class="csl-entry" role="listitem">
+Atkinson, G., und A. Nevill. 2000. <span>„Typical error versus limits of agreement“</span>. <em>Sports Med</em> 30 (5): 375–81. <a href="https://doi.org/10.2165/00007256-200030050-00005">https://doi.org/10.2165/00007256-200030050-00005</a>.
+</div>
+<div id="ref-atkinson1998" class="csl-entry" role="listitem">
+Atkinson, G., und A. M. Nevill. 1998. <span>„Statistical methods for assessing measurement error (reliability) in variables relevant to sports medicine“</span>. <em>Sports Med</em> 26 (4): 217–38. <a href="https://doi.org/10.2165/00007256-199826040-00002">https://doi.org/10.2165/00007256-199826040-00002</a>.
+</div>
+<div id="ref-baumgartner1968" class="csl-entry" role="listitem">
+Baumgartner, Ted A. 1968. <span>„The Applicability of the Spearman-Brown Prophecy Formula When Applied to Physical Performance Tests“</span>. <em>Research Quarterly. American Association for Health, Physical Education and Recreation</em> 39 (4): 847–56. <a href="https://doi.org/10.1080/10671188.1968.10613429">https://doi.org/10.1080/10671188.1968.10613429</a>.
+</div>
+<div id="ref-baumgartner1989" class="csl-entry" role="listitem">
+Baumgartner, Ted A. 1989. <span>„Norm-referenced measurement: Reliability“</span>. Chap. 3 in <em>Measurement concepts in physical education and exercise science</em>, herausgegeben von Margaret J Safrit und Terry M Wood. Human Kinetics Books.
+</div>
+<div id="ref-berchtold2016" class="csl-entry" role="listitem">
+Berchtold, André. 2016. <span>„Test–retest: Agreement or reliability?“</span> <em>Methodological Innovations</em> 9: 2059799116672875. <a href="https://doi.org/10.1177/2059799116672875">https://doi.org/10.1177/2059799116672875</a>.
+</div>
+<div id="ref-bland1986" class="csl-entry" role="listitem">
+Bland, J. M., und D. G. Altman. 1986. <span>„Statistical methods for assessing agreement between two methods of clinical measurement“</span>. <em>Lancet</em> 1 (8476): 307–10.
+</div>
+<div id="ref-bland1996cv" class="csl-entry" role="listitem">
+Bland, J. M., und D. G. Altman. 1996. <span>„Measurement error proportional to the mean“</span>. <em>BMJ</em> 313 (7049): 106. <a href="https://doi.org/10.1136/bmj.313.7049.106">https://doi.org/10.1136/bmj.313.7049.106</a>.
+</div>
+<div id="ref-bland1999" class="csl-entry" role="listitem">
+Bland, J. M., und D. G. Altman. 1999. <span>„Measuring agreement in method comparison studies“</span>. <em>Stat Methods Med Res</em> 8 (2): 135–60. <a href="https://doi.org/10.1177/096228029900800204">https://doi.org/10.1177/096228029900800204</a>.
+</div>
+<div id="ref-brown2007" class="csl-entry" role="listitem">
+Brown, Emily, und Peter O’Donoghue. 2007. <span>„Relating reliability to analytical goals in performance analysis“</span>. <em>International Journal of Performance Analysis in Sport</em> 7 (1): 28–34. <a href="https://doi.org/10.1080/24748668.2007.11868385">https://doi.org/10.1080/24748668.2007.11868385</a>.
+</div>
+<div id="ref-buhner2011" class="csl-entry" role="listitem">
+Bühner, Markus. 2011. <em>Einf<span>ü</span>hrung in die Test-und Fragebogenkonstruktion</em>. Bd. 4033. Pearson Deutschland GmbH.
+</div>
+<div id="ref-devet2011" class="csl-entry" role="listitem">
+De Vet, Henrica CW, Caroline B Terwee, Lidwine B Mokkink, und Dirk L Knol. 2011. <em>Measurement in medicine: a practical guide</em>. Cambridge university press.
+</div>
+<div id="ref-denegar1993" class="csl-entry" role="listitem">
+Denegar, Craig R, und Donald W Ball. 1993. <span>„Assessing reliability and precision of measurement: an introduction to intraclass correlation and standard error of measurement“</span>. <em>Journal of sport rehabilitation</em> 2 (1): 35–42.
+</div>
+<div id="ref-dudek1979" class="csl-entry" role="listitem">
+Dudek, Frank J. 1979. <span>„The continuing misinterpretation of the standard error of measurement“</span>. <em>Psychological Bulletin</em> 86 (2): 335–37. <a href="https://doi.org/10.1037/0033-2909.86.2.335">https://doi.org/10.1037/0033-2909.86.2.335</a>.
+</div>
+<div id="ref-ferreira2012" class="csl-entry" role="listitem">
+Ferreira, M. L., R. D. Herbert, P. H. Ferreira, u.&nbsp;a. 2012. <span>„A critical review of methods used to determine the smallest worthwhile effect of interventions for low back pain“</span>. Journal Article. <em>J Clin Epidemiol</em> 65 (3): 253–61. <a href="https://doi.org/10.1016/j.jclinepi.2011.06.018">https://doi.org/10.1016/j.jclinepi.2011.06.018</a>.
+</div>
+<div id="ref-fraser1990" class="csl-entry" role="listitem">
+Fraser, C. G., P. Hyltoft Peterson, und M. L. Larsen. 1990. <span>„Setting analytical goals for random analytical error in specific clinical monitoring situations“</span>. <em>Clinical Chemistry</em> 36 (9): 1625–28. <a href="https://doi.org/10.1093/clinchem/36.9.1625">https://doi.org/10.1093/clinchem/36.9.1625</a>.
+</div>
+<div id="ref-harvill1991" class="csl-entry" role="listitem">
+Harvill, Leo M. 1991. <span>„Standard error of measurement: an NCME instructional module on“</span>. <em>Educational Measurement: issues and practice</em> 10 (2): 33–41.
+</div>
+<div id="ref-hopkins2000" class="csl-entry" role="listitem">
+Hopkins, W. G. 2000. <span>„Measures of reliability in sports medicine and science“</span>. <em>Sports Med</em> 30 (1): 1–15. <a href="https://doi.org/10.2165/00007256-200030010-00001">https://doi.org/10.2165/00007256-200030010-00001</a>.
+</div>
+<div id="ref-koo2016" class="csl-entry" role="listitem">
+Koo, Terry K, und Mae Y Li. 2016. <span>„A guideline of selecting and reporting intraclass correlation coefficients for reliability research“</span>. <em>Journal of chiropractic medicine</em> 15 (2): 155–63.
+</div>
+<div id="ref-kottner2011" class="csl-entry" role="listitem">
+Kottner, J., und D. L. Streiner. 2011. <span>„The difference between reliability and agreement“</span>. <em>J Clin Epidemiol</em> 64 (6): 701–2; author reply 702. <a href="https://doi.org/10.1016/j.jclinepi.2010.12.001">https://doi.org/10.1016/j.jclinepi.2010.12.001</a>.
+</div>
+<div id="ref-liljequist2019" class="csl-entry" role="listitem">
+Liljequist, D., B. Elfving, und K. Skavberg Roaldsen. 2019. <span>„Intraclass correlation - A discussion and demonstration of basic features“</span>. <em>PLoS One</em> 14 (7): e0219854. <a href="https://doi.org/10.1371/journal.pone.0219854">https://doi.org/10.1371/journal.pone.0219854</a>.
+</div>
+<div id="ref-luchette2024" class="csl-entry" role="listitem">
+Luchette, M., und A. Akhondi-Asl. 2024. <span>„Measurement Error“</span>. <em>Pediatr Crit Care Med</em> 25 (3): e140–48. <a href="https://doi.org/10.1097/PCC.0000000000003420">https://doi.org/10.1097/PCC.0000000000003420</a>.
+</div>
+<div id="ref-lydick1993" class="csl-entry" role="listitem">
+Lydick, E., und R. S. Epstein. 1993. <span>„Interpretation of quality of life changes“</span>. <em>Qual Life Res</em> 2 (3): 221–26. <a href="https://doi.org/10.1007/BF00435226">https://doi.org/10.1007/BF00435226</a>.
+</div>
+<div id="ref-mansournia2021" class="csl-entry" role="listitem">
+Mansournia, Mohammad Ali, Rachel Waters, Maryam Nazemipour, Martin Bland, und Douglas G. Altman. 2021. <span>„Bland-Altman methods for comparing methods of measurement and response to criticisms“</span>. <em>Global Epidemiology</em> 3: 100045. https://doi.org/<a href="https://doi.org/10.1016/j.gloepi.2020.100045">https://doi.org/10.1016/j.gloepi.2020.100045</a>.
+</div>
+<div id="ref-wong1996" class="csl-entry" role="listitem">
+McGraw, Kenneth O., und S. P. Wong. 1996. <span>„Forming inferences about some intraclass correlation coefficients“</span>. <em>Psychological Methods</em> 1 (1): 30–46. <a href="https://doi.org/10.1037/1082-989X.1.1.30">https://doi.org/10.1037/1082-989X.1.1.30</a>.
+</div>
+<div id="ref-mcmanus2012" class="csl-entry" role="listitem">
+McManus, I. C. 2012. <span>„The misinterpretation of the standard error of measurement in medical education: a primer on the problems, pitfalls and peculiarities of the three different standard errors of measurement“</span>. <em>Med Teach</em> 34 (7): 569–76. <a href="https://doi.org/10.3109/0142159X.2012.670318">https://doi.org/10.3109/0142159X.2012.670318</a>.
+</div>
+<div id="ref-moosbrugger2020" class="csl-entry" role="listitem">
+Moosbrugger, Helfried, und Augustin Kelava. 2020. <em>Testtheorie und Fragebogenkonstruktion</em>. 3. Aufl. Springer.
+</div>
+<div id="ref-mueller1994" class="csl-entry" role="listitem">
+Müller, Reinhold, und Petra Büttner. 1994. <span>„A critical discussion of intraclass correlation coefficients“</span>. <em>Statistics in Medicine</em> 13 (23-24): 2465–76. https://doi.org/<a href="https://doi.org/10.1002/sim.4780132310">https://doi.org/10.1002/sim.4780132310</a>.
+</div>
+<div id="ref-norman2001" class="csl-entry" role="listitem">
+Norman, G. R., F. G. Sridhar, G. H. Guyatt, und S. D. Walter. 2001. <span>„Relation of distribution- and anchor-based approaches in interpretation of changes in health-related quality of life“</span>. <em>Med Care</em> 39 (10): 1039–47. <a href="https://doi.org/10.1097/00005650-200110000-00002">https://doi.org/10.1097/00005650-200110000-00002</a>.
+</div>
+<div id="ref-patterson1955" class="csl-entry" role="listitem">
+Patterson, C. H. 1955. <span>„The Interpretation of the Standard Error of Measurement“</span>. <em>The Journal of Experimental Education</em> 23 (3): 247–52. <a href="https://doi.org/10.1080/00220973.1955.11010510">https://doi.org/10.1080/00220973.1955.11010510</a>.
+</div>
+<div id="ref-payne1989" class="csl-entry" role="listitem">
+Payne, Robert W. 1989. <span>„Reliability theory and clinical psychology“</span>. <em>Journal of Clinical Psychology</em> 45 (2): 351–53. https://doi.org/<a href="https://doi.org/10.1002/1097-4679(198903)45:2<351::AID-JCLP2270450228>3.0.CO;2-W">https://doi.org/10.1002/1097-4679(198903)45:2&lt;351::AID-JCLP2270450228&gt;3.0.CO;2-W</a>.
+</div>
+<div id="ref-qin2019" class="csl-entry" role="listitem">
+Qin, S., L. Nelson, L. McLeod, S. Eremenco, und S. J. Coons. 2019. <span>„Assessing test-retest reliability of patient-reported outcome measures using intraclass correlation coefficients: recommendations for selecting and documenting the analytical formula“</span>. <em>Qual Life Res</em> 28 (4): 1029–33. <a href="https://doi.org/10.1007/s11136-018-2076-0">https://doi.org/10.1007/s11136-018-2076-0</a>.
+</div>
+<div id="ref-stratford1997" class="csl-entry" role="listitem">
+Stratford, Paul W, und Charlie H Goldsmith. 1997. <span>„Use of the standard error as a reliability index of interest: an applied example using elbow flexor strength data“</span>. <em>Physical therapy</em> 77 (7): 745–50.
+</div>
+<div id="ref-terwee2021" class="csl-entry" role="listitem">
+Terwee, C. B., J. D. Peipert, R. Chapman, u.&nbsp;a. 2021. <span>„Minimal important change (MIC): a conceptual clarification and systematic review of MIC estimates of PROMIS measures“</span>. <em>Qual Life Res</em> 30 (10): 2729–54. <a href="https://doi.org/10.1007/s11136-021-02925-y">https://doi.org/10.1007/s11136-021-02925-y</a>.
+</div>
+<div id="ref-terwee2009" class="csl-entry" role="listitem">
+Terwee, C. B., L. D. Roorda, D. L. Knol, M. R. De Boer, und H. C. De Vet. 2009. <span>„Linking measurement error to minimal important change of patient-reported outcomes“</span>. <em>J Clin Epidemiol</em> 62 (10): 1062–67. <a href="https://doi.org/10.1016/j.jclinepi.2008.10.011">https://doi.org/10.1016/j.jclinepi.2008.10.011</a>.
+</div>
+<div id="ref-tighe2010" class="csl-entry" role="listitem">
+Tighe, J., I. C. McManus, N. G. Dewhurst, L. Chis, und J. Mucklow. 2010. <span>„The standard error of measurement is a more appropriate measure of quality for postgraduate medical assessments than is reliability: an analysis of MRCP(UK) examinations“</span>. <em>BMC Med Educ</em> 10: 40. <a href="https://doi.org/10.1186/1472-6920-10-40">https://doi.org/10.1186/1472-6920-10-40</a>.
+</div>
+<div id="ref-turner2010" class="csl-entry" role="listitem">
+Turner, D., H. J. Schunemann, L. E. Griffith, u.&nbsp;a. 2010. <span>„The minimal detectable change cannot reliably replace the minimal important difference“</span>. <em>J Clin Epidemiol</em> 63 (1): 28–36. <a href="https://doi.org/10.1016/j.jclinepi.2009.01.024">https://doi.org/10.1016/j.jclinepi.2009.01.024</a>.
+</div>
+<div id="ref-tyrrell1985" class="csl-entry" role="listitem">
+Tyrrell, AR, T Reilly, und JDG Troup. 1985. <span>„Circadian variation in stature and the effects of spinal loading“</span>. <em>Spine</em> 10 (2): 161–64.
+</div>
+<div id="ref-devet2006" class="csl-entry" role="listitem">
+Vet, H. C. de, C. B. Terwee, D. L. Knol, und L. M. Bouter. 2006. <span>„When to use agreement versus reliability measures“</span>. Journal Article. <em>J Clin Epidemiol</em> 59 (10): 1033–39. <a href="https://doi.org/10.1016/j.jclinepi.2005.10.015">https://doi.org/10.1016/j.jclinepi.2005.10.015</a>.
+</div>
+<div id="ref-vet2017" class="csl-entry" role="listitem">
+Vet, Henrica CW de, Lidwine B Mokkink, David G Mosmuller, und Caroline B Terwee. 2017. <span>„Spearman-Brown prophecy formula and Cronbach’s alpha: different faces of reliability and opportunities for new applications“</span>. <em>J Clin Epidemiol</em> 85: 45–49.
+</div>
+<div id="ref-warneke2025" class="csl-entry" role="listitem">
+Warneke, Konstantin, Thomas Gronwald, Sebastian Wallot, Alessia Magno, Martin Hillebrecht, und Klaus Wirth. 2025. <span>„Discussion on the validity of commonly used reliability indices in sports medicine and exercise science: a critical review with data simulations“</span>. <em>European Journal of Applied Physiology</em>, 1–16.
+</div>
+<div id="ref-warrens2017" class="csl-entry" role="listitem">
+Warrens, Matthijs J. 2017. <span>„Transforming intraclass correlation coefficients with the Spearman-Brown formula“</span>. Journal Article. <em>J Clin Epidemiol</em> 85: 14–16. <a href="https://doi.org/10.1016/j.jclinepi.2017.03.005">https://doi.org/10.1016/j.jclinepi.2017.03.005</a>.
+</div>
+<div id="ref-wyrwich1999" class="csl-entry" role="listitem">
+Wyrwich, K. W., N. A. Nienaber, W. M. Tierney, und F. D. Wolinsky. 1999. <span>„Linking clinical relevance and statistical significance in evaluating intra-individual changes in health-related quality of life“</span>. <em>Med Care</em> 37 (5): 469–78. <a href="https://doi.org/10.1097/00005650-199905000-00006">https://doi.org/10.1097/00005650-199905000-00006</a>.
+</div>
+<div id="ref-wyrwich1999b" class="csl-entry" role="listitem">
+Wyrwich, K. W., W. M. Tierney, und F. D. Wolinsky. 1999. <span>„Further evidence supporting an SEM-based criterion for identifying meaningful intra-individual changes in health-related quality of life“</span>. <em>J Clin Epidemiol</em> 52 (9): 861–73. <a href="https://doi.org/10.1016/s0895-4356(99)00071-2">https://doi.org/10.1016/s0895-4356(99)00071-2</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Kopiert");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Kopiert");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./ed_causal_inference.html" class="pagination-link" aria-label="Kausale Inferenz">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Kausale Inferenz</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./ed_factorial.html" class="pagination-link" aria-label="Faktorielle Untersuchungsdesigns">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Faktorielle Untersuchungsdesigns</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

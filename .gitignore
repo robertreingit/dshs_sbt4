@@ -1,0 +1,13 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.quarto/*
+
+/.quarto/
+docs/search.json
+_book/
+_freeze
+
+**/*.quarto_ipynb
+.positai

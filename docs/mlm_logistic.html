@@ -1,0 +1,1929 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>7&nbsp; Logistische Regression – Skriptum - Fortgeschrittene Statistik</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./mlm_lmm.html" rel="next">
+<link href="./mlm_basics.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-631496449bf32ff9b0bb69a6bfd9195d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Keine Treffer",
+    "search-matching-documents-text": "Treffer",
+    "search-copy-link-title": "Link in die Suche kopieren",
+    "search-hide-matches-text": "Zusätzliche Treffer verbergen",
+    "search-more-match-text": "weitere Treffer in diesem Dokument",
+    "search-more-matches-text": "weitere Treffer in diesem Dokument",
+    "search-clear-button-title": "Zurücksetzen",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Abbrechen",
+    "search-submit-button-title": "Abschicken",
+    "search-label": "Suchen"
+  }
+}</script>
+<script>
+
+  MathJax = {
+
+    tex: {
+
+      tags: 'ams'  // should be 'ams', 'none', or 'all'
+
+    }
+
+  };
+
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./mlm_title.html">Das Lineare Modell und Erweiterungen</a></li><li class="breadcrumb-item"><a href="./mlm_logistic.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Logistische Regression</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Suchen" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Skriptum - Fortgeschrittene Statistik</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Suchen"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vorwort</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./stats_title.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Statistik - Die Grundlagen</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./stats_basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Eine kleine Welt der Unsicherheit</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./stats_significance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Statistische Signifikanz</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./stats_estimation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Hypothesentests</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./slm_title.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Das einfache Regressionmodell</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slm_basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Grundlagen und Inferenz</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slm_model_fit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modellfit</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./mlm_title.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Das Lineare Modell und Erweiterungen</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mlm_basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Multiple Lineare Regression</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mlm_logistic.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Logistische Regression</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mlm_lmm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Gemischte Lineare Modelle</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./ed_title.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Experimentelles Design</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ed_basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Einführung</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ed_causal_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Kausale Inferenz</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ed_reliability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Messfehler und Reliabilität</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ed_factorial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Faktorielle Untersuchungsdesigns</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ed_misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Weitere Untersuchungsdesigns</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Literatur</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Inhaltsverzeichnis</h2>
+   
+  <ul>
+  <li><a href="#wahrscheinlichkeit-chance-und-odds-ratios" id="toc-wahrscheinlichkeit-chance-und-odds-ratios" class="nav-link active" data-scroll-target="#wahrscheinlichkeit-chance-und-odds-ratios"><span class="header-section-number">7.1</span> Wahrscheinlichkeit, Chance und Odds ratios</a></li>
+  <li><a href="#die-logistische-und-die-logit-funktion" id="toc-die-logistische-und-die-logit-funktion" class="nav-link" data-scroll-target="#die-logistische-und-die-logit-funktion"><span class="header-section-number">7.2</span> Die Logistische und die Logit Funktion</a></li>
+  <li><a href="#die-logistische-regression" id="toc-die-logistische-regression" class="nav-link" data-scroll-target="#die-logistische-regression"><span class="header-section-number">7.3</span> Die logistische Regression</a></li>
+  <li><a href="#die-parameter-einer-logistischen-regression-bestimmen" id="toc-die-parameter-einer-logistischen-regression-bestimmen" class="nav-link" data-scroll-target="#die-parameter-einer-logistischen-regression-bestimmen"><span class="header-section-number">7.4</span> Die Parameter einer logistischen Regression bestimmen</a></li>
+  <li><a href="#multivariate-logistische-regression" id="toc-multivariate-logistische-regression" class="nav-link" data-scroll-target="#multivariate-logistische-regression"><span class="header-section-number">7.5</span> Multivariate Logistische Regression</a></li>
+  <li><a href="#den-modellfit-bewerten" id="toc-den-modellfit-bewerten" class="nav-link" data-scroll-target="#den-modellfit-bewerten"><span class="header-section-number">7.6</span> Den Modellfit bewerten</a></li>
+  <li><a href="#logistische-regression-in-r" id="toc-logistische-regression-in-r" class="nav-link" data-scroll-target="#logistische-regression-in-r"><span class="header-section-number">7.7</span> Logistische Regression in <code>R</code></a></li>
+  <li><a href="#zusammenfassung" id="toc-zusammenfassung" class="nav-link" data-scroll-target="#zusammenfassung"><span class="header-section-number">7.8</span> Zusammenfassung</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./mlm_title.html">Das Lineare Modell und Erweiterungen</a></li><li class="breadcrumb-item"><a href="./mlm_logistic.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Logistische Regression</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Logistische Regression</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>In der bisherigen Behandlung der Regression war die Kriteriumsvariable, also die abhängige Variable, immer eine metrische Variable deren Wertebereich im Prinzip <span class="math inline">\(-\infty\)</span> bis <span class="math inline">\(\infty\)</span> umfasste. In der Realität ist dies natürlich nicht tatsächlich der Fall, da beispielsweise die Wurfgeschwindigkeit im Handball in der Realität durch die physiologische Kapazität der Spieler:Innen beschränkt ist. Allerdings gibt es auch den Fall, dass die Kriteriumsvariable von vorneherein überhaupt nur Werte innerhalb eines bestimmten Intervalls zulässt. Beispielsweise kann die Wahrscheinlichkeit ein Tor im Handball zu werfen nur Werte im Intervall <span class="math inline">\([0,1]\)</span> einnehmen. Soll nun zum Beispiel ein statistisches Modell erstellt werden um die Torwahrscheinlichkeit <span class="math inline">\(p_{\text{Tor}}\)</span> in Abhängigkeit vom Abstands <span class="math inline">\(d\)</span> zum Tor und des Winkels <span class="math inline">\(\alpha\)</span> gegenüber der Torauslinie vorherzusagen (siehe <a href="#fig-mlm-log-shot" class="quarto-xref">Abbildung&nbsp;<span>7.1</span></a>) dann ist nicht sofort klar wie dies durchgeführt werden soll.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-mlm-log-shot" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mlm-log-shot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="mlm_logistic_files/figure-html/fig-mlm-log-shot-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mlm-log-shot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;7.1: Wurf auf das Tor im Handball
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Im Prinzip könnte ein Ansatz mit einem multiplen Regressionmodell ausprobiert werden.</p>
+<p><span class="math display">\[
+p_{\text{Tor},i} = \beta_0 + \beta_1 d_i + \beta_2 \alpha_i + \epsilon_i
+\]</span></p>
+<p>Allerdings verhindert in diesem Fall nichts, das das Modell Werte für <span class="math inline">\(p_{\text{Tor},i}\)</span> Werte außerhalb des Bereichs <span class="math inline">\([0,1]\)</span> berechnet. D.h. um die Idee eines linearen Regressionsmodells auf dieses Problem auszuweiten ist eine Beschränkung der möglichen Werte notwendig.</p>
+<p>Eine weitere Besonderheit im Zusammenhang mit dem Handballbeispiel, hängt mit Eigenschaft zusammen, dass die Werte der abhängigen Variable <span class="math inline">\(Y\)</span> in der Realität tatsächlich ja nur zwei Werte annehmen können. Mit der Festsetzung das ein Torerfolg <span class="math inline">\(\text{Tor} = 1\)</span> und eine Fehlversuch mit <span class="math inline">\(\text{Fehlversuch} = 1\)</span> definiert wird, kann <span class="math inline">\(Y\)</span> immer nur die Werte <span class="math inline">\(0\)</span> oder <span class="math inline">\(1\)</span> annehmen. Entsprechend würde ein Datensatz die folgende Form haben:</p>
+<table class="caption-top table">
+<caption>Beispiel für einen Datensatz zur Trefferwahrscheinlichkeit im Handball in Abhängigkeit von der Distanz zum Tor und Winkel zur Grundlinie.</caption>
+<thead>
+<tr class="header">
+<th>Tor</th>
+<th>Abstand[m]</th>
+<th>Winkel[°]</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>4</td>
+<td>45</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>5</td>
+<td>90</td>
+</tr>
+<tr class="odd">
+<td>0</td>
+<td>3.5</td>
+<td>30</td>
+</tr>
+</tbody>
+</table>
+<p>Aus dieser Perspektive, kann dieses Problem auch als Klassifikationsproblem interpretiert werden. Es sind zwei verschiedene <em>Klassen</em> vorhanden, <strong>Tor</strong> und <strong>kein Tor</strong> und es soll anhand bestimmter Prädiktorvariablen vorhergesagt werden, zu welcher Klasse ein Objekt zugeordnet werden kann. Ähnliche Problemstellung ergeben sich auch im medizinischen Kontext, wo beispielsweise anhand einer Reihe von Prädiktorvariablen bestimmt werden soll, ob ein:e Patient:In erkrankt oder gesund bleibt.</p>
+<p>Die Lösung für diese beiden Problem bietet die <strong>Logistische Regression</strong> die im Folgenden behandelt wird. Glücklicherweise können praktisch alle bereits gelernten Konzepte aus der multiplen linearen Regression auch im Kontext der logistischen Regression angewendet werden. Alles was benötigt wird, ist ein zusätzlicher Kniff um die Beschränkung des Wertebereichs zu erreichen. Zusätzlich kommt noch ein komplett neuer Aspekt hinzu, da die logistische Regression eben auch als die Lösung für ein Klassifikationsproblem interpretiert werden kann. Dadurch ergibt sich eine enge Anbindung an den Bereich des Maschinellen Lernens in dem Klassifikationsalgorithm eine zentrale Rolle spielen. Zunächst ist allerdings ein kurzer Ausflug in den Bereich der Wetten notwendig.</p>
+<section id="wahrscheinlichkeit-chance-und-odds-ratios" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="wahrscheinlichkeit-chance-und-odds-ratios"><span class="header-section-number">7.1</span> Wahrscheinlichkeit, Chance und Odds ratios</h2>
+<p>Bei dem Handballproblem bleibend, soll das Problem zunächst heuristisch modelliert werden ohne konkrete Zahlen zu berechnen. Wenn ein Wurf aus größerer Distanz <span class="math inline">\(d\)</span> durchgeführt wird, dann nimmt die Wahrscheinlichkeit für einen Treffer ab. Gleiches gilt auch, wenn der Winkel mit der Torauslinie steiler wird. Werden nun zwei verschiedene Würfe P1 und P2 miteinander verglichen (siehe <a href="#fig-mlm-log-handball-chance" class="quarto-xref">Abbildung&nbsp;<span>7.2</span></a>), dann ist der Wurf P2 deutlich schwierigerer als Wurf P1.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-mlm-log-handball-chance" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mlm-log-handball-chance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="mlm_logistic_files/figure-html/fig-mlm-log-handball-chance-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mlm-log-handball-chance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;7.2: Handballwürfe aus zwei verschiedenen Positionen
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Daher ist davon auszugehen, dass die Wahrscheinlichkeiten für einen Treffer die folgende Anordnung zulassen.</p>
+<p><span class="math display">\[
+\Pr(\text{Tor}_{P1}) &lt; \Pr(\text{Tor}_{P2})
+\]</span></p>
+<p>Nun können diese beiden Wahrscheinlichkeiten zueinander ins Verhältnis gesetzt werden, es wird vom sogenannten <strong>Risikoverhältnis RR</strong> gesprochen.</p>
+<p><span class="math display">\[
+\text{RR} = \frac{\Pr(\text{Tor}_{P1})}{\Pr(\text{Tor}_{P2})}
+\]</span></p>
+<p>Die Bezeichnung mit Risikoverhältnis ist in diesem Zusammenhang etwas irreführend, da sie aus dem medizinischen Bereich stammt, wo beispielsweise die Wahrscheinlichkeiten in zwei unterschiedlichen Gruppen an einer Krankheit zu erkranken beschrieben werden kann. Hier ist die Terminologie als <em>Risiko</em> dementsprechend auch besser nachvollziehbar.</p>
+<div id="def-risk-ratio" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 7.1 (Risikoverhältnis (RR))</strong></span> Das Risikoverhältnis (RR) ist der Quotient aus zwei Wahrscheinlichkeiten (Risiken):</p>
+<p><span class="math display">\[
+\text{Risikoverhältnis (RR)} = \frac{\text{Risiko in der exponierten / betroffenen Gruppe}}{\text{Risiko in der nicht-exponierten / Vergleichsgruppe}}
+\]</span></p>
+<p>Das Risiko beschreibt die Wahrscheinlichkeit, dass ein bestimmtes Ereignis in einer Gruppe eintritt (z.B. Krankheit, Treffer, Unfall). Es können für das RR die folgenden Fälle unterschieden werden:</p>
+<ul>
+<li>RR = 1 <span class="math inline">\(\rightarrow\)</span> Das Risiko ist in beiden Gruppen <strong>gleich</strong></li>
+<li>RR &gt; 1 <span class="math inline">\(\rightarrow\)</span> Das Risiko ist in der ersten Gruppe <strong>höher</strong></li>
+<li>RR &lt; 1 <span class="math inline">\(\rightarrow\)</span> Das Risiko ist in der ersten Gruppe <strong>niedriger</strong></li>
+</ul>
+</div>
+<p>Eine weitere Betrachtung der Trefferwahrscheinlichkeit ist über die sogenannte <strong>Chance</strong> (engl. odds) möglich. Hier wird der Quotient zwischen der Anzahl der Treffer zu der Anzahl der verworfenen Würfe betrachtet. Also wird zum Beispiel aus Position P1 geworfen und von <span class="math inline">\(100\)</span> Würfen sind <span class="math inline">\(30\)</span> erfolgreich und <span class="math inline">\(70\)</span> nicht erfolgreich, dann ergibt das für die odds.</p>
+<p><span class="math display">\[
+\text{odds} = \frac{\#\text{Tore}}{\#\text{Fehlwürfe}} = \frac{30}{70} \approx 0.43
+\]</span></p>
+<p>Wenn nun oben und unten mit der Anzahl <span class="math inline">\(N\)</span> der Würfe erweitert wird und beachtet wird das <span class="math inline">\(\Pr(\text{Fehlwurf}) = 1 - \Pr(\text{Tor})\)</span> erhält man:</p>
+<p><span class="math display">\[
+\text{odds} = \frac{\#\text{Tore}/N}{\#\text{Fehlwürfe}/N} = \frac{\Pr(\text{Tor})}{\Pr(\text{Fehlwurf})} = \frac{\Pr(\text{Tor})}{1 - \Pr(\text{Tor})}
+\]</span></p>
+<p>Wenn nun noch verallgemeinert wird und aus Tor ein beliebiges Ereignis wird und mit der Festsetzung <span class="math inline">\(\Pr(\text{Ereignis}) = p\)</span> folgt:</p>
+<p><span class="math display">\[
+\text{odds}  = \frac{\Pr(\text{Ereignis})}{\Pr(\text{Nicht-Ereignis})} = \frac{p}{1-p} \\
+\]</span></p>
+<div id="def-odds" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 7.2</strong></span> Die <strong>Chance</strong> oder auch <strong>Odds</strong> ist definiert als das Verhältnis der Wahrscheinlichkeit, dass ein bestimmtes Ereignis <strong>eintritt</strong>, zu der Wahrscheinlichkeit das das Ereignis <strong>nicht</strong> eintritt.</p>
+<p><span id="eq-def-odds"><span class="math display">\[
+\text{odds (für ein Ereignis)} = \frac{p}{1 - p}
+\tag{7.1}\]</span></span></p>
+<p>Dabei beschreibt <span class="math inline">\(p\)</span> die Wahrscheinlichkeit, dass das Ereignis eintritt.</p>
+</div>
+<p>Odds werden historisch vor allem bei Sportwetten verwendet, weil sie den potenziellen Gewinn direkt mit dem Risiko in einer einzigen Zahl verbinden und für Wettende intuitiver sind als reine Wahrscheinlichkeiten. Sie zeigen sofort, wie viel man bei einem bestimmten Einsatz gewinnen kann (z.B. Quote 3.00: Einsatz verdreifacht).</p>
+<div id="exm-odds-01" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 7.1 (Verschiedene Odds im Handball)</strong></span> &nbsp;</p>
+<div id="tbl-mlm-log-odds" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mlm-log-odds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;7.1: Verschiedene Beispiel für odds
+</figcaption>
+<div aria-describedby="tbl-mlm-log-odds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Fall</th>
+<th>#Tore</th>
+<th>#Fehlwürfe</th>
+<th>odds</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td><span class="math inline">\(30\)</span></td>
+<td><span class="math inline">\(60\)</span></td>
+<td><span class="math inline">\(\frac{1}{2}\)</span></td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td><span class="math inline">\(60\)</span></td>
+<td><span class="math inline">\(30\)</span></td>
+<td><span class="math inline">\(2\)</span></td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td><span class="math inline">\(120\)</span></td>
+<td><span class="math inline">\(30\)</span></td>
+<td><span class="math inline">\(4\)</span></td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td><span class="math inline">\(60\)</span></td>
+<td><span class="math inline">\(60\)</span></td>
+<td><span class="math inline">\(1\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>In <a href="#tbl-mlm-log-odds" class="quarto-xref">Tabelle&nbsp;<span>7.1</span></a> sind verschiedene Beispiel für odds gezeigt und wie sich die Anzahl der <em>Ereignisse</em> für diese unterschiedlichen odds verhält. Zum Beispiel im 3. Fall ist die Chance ein Tor zu erzielen viermal so hoch wie daneben zu werfen.</p>
+</div>
+<div id="exm-odds-rain" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 7.2</strong></span> Ein weiteres typisches Beispiel sind die Odds für Regen am nächsten Tag. Liegt zum Beispiel die Wahrscheinlichkeit für Regen bei <span class="math inline">\(p(\text{Regen}) = 0.7\)</span> dann sind die Odds für Regen:</p>
+<p><span class="math display">\[
+\text{Odds}(\text{Regen}) = \frac{0.7}{1-0.3} = \frac{0.7}{0.3} = \frac{7/10}{3/10} = \frac{7}{10}\frac{10}{3}=\frac{7}{3}\approx 2.3
+\]</span></p>
+</div>
+<p>Der Graph der Odds gegen die Wahrscheinlichkeit ist in <a href="#fig-mlm-log-p-to-odds" class="quarto-xref">Abbildung&nbsp;<span>7.3</span></a> zu sehen.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-mlm-log-p-to-odds" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mlm-log-p-to-odds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="mlm_logistic_files/figure-html/fig-mlm-log-p-to-odds-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mlm-log-p-to-odds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;7.3: Graph Odds gegen Wahrscheinlichkeiten
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Da die Odds auf Wahrscheinlichkeiten definiert sind, ist der Definitionsbereich <span class="math inline">\([0,1)\)</span> und die Funktion ist monoton steigend.</p>
+<p>Zusammengefasst, geben Odds eine Abschätzung darüber, wie viel wahrscheinlicher es ist ein bestimmtes Ereignis zu beobachten, als das Ereignis nicht zu beobachten. Odds geben aber nicht die die absolute Wahrscheinlichkeit an, also wie wahrscheinlich es ist zu treffen, sondern Odds sagen etwas darüber aus, wie oft es klappt im Vergleich dazu, wie oft es nicht klappt.</p>
+<p>Über einfaches Umstellen können kann aus den Odds auch wieder der Wert für <span class="math inline">\(p\)</span> berechnet werden.</p>
+<p><span class="math display">\[
+p =  \frac{\text{odds}}{1 + \text{odds}}
+\]</span></p>
+<p>Entsprechend hat der Graph der Wahrscheinlichkeit gegen die Odds die folgende Form (siehe <a href="#fig-mlm-log-odds-to-p" class="quarto-xref">Abbildung&nbsp;<span>7.4</span></a>)</p>
+<div class="cell" data-fig-label="Graph der Wahrscheinlichkeit gegen die Odds">
+<div class="cell-output-display">
+<div id="fig-mlm-log-odds-to-p" class="quarto-float quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mlm-log-odds-to-p-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="mlm_logistic_files/figure-html/fig-mlm-log-odds-to-p-1.png" id="fig-mlm-log-odds-to-p" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-mlm-log-odds-to-p-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;7.4
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Der Graph ist wieder monoton steigend.</p>
+<p>Da die Odds nur auf den Wert <span class="math inline">\(p \in [0,1)\)</span> definiert sind, wird es im Zusammenhang mit der Logistischen Regression von Vorteil sind, wenn die Funktion auf den gesamten reelen Zahlen definiert ist. Dies kann erreicht werden, indem der Logarithmus der Odds genommen wird, was zu den sogenannten Log-Odds führt.</p>
+<p><span class="math display">\[
+\text{Log-Odds} = \log(\text{Odds}(p))
+\]</span></p>
+<p>Über die Exponentialfunktion als die Umkehrfunktion des Logarithmus <span class="math inline">\(x = \exp(\log(x))\)</span> wird der folgenden Zusammenhang erhalten, der später noch von Relevanz wird.</p>
+<p><span class="math display">\[
+p(\text{Odds}) = \frac{\text{Odds}}{1+\text{Odds}} = \frac{e^{(\log(Odds))}}{1+e^{\log(\text{Odds})}}
+\]</span></p>
+<p>Der Graph Wahrscheinlichkeit p gegen die Log-Odds führt zu der folgenden Darstellung (siehe <a href="#fig-mlm-log-logodds-to-p" class="quarto-xref">Abbildung&nbsp;<span>7.5</span></a>).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-mlm-log-logodds-to-p" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mlm-log-logodds-to-p-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="mlm_logistic_files/figure-html/fig-mlm-log-logodds-to-p-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mlm-log-logodds-to-p-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;7.5: Graph der Wahrscheinlichkeit <span class="math inline">\(p\)</span> gegen die log-odds
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Hier ist auch wieder zu erkennen, dass die Funktion monoton steigt zwischen <span class="math inline">\(0\)</span> und <span class="math inline">\(1\)</span> und einen S-förmigen Verlauf hat.</p>
+<p>Nach dem Risikoverhältnis RR und den Odds gibt es noch eine wichtige Größe für die Behandlung der logistischen Regression, dass sind die <strong>Odds Ratios</strong>.</p>
+<div id="def-odds-ratio" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 7.3 (Odds Ratio (OR))</strong></span> Das <strong>Odds Ratio</strong> (Chancenverhältnis, Odds-Verhältnis, OR) ist ein Maß, das beschreibt, wie stark sich die Chancen (Odds) für ein bestimmtes Ereignis zwischen zwei Gruppen unterscheiden. D.h. OR ist der Quotient zweier Odds.</p>
+<p><span class="math display">\[
+\text{Odds Ratio} = \text{OR} = \frac{\text{Odds in Gruppe A}}{\text{Odds in Gruppe B}} = \frac{\frac{\text{Treffer}_A}{\text{Fehlwürfe}_A}}{\frac{\text{Treffer}_B}{\text{Fehlwürfe}_B}}
+\]</span></p>
+</div>
+<p>Bezogen auf das Beispiel <a href="#fig-mlm-log-handball-chance" class="quarto-xref">Abbildung&nbsp;<span>7.2</span></a> kann für die beiden Wurfpositionen P1 und P2 die Odds berechnet werden. Unter der Annahme der folgenden Werte (siehe <a href="#tbl-mlm-log-shot-odds" class="quarto-xref">Tabelle&nbsp;<span>7.2</span></a>)</p>
+<div id="tbl-mlm-log-shot-odds" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mlm-log-shot-odds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;7.2: Odds für Wurfpositionen P1 und P2
+</figcaption>
+<div aria-describedby="tbl-mlm-log-shot-odds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Wurfposition</th>
+<th>Treffer</th>
+<th>Fehlwürfe</th>
+<th>Odds (Treffer : Fehl)</th>
+<th>Odds als Zahl</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>P1</td>
+<td><span class="math inline">\(80\)</span></td>
+<td><span class="math inline">\(20\)</span></td>
+<td><span class="math inline">\(80 : 20\)</span></td>
+<td><span class="math inline">\(4\)</span></td>
+</tr>
+<tr class="even">
+<td>P2</td>
+<td><span class="math inline">\(20\)</span></td>
+<td><span class="math inline">\(80\)</span></td>
+<td><span class="math inline">\(20 : 80\)</span></td>
+<td><span class="math inline">\(\frac{1}{4}\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Aus den gegeben Odds berechnet sich das folgende Odds Ratio:</p>
+<p><span class="math display">\[
+\text{OR} = \frac{4}{\frac{1}{4}} = 16
+\]</span></p>
+<p>D.h. die Chance zu treffen ist an Position P1 <span class="math inline">\(16\)</span>-mal so hoch wie in P2. Die <strong>Odds</strong> sind bei einem Wurf von P1 16-mal höher als bei einem Wurf von P2. Odds Ratio sagt nicht wieder nicht, wie wahrscheinlich ein Ereignis (z.B. Treffer) ist, sondern OR beschreibt, wie viele Male höher (oder niedriger) die Chancen in einer Situation (Gruppe) im Vergleich zu einer anderen sind. Bei der Interpretation gelten ähnlich Kategorien wie bei den Odds.</p>
+<ul>
+<li>OR = 1 <span class="math inline">\(\rightarrow\)</span> Chancen sind gleich (kein Unterschied)</li>
+<li>OR &gt; 1 <span class="math inline">\(\rightarrow\)</span> höhere Chance in Gruppe A</li>
+<li>OR &lt; 1 <span class="math inline">\(\rightarrow\)</span> niedrigere Chance in Gruppe A (schützender Effekt)</li>
+</ul>
+<p>Die Odds Ratio treten auch im Zusammenhang mit Kreuztabellen auf. Zum Beispiel, wenn <a href="#tbl-mlm-log-shot-odds" class="quarto-xref">Tabelle&nbsp;<span>7.2</span></a> in der folgenden Form dargestellt wird (siehe <a href="#tbl-mlm-log-shot-ctbl" class="quarto-xref">Tabelle&nbsp;<span>7.3</span></a>:</p>
+<div id="tbl-mlm-log-shot-ctbl" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mlm-log-shot-ctbl-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;7.3: Häufigkeiten der Treffer und Fehlwürfe unter P1 und P2
+</figcaption>
+<div aria-describedby="tbl-mlm-log-shot-ctbl-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>P1</th>
+<th>P2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Treffer</td>
+<td><span class="math inline">\(80_{a}\)</span></td>
+<td><span class="math inline">\(20_{b}\)</span></td>
+</tr>
+<tr class="even">
+<td>Fehlwurf</td>
+<td><span class="math inline">\(20_{c}\)</span></td>
+<td><span class="math inline">\(80_{d}\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Das OR berechnet sich nach Vereinfachung auch direkt mit der Formel:</p>
+<p><span class="math display">\[
+\text{OR} = \frac{a\cdot d}{b\cdot c} = \frac{80\cdot 80}{20\cdot 20} = 16
+\]</span></p>
+<p>Wenn in <a href="#tbl-mlm-log-shot-ctbl" class="quarto-xref">Tabelle&nbsp;<span>7.3</span></a> Treffer mit Krankheit und Wurfposition mit exposure ausgetauscht wird, dann wird der Zusammenhang mit der Schätzung von Erkrankungen auch wieder direkter einsichtig. Im Rahmen von Untersuchungen im medizinischen Bereich ist daher die OR eine zentrale Kenngröße um z.B. abzuschätzen ob ein Medikament wirksam ist oder nicht. Ein wichtiger Punkt zum Odds Ratio. Die Kenntnis des Odds Ratios erlaubt keine Aussage darüber zu treffen, wie Wahrscheinlich das auftreten einer <em>Krankheit</em> ist.</p>
+<div id="exm-odds-ratios-diff-pro" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 7.3 (Odds Ratios und Baselinewahrscheinlichkeit)</strong></span> Es sei angenommen, es werden zwei verschiedene Torwärter eingesetzt. T1 ein weniger guter Torwart der nur in der Kreisliga spielt und T2 ein sehr guter Torwart der auf Nationalniveau spielt. Entsprechend verändern sich die Trefferwahrscheinlichkeiten in folgender Art und Weise:</p>
+<div id="tbl-mlm-log-or-to-p" class="quarto-layout-panel anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mlm-log-or-to-p-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;7.4: Veränderung der Trefferquoten in Abhängigkeit von der Wurfposition und dem Torwart
+</figcaption>
+<div aria-describedby="tbl-mlm-log-or-to-p-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-mlm-log-or-to-p" style="flex-basis: 50.0%;justify-content: center;">
+<div id="tbl-mlm-log-or-to-p-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-mlm-log-or-to-p-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Odds für Position P1
+</figcaption>
+<div aria-describedby="tbl-mlm-log-or-to-p-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">P1</th>
+<th style="text-align: left;">T1</th>
+<th style="text-align: left;">T2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(p\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(0.8\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(0.5\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Odds</td>
+<td style="text-align: left;"><span class="math inline">\(4\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(1\)</span> s</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-mlm-log-or-to-p" style="flex-basis: 50.0%;justify-content: center;">
+<div id="tbl-mlm-log-or-to-p-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-mlm-log-or-to-p-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Odds für Position P2
+</figcaption>
+<div aria-describedby="tbl-mlm-log-or-to-p-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">P2</th>
+<th style="text-align: left;">T1</th>
+<th style="text-align: left;">T2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(p\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(0.4\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\frac{1}{7}=\approx 0.14\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Odds</td>
+<td style="text-align: left;"><span class="math inline">\(\frac{2}{3}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\frac{1}{6}\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</figure>
+</div>
+<p>Die Verteilung würde zu den folgenden Odds Ratios führen.</p>
+<p><span class="math display">\[
+\text{OR}_{T1} = \frac{4}{\frac{2}{3}} = 6, \quad \text{OR}_{T2} = \frac{1}{\frac{1}{6}} = 6
+\]</span></p>
+<p>D.h. in beiden Fällen ist das Odds Ratio gleich, allerdings sind die Grundwahrscheinlichkeiten für einen Treffer sehr unterschiedlich in Abhängigkeit welcher Torwart zum Einsatz kommt. D.h. ein Odds Ratio von <span class="math inline">\(6\)</span> bedeutet immer die Chancen werden versechsfacht, aber ob das mit einer Erhöhung der Trefferquote von <span class="math inline">\(p(P2)_{T1} = 0.4\)</span> auf <span class="math inline">\(p(P1)_{T1} = 0.8\)</span> oder einer Erhöhung von <span class="math inline">\(p(P2)_{T2} = 0.14\)</span> auf <span class="math inline">\(p(P1)_{T2} = 0.5\)</span> einhergeht, hängt von der Baseline Trefferquote ab.</p>
+</div>
+<div id="exm-odds-ratio-drug" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 7.4</strong></span> Seien zwei Medikamente gegeben. Bei Gabe von Medikament A treten Nebenwirkungen mit einer Wahrscheinlichkeit von <span class="math inline">\(p_A = 0.001\)</span> auf. Bei Gabe von Medikament B treten Wahrscheinlichkeiten mit <span class="math inline">\(p_B = 0.0005\)</span> auf. Daraus ergeben sich die folgenden Odds:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{Odds}(A) &amp;= \frac{0.001}{1-0.001}\approx  0.001 \\
+\text{Odds}(B) &amp;= \frac{0.0005}{1-0.0005}\approx  0.0005 \\
+\end{aligned}
+\]</span></p>
+<p>Daraus ergibt sich ein Odds-Ration von:</p>
+<p><span class="math display">\[
+OR = \frac{0.001}{0.0005} \approx 2
+\]</span></p>
+<p>D.h. die Wahrscheinlichkeit für Nebenwirkungen ist bei Medikamentengabe A etwa doppelt so hoch wie bei Medikament B. In diesem Fall, ist das Ergebnis auch direkt aus den Wahrscheinlichkeiten einsichtig. Hier tritt der Fall auf, dass für kleine Wahrscheinlichkeiten <span class="math inline">\(p\)</span> die Odds und die Wahrscheinlichkeiten sehr ähnliche Werte haben.</p>
+</div>
+<p>Diese drei Begrifflichkeiten Risikoverhältnis RR, Chance oder Odds und Odds ratio OR auseinander zu halten ist wichtig bei der Interpretation der Ergebnisse der logistischen Regression. Vor allem ein klares Verständnis der ORs ist wichtigt, da diese mittels der Logistischen Regression direkt geschätzt werden. Im nächsten Schritt wird die Logistische Funktion betrachtet</p>
+</section>
+<section id="die-logistische-und-die-logit-funktion" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="die-logistische-und-die-logit-funktion"><span class="header-section-number">7.2</span> Die Logistische und die Logit Funktion</h2>
+<p>Die logistische Funktion und Namensgeberin der Logistischen Regression ist schon im Zusammenhang mit den Log-Odds informell eingeführt worden. Die logistische Funktion ist entsprechend über den Bereich <span class="math inline">\([-\infty,\infty]\)</span> definiert und hat den Wertebereich <span class="math inline">\([0,1]\)</span>. D.h. durch die logistische Funktion kann das eingangs beschriebene Problem bei der <em>normalen</em> Regression behoben werden, dass Werte außerhalb von <span class="math inline">\([0,1]\)</span> nicht auftreten. Die Funktion ist wie folgt definiert:</p>
+<p><span id="eq-logistic-function"><span class="math display">\[
+f(z) = \frac{1}{1 + e^{-z}}
+\tag{7.2}\]</span></span></p>
+<p>Durch Umformung bzw. Erweiterung mit <span class="math inline">\(e^z\)</span> wird eine alternative Formulierung erhalten, die auch oft in der Literatur verwendet wird und die bei den Log-Odds verwendet wurde.</p>
+<p><span class="math display">\[
+f(z) = \frac{1}{1+e^{-z}} = \frac{e^z}{e^z + e^{-z}e^z} = \frac{e^z}{1+e^z}
+\]</span></p>
+<p>Der Graph der logistischen Funktion sieht folgendermaßen aus (siehe <a href="#fig-mlm-log-logfunc" class="quarto-xref">Abbildung&nbsp;<span>7.6</span></a>).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-mlm-log-logfunc" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mlm-log-logfunc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="mlm_logistic_files/figure-html/fig-mlm-log-logfunc-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mlm-log-logfunc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;7.6: Graph der logistischen Funktion <span class="math inline">\(f(z)=\frac{1}{1+e^{-z}}\)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>D.h. die logistische Funktion geht nach links asymptotisch gegen Null und recht asymptotisch gegen <span class="math inline">\(1\)</span>. Dazwischen folgt der Graph einer S-förmigen Kurve. Die maximale Steigung wird an dem Punkt <span class="math inline">\(f(0)\)</span> erreicht. Der Graph der logistischen Funktion kann angepasst werden, indem eine Parametrisierung eingeführt wird. Dies führt zu.</p>
+<p><span class="math display">\[
+f(z,a) = \frac{1}{1+e^{-az}}
+\]</span></p>
+<p>Über den Parameter <span class="math inline">\(a\)</span> kann nun die <em>Steilheit</em> der S-Kurve manipuliert werden (siehe <a href="#fig-mlm-log-faz" class="quarto-xref">Abbildung&nbsp;<span>7.7</span></a>).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-mlm-log-faz" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mlm-log-faz-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="mlm_logistic_files/figure-html/fig-mlm-log-faz-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mlm-log-faz-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;7.7: Variationen der logistischen Funktion mit unterschiedlichen Steigungsraten.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Entspechend kann der Übergang von <span class="math inline">\(0\)</span> zu <span class="math inline">\(1\)</span> entweder sehr abrupt stattfinden oder ober einen längeren Bereich gestreckt werden. Der Graph kann natürlich auch auf der <span class="math inline">\(x\)</span>-Achse nach links oder rechts verschoben, indem die Transformation <span class="math inline">\(z = x \pm b\)</span> eingeführt wird (siehe <a href="#fig-mlm-log-fazpm" class="quarto-xref">Abbildung&nbsp;<span>7.8</span></a>).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-mlm-log-fazpm" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mlm-log-fazpm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="mlm_logistic_files/figure-html/fig-mlm-log-fazpm-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mlm-log-fazpm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;7.8: Verschiebung des Graphen um <span class="math inline">\(-2\)</span> bzw. <span class="math inline">\(2\)</span>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Eine wichtige Eigenschaft der logistischen Funktion die auch später bei der Interpretation der logistischen Regression immer wieder auftauchen wird, ist die Nichtlinearität des Graphen. Dies führt dazu, dass die Veränderung <span class="math inline">\(\Delta Y\)</span> auf der <span class="math inline">\(Y\)</span>-Achse für einen gegebenen Unterschied <span class="math inline">\(\Delta X\)</span> unterschiedlich ausfällt, je nachdem in welchem Bereich der Funktion sich <span class="math inline">\(X\)</span> befindet. Zum Beispiel führt eine Veränderung um <span class="math inline">\(\Delta X = 1\)</span> für den <span class="math inline">\(-2\)</span> auf <span class="math inline">\(-1\)</span> zu einer anderen Veränderung von <span class="math inline">\(Y\)</span> wenn der Wert <span class="math inline">\(X\)</span> von <span class="math inline">\(0\)</span> zu <span class="math inline">\(1\)</span> steigt, obwohl in beiden Fällen die Veränderung <span class="math inline">\(\Delta X\)</span> gleich ist.</p>
+<p><span class="math display">\[
+\begin{aligned}
+x: -2 \rightarrow -1: \Delta y &amp;= 0.1 \\
+x: 0 \rightarrow 1: \Delta y &amp;= 0.2
+\end{aligned}
+\]</span></p>
+<p>Ein Funktion die Zentral beim Umgang mit der logistischen Regression ist, ist die Umkehrfunktion der logistischen Funktion die sogenannte <strong>Logit</strong> Funktion .</p>
+<p><span id="eq-log-function"><span class="math display">\[
+\text{logit}(x) = \text{log}\left(\frac{x}{1-x}\right)
+\tag{7.3}\]</span></span></p>
+<p>Der Graph der Logit Funktion ist in <a href="#fig-mlm-log-logit" class="quarto-xref">Abbildung&nbsp;<span>7.9</span></a> abgetragen.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-mlm-log-logit" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mlm-log-logit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="mlm_logistic_files/figure-html/fig-mlm-log-logit-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mlm-log-logit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;7.9: Graph der Logit funktion.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Wie zu erwarten ist der Definitionsbereich der Logit-Funktion <span class="math inline">\([0,1]\)</span>. Der Graph der Logit-Funktion hat Polstellen bei <span class="math inline">\(0\)</span> und <span class="math inline">\(1\)</span>, so dass der Graph dort asymptotisch gegen <span class="math inline">\(-\infty\)</span> bzw. <span class="math inline">\(\infty\)</span> geht.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tipp
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Um so sehen, dass der Logit die Umkehrfunktion der logistischen Funktion ist. Zunächst eine kurze Äquivalenzgleichung mit der Festsetzung <span class="math inline">\(x = f(z) = \frac{1}{1+e^{-z}}\)</span>.</p>
+<p><span class="math display">\[
+1 - x = 1 - \frac{1}{1 + e^{-z}} = \frac{1 + e^{-z}}{1 + e^{-z}} - \frac{1}{1 + e^{-z}} = \frac{e^{-z}}{1 + e^{-z}}
+\]</span></p>
+<p>Daraus folgt:</p>
+<p><span class="math display">\[
+\frac{x}{1 - x} = \frac{\frac{1}{1 + e^{-z}}}{\frac{e^{-z}}{1 + e^{-z}}} = \frac{1}{1 + e^{-z}} \cdot \frac{1 + e^{-z}}{e^{-z}} = \frac{1}{e^{-z}} = e^{z}
+\]</span></p>
+<p>Angewandt auf in die Logit Funktion folgt somit:</p>
+<p><span class="math display">\[
+\text{logit}(\text{logistic}(z))=\text{logit}(x) = \ln\left( \frac{x}{1 - x} \right) = \ln(e^{z}) = z
+\]</span></p>
+</div>
+</div>
+<p>Eine wichtige Verbindung zwischen der Logistischen Funktion, der Logit Funktion und Odds wird ersichtlich, wenn die folgende Änderung in der Nomenklatur angewandt wird. Da die logistische Funktion den Wertebereich <span class="math inline">\([0,1]\)</span> hat, können die berechneten Werte im jeweiligen Zusammenhang als Wahrscheinlichkeiten <span class="math inline">\(p\)</span> in Abhängigkeit von <span class="math inline">\(x\)</span> interpretiert werden. Also:</p>
+<p><span class="math display">\[
+p(x) = \frac{1}{1+e^{-x}}
+\]</span></p>
+<p>Entsprechend kann an die Logit-Funktion anstatt ein <em>Wert</em> <span class="math inline">\(x\)</span> ebenfalls eine <em>Wahrscheinlichkeit</em> <span class="math inline">\(p\)</span> übergeben werden. Nochmal, dies sind nur Änderung der Interpretation, ein Wert wird nicht zur Wahrscheinlichkeit, weil aus einem <span class="math inline">\(x\)</span> ein <span class="math inline">\(p\)</span> gemacht wird. Es folgt jedoch formal:</p>
+<p><span class="math display">\[
+\text{logit}(p(x)) = \ln\left(\frac{p(x)}{1-p(x)}\right)
+\]</span></p>
+<p>Unter dieser Betrachtungsweise, ist der berechnete Wert der Logit-Funktion der natürliche Logarithmus eines Odds, da <span class="math inline">\(\frac{p}{1-p}\)</span> ja genau die Definition von Odds ist. Insgesamt folgt:</p>
+<p><span class="math display">\[
+\text{logit}(\text{logistic}(x))=\text{logit}(p(x)) = \ln\left( \frac{p(x)}{1 - p(x)} \right) = \ln(e^{x}) = x
+\]</span></p>
+</section>
+<section id="die-logistische-regression" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="die-logistische-regression"><span class="header-section-number">7.3</span> Die logistische Regression</h2>
+<p>Nun kann die logistische Regression eingeführt werden. Sei der folgende Kontext vorgegeben. Es wurden insgesamt <span class="math inline">\(20\)</span> Würfen von der zentralen Linie auf das Tor gemacht. Zehn der Würfe wurden direkt von der Torraumlinie (6m) und zehn Würfe aus dem Rückraum (8m). Es ergibt sich die folgende Verteilung der Würfe (siehe <a href="#fig-mlm-log-handball-prob-01" class="quarto-xref">Abbildung&nbsp;<span>7.10</span></a>).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-mlm-log-handball-prob-01" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mlm-log-handball-prob-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="mlm_logistic_files/figure-html/fig-mlm-log-handball-prob-01-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mlm-log-handball-prob-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;7.10: Beispiel für Würfe aus zwei verschiedenen Distanzen.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Die Würfe werden nun in zwei Kategorien eingeordnet. Würfe mit einer Distanz von <span class="math inline">\(\leq8\)</span>m werden als <em>kurz</em> bezeichnet und Würfe mit einer Distanz von <span class="math inline">\(&gt;8\)</span>m werden als <em>lang</em> bezeichnet. Es ergibt sich die folgende tabellarische Anordnung.</p>
+<div class="cell">
+<div id="tbl-mlm-log-prob-01" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl quarto-uncaptioned" id="tbl-mlm-log-prob-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;7.5
+</figcaption>
+<div aria-describedby="tbl-mlm-log-prob-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">kurz</th>
+<th style="text-align: right;">lang</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">miss</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">hit</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">3</td>
+</tr>
+</tbody>
+</table>
+<p>Häufigkeitstabelle der Würfe</p>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Nun soll die Trefferwahrscheinlichkeit für die beiden Kategorien in einem logistischen Regressionsmodell geschätzt werden. D.h. es soll das folgende Modell geschätzt werden:</p>
+<p><span class="math display">\[
+p_{Tor,i} = \beta_0 + \beta_1 \cdot d_i \quad i=1,2,\ldots, N
+\]</span></p>
+<p>In diesem Fall ist <span class="math inline">\(\beta_0\)</span> als eine Basistrefferwahrscheinlichkeit zu interpretieren und <span class="math inline">\(\beta_1\)</span> beschreibt dann, wie sich die Wahrscheinlichkeit ändert wenn von <em>kurz</em> auf <em>lang</em> gegangen wird. Da die Distanz nun eine kategorische Variable ist, wird wieder mit eine Dummy-Kodierung gearbeitet und <em>kurz</em> ist die Referenzkategorie mit <span class="math inline">\(d=0\)</span> und <em>lang</em> ist die Alternativkategorie mit <span class="math inline">\(d=1\)</span>. Dadurch wird <span class="math inline">\(\beta_0\)</span> zur Trefferwahrscheinlichkeit für <em>kurz</em>.</p>
+<p>Wie schon besprochen, muss aber sichergestellt werden, dass <span class="math inline">\(p_{Tor,i}\)</span> tatsächlich auch nur Werte zwischen <span class="math inline">\(0\)</span> und <span class="math inline">\(1\)</span> annehmen kann, um den Wert als eine Wahrscheinlichkeit interpretiert zu können. Hier kommt nun die logistische Funktion ins Spiel. Dazu wird der lineare Teil mit der folgenden Festsetzung auf der rechten Seite der Gleichung an die logistische Funktion <span class="math inline">\(f(z)\)</span> übergeben.</p>
+<p><span class="math display">\[
+\begin{aligned}
+z &amp;= \beta_0 + \beta_1d_i \\
+f(z) &amp;= f(\beta_0 + \beta_1d_i) = \frac{1}{1 + e^{-(\beta_0 + \beta_1d_i})}
+\end{aligned}
+\]</span></p>
+<p>Insgesamt folgt daraus:</p>
+<p><span id="eq-mlm-log-handball-01"><span class="math display">\[
+p_{Tor,i} =  \frac{1}{1 + e^{-(\beta_0 + \beta_1d)}}
+\tag{7.4}\]</span></span></p>
+<p>Dieses <em>Zwischenschieben</em> der logistischen Funktion stellt sicher, dass tatsächlich nur Werte zwischen <span class="math inline">\(0\)</span> und <span class="math inline">\(1\)</span> für <span class="math inline">\(p_{Tor,i}\)</span> berechnet werden. Wird dieses Modell nun in <code>R</code> gefittet (wie wird später gezeigt) dann ergibt sich das folgende Ergebnis (<a href="#tbl-mlm-log-handball-prob-01" class="quarto-xref">Tabelle&nbsp;<span>7.6</span></a>}.</p>
+<div id="tbl-mlm-log-handball-prob-01" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mlm-log-handball-prob-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;7.6: Berechnete Schätzer für die Koeffizienten
+</figcaption>
+<div aria-describedby="tbl-mlm-log-handball-prob-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Koeffizient</th>
+<th>Schätzer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\beta_0\)</span></td>
+<td><span class="math inline">\(2.2\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\beta_1\)</span></td>
+<td><span class="math inline">\(-3.04\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Was bedeuten diese Parameter nun? Dazu müssen die Koeffizienten in die Formel für die logistische Regression eingesetzt werden. Sei zum Beispiel der Wert für eine Werferin aus der kurzen Distanz gesucht. Da <em>kurz</em> die Referenzkondition ist, gilt <span class="math inline">\(d = 0\)</span>. Daher wird aus <a href="#eq-mlm-log-handball-01" class="quarto-xref">Gleichung&nbsp;<span>7.4</span></a>.</p>
+<p><span class="math display">\[
+\begin{split}
+p_{Tor,i} &amp;=  \frac{1}{1 + e^{-(2.2 + -3.04\cdot 0)}} \\
+&amp;= \frac{1}{1 + e^{-2.2 }} \\
+&amp;= 0.9
+\end{split}
+\]</span></p>
+<p>D.h. im Mittel liegt die Wahrscheinlichkeit aus der kurzen Distanz zu treffen bei <span class="math inline">\(p_{\text{kurz}} = 0.9\)</span>. Wie seht es nun für einen Wurf aus der weiten Distanz aus. Hier gilt nun <span class="math inline">\(d = 1\)</span> und es folgt:</p>
+<p><span class="math display">\[
+\begin{split}
+p_{Tor,i} &amp;=  \frac{1}{1 + e^{-(2.2 + -3.04\cdot 1)}} \\
+&amp;= \frac{1}{1 + e^{--0.84 }} \\
+&amp;= 0.3
+\end{split}
+\]</span></p>
+<p>Wie erwartet ist die Wahrscheinlichkeit aus der <em>weiten</em> Distanz geringer mit <span class="math inline">\(p_{\text{lang}} = 0.3\)</span>.</p>
+<p>Nochmal zusammengefasst: Es wurde der Ansatz der linearen Regression verwendet mit einer Punkt-Steigungsform. Allerdings wurde nun die Punkt-Steigungsform in eine zusätzlich Funktion, die logistische Regression, gesteckt, damit die berechneten Werte in dem gewünschten Bereich zwischen <span class="math inline">\(0\)</span> und <span class="math inline">\(1\)</span> liegen. Daran schließt sich nun die Frage: Wie können die Koeffizienten <span class="math inline">\(\beta_0\)</span> und <span class="math inline">\(\beta_1\)</span> interpretiert werden?</p>
+<p>Um die Bedeutung der Koeffizienten zu verstehen, wird nun wieder auf Logit-Funktion zurückgegriffen. Wie bereits erläutert, ist die Logit-Funktion die Umkehrfunktion der Logistischen-Funktion. D.h. es gilt der folgende Zusammenhang:</p>
+<p><span class="math display">\[
+\begin{split}
+\text{logit}(\text{logistic}(\beta_0+\beta_1d_i)) &amp;=\text{logit}(p(\beta_0+\beta_1d_i)) \\
+&amp;= \ln\left( \frac{p(\beta_0+\beta_1d_i)}{1 - p(\beta_0+\beta_1d_i)} \right) \\
+&amp;= \ln(e^{\beta_0+\beta_1d_i}) \\
+&amp;= \beta_0+\beta_1d_i
+\end{split}
+\]</span></p>
+<p>Der dritte und der letzte Schritt führen zu dem foglendem Zusammenhang:</p>
+<p><span class="math display">\[
+\ln\left( \frac{p(\beta_0+\beta_1d_i)}{1 - p(\beta_0+\beta_1d_i)} \right) = \beta_0+\beta_1d_i
+\]</span></p>
+<p>Auf der linken Seite steht eine Log-Odds, während auf der reichten Seite der lineare Teil mit den beiden Koeffizienten <span class="math inline">\(\beta_0\)</span> und <span class="math inline">\(\beta_1\)</span> steht. Sei nun ein Wurf aus der kurzen Distanz betrachtet. Bei einem kurzem Wurf gilt <span class="math inline">\(d_i = 0\)</span> was zu der folgenden Vereinfachung führt:</p>
+<p><span class="math display">\[
+\ln\left( \frac{p(\beta_0)}{1 - p(\beta_0)} \right) = \beta_0
+\]</span></p>
+<p>D.h. der <span class="math inline">\(y\)</span>-<em>Achsenabschnitt</em> <span class="math inline">\(\beta_0\)</span> beschreibt den <strong>Logarithmus der Odds</strong> (kurz: <strong>log odds</strong>) für einen erfolgreichen Wurf aus der kurzen Distanz. Wenn diese Gleichung nun exponentiert wird folgt (Hinweis: <span class="math inline">\(e^{x}\)</span> ist die Umkehrfunktion von <span class="math inline">\(\log(x)\)</span>):</p>
+<p><span class="math display">\[
+e^{\left(\ln\left( \frac{p(\beta_0)}{1 - p(\beta_0)} \right) \right)}=\frac{p(\beta_0)}{1 - p(\beta_0)} = e^{\beta_0}
+\]</span></p>
+<p>Ausgeschrieben, der Koeffizienten <span class="math inline">\(\beta_0\)</span> exponentiert, <span class="math inline">\(e\)</span> hoch <span class="math inline">\(\beta_0\)</span>, beschreibt die Odds aus der kurzen Distanz zu treffen. D.h. im Vergleich zur linearen Regression ist die Interpretation durch die Anwendung der Logistischen- bzw. Logit-Funktion nun etwas komplizierter. Wie sieht es für <span class="math inline">\(\beta_1\)</span> aus?</p>
+<p>Es gilt zunächst, dass nun eine Wurf aus der weiten Distanz betrachtet wird und <span class="math inline">\(d_i = 1\)</span> gilt. Um den Wert <span class="math inline">\(\beta_1\)</span> in <span class="math inline">\(\beta_0 + \beta_1 d_i = \beta_0 + \beta_1\)</span> zu <em>isolieren</em> muss zunächst <span class="math inline">\(\beta_0\)</span> subtrahiert werden indem die Gleichungen von eben verwendet werden. Formal:</p>
+<p><span class="math display">\[
+\beta_1 = \beta_0 + \beta_1d_i - \beta_0 =  \ln\left( \frac{p(\beta_0+\beta_1d_i)}{1 - p(\beta_0+\beta_1d_i)} \right) - \ln\left( \frac{p(\beta_0)}{1 - p(\beta_0)} \right)
+\]</span></p>
+<p>Mit der Eigenschaft des Logarithmus <span class="math inline">\(\log(\frac{a}{b}) = \log(a) - \log(b)\)</span> unter Berücksichtigung von <span class="math inline">\(d_i = 1\)</span> folgt:</p>
+<p><span class="math display">\[
+\beta_1 = \ln\left( \frac{\frac{p(\beta_0+\beta_1)}{1 - p(\beta_0+\beta_1)}}{\frac{p(\beta_0)}{1 - p(\beta_0)}} \right) = \ln\left(\frac{\text{Odds}_{\beta_0+\beta_1}}{\text{Odds}_{\beta_0}}\right)
+\]</span></p>
+<p>D.h. der Koeffizient <span class="math inline">\(\beta_1\)</span> beschreibt das log Odds-Verhältnis (log odds ratio oder log OR) zwischen einen Wurf aus der kurzen Distanz und einem Wurf aus der weiten Distanz. Exponentieren mit <span class="math inline">\(e\)</span> ergibt entsprechend:</p>
+<p><span class="math display">\[
+e^{\beta_1} =  \frac{\text{Odds}_{\beta_0+\beta_1}}{\text{Odds}_{\beta_0}}
+\]</span></p>
+<p>Wiederum ist die Interpretation des <em>Steigungskoeffizienten</em> <span class="math inline">\(\beta_1\)</span> bei der Logistischen Regression, wie auch für <span class="math inline">\(\beta_0\)</span> abstrakter als dies bei der linearen Regression der Fall ist. Wie später gezeigt wird, führt dies dazu, dass wenn eine kontinuierliche Variable <span class="math inline">\(x\)</span>, also im Beispiel die tatsächlichen Distanzen <span class="math inline">\(d_i\)</span> verwendet werden, <span class="math inline">\(\beta_1\)</span> die <strong>Änderung im odds ratio</strong> bei einer Veränderung von <span class="math inline">\(\Delta d = 1\)</span> um eine Einheit beschreibt.</p>
+<p>Sei dazu kurz die Berechnung der OR anhand von <a href="#tbl-mlm-log-prob-01" class="quarto-xref">Tabelle&nbsp;<span>7.5</span></a> durchgeführt.</p>
+<p><span class="math display">\[
+(1\cdot 3)/(7\cdot 9) = 0.048
+\]</span></p>
+<p>Berechnung von <span class="math inline">\(e^{\beta_1}\)</span> liefert:</p>
+<p><span class="math display">\[
+e^{-3.04} = 0.048
+\]</span></p>
+<p>D.h. die logistische Regression liefert das gleiche Ergebnis wie die Berechnung die Häufigkeitstabelle, allerdings stellt sie das deutlich flexiblere Verfahren dar, denn die logistische Regression ist nicht auf nur eine einzelne Prädiktorvariable beschränkt.</p>
+<p>Im Folgenden wird noch eine alternative Interpretation der Logistischen Regression betrachtet um das Verständnis noch einmal zu erweitern. Dazu wird ein Spezialfall des vorhergehenden Beispiels betrachtet indem nur Würfe aus der kurzen Distanz analysiert werden (siehe <a href="#fig-mlm-log-handball-prob-02" class="quarto-xref">Abbildung&nbsp;<span>7.11</span></a>)</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-mlm-log-handball-prob-02" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mlm-log-handball-prob-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="mlm_logistic_files/figure-html/fig-mlm-log-handball-prob-02-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mlm-log-handball-prob-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;7.11: Ausschließlich kurze Würfe auf das Tor
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Mittels der Logistischen Regression wird für die Würfe eine <em>mittlere</em> Trefferwahrscheinlichkeit berechnet. Ähnlich wie das bei der einfachen Regression auch der Fall ist. Dort wird ein mittlerer Wert <span class="math inline">\(\hat{y}_i\)</span> berechnet, nämlich genau derjenige der auf der Linie für ein gegebenes <span class="math inline">\(X\)</span> liegt. Übertragen auf das Beispiel, liefert das Logistische Regressionsmodell eine mittlere Wahrscheinlichkeit <span class="math inline">\(\hat{p}(d)\)</span> aus dieser Distanz zu treffen.</p>
+<p>Im Beispiel Fall wurden <span class="math inline">\(10\)</span> Würfe beobachtet. Von diesen <span class="math inline">\(10\)</span> Würfen ging einer daneben und neun waren Treffer. Oben wurde auch gezeigt, dass die berechnet Wahrscheinlichkeit auch tatsächlich diesem Verhältnis entspricht mit <span class="math inline">\(p_{Tor} = 0.9\)</span>. Eine andere Betrachtungsweise wäre, die einzelnen Würfe als das Ergebnis eines Münzwurfes zu sehen. Die Fragestellung wäre dementsprechend: “Wie viele der zehn Würfe waren <em>erfolgreich</em>?”. Dies ist aber wieder ein Wahrscheinlichkeitsmodell das schon vorher behandelt wurde, nämlich im Rahmen der Binomialverteilung. Unter dieser Sichtweise folgt <span class="math inline">\(Y_i\)</span> einer Binomialverteilung mit <span class="math inline">\(n = 10\)</span> und einem zu bestimmenden <span class="math inline">\(p\)</span>.</p>
+<p>Die gleiche Situation ergibt sich wenn die <em>langen</em> Würfe betrachtet werden (siehe <a href="#fig-mlm-log-handball-prob-03" class="quarto-xref">Abbildung&nbsp;<span>7.12</span></a>).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-mlm-log-handball-prob-03" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mlm-log-handball-prob-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="mlm_logistic_files/figure-html/fig-mlm-log-handball-prob-03-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mlm-log-handball-prob-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;7.12: Ausschließlich kurze Würfe auf das Tor
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In diesem Fall ist das Ergebnis so, dass von zehn Würfen nur drei getroffen wurden was sich auch wieder in dem Ergebnis der Logistischen Regression widerspiegelt. Hier wurde also eine <em>neue</em> Binomialverteilung gefittet mit <span class="math inline">\(n = 10\)</span> und nun einem anderen <span class="math inline">\(p\)</span>. Formal aufgeschrieben mit Erwartungswert <span class="math inline">\(E[X]\)</span> der die mittlere Trefferwahrscheinlichkeit beschreibt, ergibt sich:</p>
+<p><span class="math display">\[
+E[Y|X] = p
+\]</span></p>
+<p>Der senkrechte Strich <span class="math inline">\(|\)</span> bedeutet “<em>gegeben</em>”, also ausgesprochen der “Erwartungswert von <span class="math inline">\(Y\)</span> für ein gegebenes <span class="math inline">\(X\)</span> ist <span class="math inline">\(p\)</span>. Die Variable <span class="math inline">\(p\)</span> folgt wieder einer Binomialverteilung. Dies ist vollkommen parallel zu der Herleitung der <em>normalen</em> linearen Regression, wo der Wert <em>auf der Geraden</em> einer Normalverteilung folgte:</p>
+<p><span class="math display">\[
+E[Y|X] = \mathcal{N}(\beta_0 + \beta_1 X, \sigma^2)
+\]</span></p>
+<p>Im vorliegenden Fall ist die abhängige Variable allerdings nicht mehr Normalverteilt sondern Biomialverteilt, formal:</p>
+<p><span class="math display">\[
+E[Y|X] = \text{Binom}(n,p)
+\]</span></p>
+<p>Die logistische Regression ist dabei wieder <strong>linear</strong> in den Parametern in der Form von <span class="math inline">\(\beta_0 + \beta_1 X_{1i}\)</span>, allerdings, im Gegensatz zu normalen linearen Regression, überträgt sich diese Linearität nicht mehr die abhängige Variable <span class="math inline">\(Y\)</span>. Wie bereits gezeigt, ist der Graph der Wahrscheinlichkeiten <span class="math inline">\(p\)</span> S-förmig und die Änderung von <span class="math inline">\(Y\)</span> hängt davon ab, in welchem Bereich der Kurve man sich befindet.</p>
+<p>Um von der abhängigen Variable <span class="math inline">\(p\)</span> auf die linearen Parameter <span class="math inline">\(\beta_i\)</span> abzubilden wird wieder die Logit-Funktion verwendet.</p>
+<p><span class="math display">\[
+\text{logit}(p) = \text{logit}(E[p|X])= \beta_0 + \beta_1 X
+\]</span></p>
+<p>Unter dem Zusammenhang mit der Binomialverteilung, wird die Logit-Funktion als <strong>Link</strong>-Funktion bezeichnet. D.h. die Link-Funktion verknüpft den mittleren Wert der abhängigen Variablen <span class="math inline">\(E[Y|X] = \mu\)</span> mit den linearen Parametern <span class="math inline">\(\beta_i\)</span>. In der Literatur wird zusätzlich oft eine Terminologie verwendet, bei der die Link-Funktion den Buchstaben <span class="math inline">\(g\)</span> bekommt. Die Link-Funktion bildet dann <span class="math inline">\(E[Y|X] = \mu\)</span>, als den mittleren Wert (im Beispiel die Trefferwahrscheinlichkeit <span class="math inline">\(p(d)\)</span>) auf den linearen Prädiktor (im Beispiel <span class="math inline">\(\beta_0 + \beta_i \cdot D\)</span>) ab. Dabei wird noch eine Zwischenvariable <span class="math inline">\(\eta\)</span> eingeführt, die das Ergebnis des linearen Prädiktors ist (im Beispiel entsprechend <span class="math inline">\(\eta = \beta_0 + \beta_1 \cdot D\)</span>).</p>
+<div id="def-link-function" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 7.4 (Link-Funktion)</strong></span> Die Link-Funktion <span class="math inline">\(g\)</span>, definiert den Zusammenhang zwischen der abhängigen Variable <span class="math inline">\(Y\)</span>, deren Erwartungswert <span class="math inline">\(\mu = E[Y]\)</span> und dem linearen Prädiktor <span class="math inline">\(\eta = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \dots + \beta_k x_k\)</span>. Formal:</p>
+<p><span class="math display">\[
+g(\mu) = \eta = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \dots + \beta_k x_k
+\]</span></p>
+</div>
+<p>Bei der Logistischen Regression mit der Logit-Funktion als die Link-Funktion, folgt:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mu &amp;= p = E[Y|X] \sim \text{Binom} \\
+\eta &amp;= \beta_0 + \beta_1 \cdot d_i \\
+g(z) &amp;= \ln \left(\frac{z}{1-z}\right) \\
+g(\mu) &amp;= \eta = \beta_0 + \beta_1 \cdot d_i
+\end{aligned}
+\]</span></p>
+<p>Sei nun <span class="math inline">\(d_i\)</span> eine kontinuierliche Variable, d.h. die Distanzen <span class="math inline">\(d_i\)</span> gehen mit ihrem tatsächlichen Wert in die logistische Regression ein und es ergibt sich das folgende Ergebnis (siehe <a href="#fig-mlm-log-dcontinuous" class="quarto-xref">Abbildung&nbsp;<span>7.13</span></a>).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-mlm-log-dcontinuous" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mlm-log-dcontinuous-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="mlm_logistic_files/figure-html/fig-mlm-log-dcontinuous-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mlm-log-dcontinuous-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;7.13: Verteilung der Würfe mit Treffern und Fehlwürfen
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Das Modell ist wieder das gleiche wie schon vorher:</p>
+<p><span class="math display">\[
+\begin{aligned}
+g(\eta) &amp;= \beta_0 + \beta_1 \cdot d_i \\
+\mu(d) &amp;\sim \text{Binom}(d)
+\end{aligned}
+\]</span></p>
+<p>Für den Datensatz in <a href="#fig-mlm-log-dcontinuous" class="quarto-xref">Abbildung&nbsp;<span>7.13</span></a> werden die folgenden Werte für <span class="math inline">\(\beta_0\)</span> und <span class="math inline">\(\beta_1\)</span> erhalten.</p>
+<table class="caption-top table">
+<caption>Berechnete Schätzer für die Koeffizienten</caption>
+<thead>
+<tr class="header">
+<th>Koeffizient</th>
+<th>Schätzer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\beta_0\)</span></td>
+<td><span class="math inline">\(6.3\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\beta_1\)</span></td>
+<td><span class="math inline">\(-0.73\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Werden nun die Wahrscheinlichkeiten <span class="math inline">\(p\)</span> gegen die Wurfdistanz <span class="math inline">\(d_i\)</span> abgetragen, ergibt sich der folgende graphische Zusammenhang (siehe <a href="#fig-mlm-log-p-to-distance" class="quarto-xref">Abbildung&nbsp;<span>7.14</span></a>):</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-mlm-log-p-to-distance" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mlm-log-p-to-distance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="mlm_logistic_files/figure-html/fig-mlm-log-p-to-distance-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mlm-log-p-to-distance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;7.14: Zusammenhang zwischen der Trefferwahrscheinlichkeit und der Wurfdistanz
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Die S-Kurve ist nun anders herum, da mit kleiner werden Distanz die Wahrscheinlichkeit größer wird zu treffen, sprich bei einer Distanz von <span class="math inline">\(d_i = 0\)</span> ist Trefferwahrscheinlichkeit praktisch gleich <span class="math inline">\(1\)</span>. Mit größer werden Distanz wird entsprechend die Wahrscheinlichkeit für einen Treffer geringer. In <a href="#fig-mlm-log-p-to-distance" class="quarto-xref">Abbildung&nbsp;<span>7.14</span></a> sind auch auch die Daten eingetragen. Wobei ein Wert von <span class="math inline">\(1\)</span> einen Treffer signalisiert, während ein Wert von <span class="math inline">\(0\)</span> einen Fehlwurf kennzeichnet. Im Graphen ist auch zu erkennen, das für diesen <em>Datensatz</em> im Bereich zwischen <span class="math inline">\(8\)</span> und <span class="math inline">\(9\)</span> Metern die Trefferwahrscheinlichkeit am stärksten abnimmt.</p>
+<p>Nun stellt sich wieder die Frage, wie die Koeffizienten <span class="math inline">\(\beta_0\)</span> und <span class="math inline">\(\beta_1\)</span> zu interpretieren sind. Im Fall des y-Achsenabschnitts <span class="math inline">\(\beta_0\)</span> der Auftritt für <span class="math inline">\(d_i = 0\)</span> wird die folgende Wahrscheinlichkeit erhalten:</p>
+<p><span class="math display">\[
+p = \frac{1}{1+e^{-6.3}} = 0.998
+\]</span></p>
+<p>Wie schon am Graphen ersichtlich ist die Wahrscheinlichkeit nahe <span class="math inline">\(1\)</span> für einen Treffer. Wenn der Koeffizient direkt interpretiert wird, dann beschreibt <span class="math inline">\(\beta_0\)</span> die log-odds für einen Treffer aus der Distanz <span class="math inline">\(d_i = 0\)</span>, bzw. <span class="math inline">\(\beta_0\)</span> in den Exponenten <span class="math inline">\(e^{\beta_0}\)</span> gesetzt ergibt die Odds für einen Treffer aus der Distanz <span class="math inline">\(d_i=0\)</span>.</p>
+<p>Für den <em>Steigungskoeffizienten</em> <span class="math inline">\(\beta_1\)</span> ergibt sich die parallel Interpretation mit dem Rückgriff aus der Interpretation aus der linearen Regression. Wenn zwei Objekte miteinander verglichen, die sich in der Wurfdistanz um eine Einheit, als einen Meter <span class="math inline">\(\Delta d = 1\)</span> unterscheiden, dann gibt beziffert <span class="math inline">\(\beta_1\)</span> die <strong>Veränderung</strong> in den <strong>Log-Odds</strong>. Wenn <span class="math inline">\(\beta_1\)</span> exponiert wird also <span class="math inline">\(e^{\beta_1}\)</span>, dann beschreibt der Wert den mittleren Unterschied dieser zwei Objekte in Odds an. Achtung, es geht um die Veränderung in den Odds bzw. Log-Odds nicht um die Veränderung in den Wahrscheinlichkeiten.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\Delta \text{log-odds} &amp;= \beta_1 = -0.73 \\
+\Delta \text{odds} &amp;= e^{\beta_1} = 0.481909 \\
+\end{aligned}
+\]</span></p>
+<p>Um die Veränderung in den Wahrscheinlichkeiten zu erhalten, dann müssen die Wert entsprechend in die logistische Funktion eingesetzt werden. Die Veränderung in den Log-Odds ist dabei <strong>linear</strong>, während die Veränderung in den Wahrscheinlichkeiten <span class="math inline">\(p\)</span> <strong>nicht-linear</strong> ist, wie in <a href="#fig-mlm-log-p-to-distance" class="quarto-xref">Abbildung&nbsp;<span>7.14</span></a> zu erkennen ist.</p>
+</section>
+<section id="die-parameter-einer-logistischen-regression-bestimmen" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="die-parameter-einer-logistischen-regression-bestimmen"><span class="header-section-number">7.4</span> Die Parameter einer logistischen Regression bestimmen</h2>
+<p>Im Gegensatz zu der multiplen linearen Regression gibt es für die Logistische Regression keine geschlossene Formel um die Modellparameter <span class="math inline">\(\beta_i\)</span> zu bestimmen. Daher werden die Parameter über eine numerische Nährung iterativ mittels der Maximum-Likelihood Methode bestimmt. Für eine einzelne Beobachtung <span class="math inline">\(y_i\)</span> gilt:</p>
+<p><span class="math display">\[
+p_i = \frac{1}{1 + e^{-(\beta_0 + \beta_1x_i})}
+\]</span></p>
+<p>Die Likelihood in Abhängigkeit von <span class="math inline">\(\boldsymbol{\beta} = (\beta_0,\beta_1)\)</span> für diesen einzelnen Wert kann dann folgendermaßen gebildet werden. Die Wahrscheinlichkeit einen <em>Treffer</em> zu beobachten ist dann genau entsprechend dieser Formel, während die Wahrscheinlichkeit keinen Treffer zu erzielen <span class="math inline">\((1 - p_i)\)</span> ist. Daher kann die Likelihood folgendermaßen formuliert werden.</p>
+<p><span class="math display">\[
+\mathcal{L}_i = p_i^{y_i} \cdot (1 - p_i)^{1 - y_i}
+\]</span></p>
+<p>Wenn ein Treffer beobachtet wurde, dann gilt <span class="math inline">\(y_i = 1\)</span> und es folgt:</p>
+<p><span class="math display">\[
+\mathcal{L}_i = p_i^{1} \cdot (1 - p_i)^{1 - 1} = p_i
+\]</span></p>
+<p>bzw. kein Treffer beobachtet wird <span class="math inline">\(y_i = 0\)</span> dann folgt:</p>
+<p><span class="math display">\[
+\mathcal{L}_i = p_i^{0} \cdot (1 - p_i)^{1 - 0} = (1-p_i)
+\]</span></p>
+<p>Die Wahrscheinlichkeit <span class="math inline">\(p_i\)</span> wird anhand mittels der logistischen Funktion modelliert woraus sich der folgende Ausdruck für einen einzelnen Likelihood <span class="math inline">\(\mathcal{L}_i\)</span> ergibt:</p>
+<p><span class="math display">\[
+\mathcal{L}_i(\boldsymbol{\beta}) = p_i^{y_i} \cdot (1 - p_i)^{1 - y_i} = \left(\frac{1}{1+e^{-(\beta_0 + \beta_1x_i)}}\right)^{y_i}\left(1-\frac{1}{1+e^{-(\beta_0 + \beta_1x_i}}\right)^{1-y_i}
+\]</span></p>
+<p>Da davon ausgegangen wird, dass die Werte zwischen den Personen unabhängig voneinander sind, multiplizieren sich die Werte für die Likelihood über alle beobachteten Werte und es folgt:</p>
+<p><span class="math display">\[
+\mathcal{L}(\boldsymbol{\beta}) = \prod_{i=1}^n\left(\frac{1}{1+e^{-(\beta_0 + \beta_1x_i)}}\right)^{y_i}\left(1-\frac{1}{1+e^{-(\beta_0 + \beta_1x_i}}\right)^{1-y_i}
+\]</span></p>
+<p>Mittels des Übergangs von der Likelihood <span class="math inline">\(\mathcal{L}(\boldsymbol{\beta})\)</span> zur log-Likelihood <span class="math inline">\(\ell(\boldsymbol{\beta})\)</span> folgt dann wieder mit den Eigenschaften des Logarithmus.</p>
+<p><span class="math display">\[
+\ell(\boldsymbol{\beta}) = \sum_{i=1}^ny_i\log\left(\frac{1}{1+e^{-(\beta_0 + \beta_1x_i)}}\right)(1-y_i)\log\left(1-\frac{1}{1+e^{-(\beta_0 + \beta_1x_i)}}\right)
+\]</span></p>
+<p>Hier wird dann wieder der übliche Ansatz mit Ableitung nach <span class="math inline">\(\beta_0\)</span> und <span class="math inline">\(\beta_1\)</span> und Nullsetzung um die Lösungsgleichung zu erhalten. Diese können allerdings nicht einfach algebraisch gelöst werden, sondern müssen über ein numerisches Nährungsverfahren gelöst werden. Letztendlich werden dann Maximum-Likelihood Schätzer <span class="math inline">\(\hat{\beta}_0\)</span> und <span class="math inline">\(\hat{\beta}_1\)</span> für die beiden Modellparameter <span class="math inline">\(\beta_0\)</span> und <span class="math inline">\(\beta_1\)</span> erhalten. Mittels dieser können dann Schätzer für die Wahrscheinlichkeiten <span class="math inline">\(\hat{p}_i\)</span> berechnet werden.</p>
+</section>
+<section id="multivariate-logistische-regression" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="multivariate-logistische-regression"><span class="header-section-number">7.5</span> Multivariate Logistische Regression</h2>
+<p>Der Übergang von der einfachen logistischen Regression zur multiplen logistischen Regression vollzieht sich parallel zum einfachen linearen Regressionsmodell. Die formale Darstellung auf der Logit-Skala wird zu:</p>
+<p><span class="math display">\[
+\text{logit}(p) = \text{logit}(\beta_0 + \beta_1 X_{1i} + \beta_2 X_{2i} + \cdots +\beta_k X_{ki})
+\]</span></p>
+<p>D.h. die Formel für die logistische Regression wird lediglich um weiter Variablen <span class="math inline">\(X_i\)</span> erweitert. Die einzelnen Prädiktorvariablen <span class="math inline">\(X_i\)</span> können dabei die gleiche Form wie bei der linearen Regression annehmen. D.h. es können genauso kontinuierliche Prädiktorvariablen oder über den Umweg von Indikatorvariablen nominale Faktoren in das Modell integriert werden.</p>
+<p>Auf der Wahrscheinlichkeitsskala folgt analog:</p>
+<p><span class="math display">\[
+P(\boldsymbol{X}) = \frac{1}{1 + e^{-(\beta_0+\sum_{i=1}^k\beta_iX_i)}}
+\]</span></p>
+<p>Die Interpretation der einzelnen Modellparameter <span class="math inline">\(\beta_i\)</span> ist analog derjenigen bei der einfachen logistischen Regression. Wenn alle anderen Variablen <span class="math inline">\(\boldsymbol{X}_j, j\neq i\)</span> konstant gehalten werden, dann kann der Modellparameter <span class="math inline">\(\beta_i\)</span> als die Veränderung in den log-odds zwischen zwei Objekten die sich in <span class="math inline">\(X_i\)</span> um eine Einheit voneinander unterschieden werden interpretiert werden.</p>
+<div id="exm-mlm-multi-log" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 7.5 (Zwei Variablen)</strong></span> Sei ein Modell mit zwei Variablen gegeben: <span class="math inline">\(X_1=\)</span>Alter und <span class="math inline">\(X_2\)</span>=EKG-Status. EKG-Status ist dabei eine nominale Variable, die lediglich zwei Werte annehmen kann.</p>
+<p><span class="math display">\[
+X_2 = \begin{cases}
+0: \text{unauffällig} \\
+1: \text{auffällig}
+\end{cases}
+\]</span></p>
+<p>Es wurde entsprechend das einfache folgende Modell ohne Interaktionseffekte gefittet.</p>
+<p><span class="math display">\[
+\text{logit}P(\boldsymbol{X}) = \beta_0 + \beta_1 \text{Alter} + \beta_2 \text{EKG}
+\]</span></p>
+<p>Um zu verstehen was der Koeffizient <span class="math inline">\(\beta_2\)</span> bedeutet, sei nun eine Person mit Alter<span class="math inline">\(=40\)</span> gegeben und es soll betrachtet werden, wenn der EKG-Status von <span class="math inline">\(0\)</span> auf <span class="math inline">\(1\)</span> <em>springt</em>, d.h. der Wert <span class="math inline">\(X_2\)</span> ändert sich um eine <em>Einheit</em>. Eingesetzt in die Formel folgt:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{logit}P(\text{EKG}=1) &amp;= \beta_0 + \beta_1 \cdot 40 + \beta_2 \cdot 1 \\
+\text{logit}P(\text{EKG}=0) &amp;= \beta_0 + \beta_1 \cdot 40 + \beta_2 \cdot 0 \\
+\end{aligned}
+\]</span></p>
+<p>Werden nun diese beiden Formel voneinander abgezogen, sprich zwei Personen miteinander verglichen, die das gleiche Alter haben und sich um eine <em>Einheit</em> für die Variable EKG unterscheiden, dann folgt:</p>
+<p><span class="math display">\[
+\text{logit}P(\text{EKG}=1) - \text{logit}P(\text{EKG}=0) = \beta_0 + \beta_1 \cdot 40 + \beta_2 - (\beta_0 + \beta_1 \cdot 40) = \beta_2
+\]</span></p>
+<p>Nach der Subtraktion bleibt der Koeffizient <span class="math inline">\(\beta_2\)</span> übrig. D.h. <span class="math inline">\(\beta_2\)</span> repräsentiert die <strong>Änderung</strong> in den <strong>log-odds</strong> zwischen den beiden Personen. Wird <span class="math inline">\(\beta_2\)</span> in Exponenten <span class="math inline">\(e\)</span> gestellt, repräsentiert <span class="math inline">\(e^{\beta_2}\)</span> entsprechend die Änderung in den Odds zwischen den beiden Personen.</p>
+</div>
+</section>
+<section id="den-modellfit-bewerten" class="level2" data-number="7.6">
+<h2 data-number="7.6" class="anchored" data-anchor-id="den-modellfit-bewerten"><span class="header-section-number">7.6</span> Den Modellfit bewerten</h2>
+<p>Bei der logistischen Regression funktionieren Parameter wie <span class="math inline">\(R^2\)</span> aus der linearen Regression nicht, da die abhängige Variable nur Werte <span class="math inline">\(0\)</span> und <span class="math inline">\(1\)</span> annehmen kann. Daher wird ein Ansatz über einen Modellvergleich verwendet ähnlich dem <span class="math inline">\(F\)</span>-Test aus der <code>summary()</code> von <code>lm()</code>. D.h. es wird ein Modell ohne Parameter, dass Nullmodel, mit einem Modell mit den angegebenen Parametern verglichen. Der Parameter ist dabei die sogenannte <strong>Deviance</strong>. Die Deviance ist ein Maß dafür, <strong>wie schlecht das Modell zu den beobachteten Daten passt</strong>. Sie misst den “Abstand” zwischen dem, was das Modell vorhersagt, und dem, was tatsächlich eingetreten ist. Je <strong>kleiner</strong> die Deviance, desto <strong>besser</strong> der Fit. Sie übernimmt damit ungefähr die Rolle, die bei der linearen Regression die Summe der quadrierten Residuen spielt – nur eben für <span class="math inline">\(0/1\)</span>-Daten.</p>
+<p>Die Deviance ist definiert als das <strong>−2-fache der maximum Log-Likelihood <span class="math inline">\(L\)</span></strong> des Modells:</p>
+<p><span class="math display">\[
+\text{Deviance} = -2 \cdot \ln(L_{\text{Modell}})
+\]</span></p>
+<p>Streng genommen, ist die Deviance eigentlich ein Modellvergleich, zwischen dem gefitten Modell und dem sogenannten <strong>saturierten</strong> Modell. Das saturierte Modell ist das <em>perfekte</em> Modell, dass jeden <span class="math inline">\(0/1\)</span>-Wert perfekt fittet. Das Likelihood <span class="math inline">\(L_{\text{max}}\)</span> für das saturierte Modell ist allerdings <span class="math inline">\(1\)</span>. Daher gilt:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{Deviance} &amp;= -2 \ln(L_{\text{Modell}}/L_{\text{max}}) \\
+&amp;= -2 \ln(L_{\text{Modell}}) - 2\ln(L_{\text{max}}) \\
+&amp;= -2 \ln(L_{\text{Modell}}) - 2\ln(1) \\
+&amp;= -2 \ln(L_{\text{Modell}}) - 2\cdot 0 \\
+&amp;= -2 \ln(L_{\text{Modell}}) \\
+\end{aligned}
+\]</span></p>
+<p>D.h. die Deviance vergleicht den Fit des <em>akutellen</em> Modells mit dem <em>perfekten</em> Modell. Umso näher diese beiden Modell sind, umso kleiner ist die Deviance.</p>
+<p>Unter verschiedenen Annahmen, folgt die Deviance eine <span class="math inline">\(\chi^2\)</span>-Verteilung mit (n-k-1) Freiheitsgraden. Die <span class="math inline">\(H_0\)</span>-Hypothese ist dann, das das Modell die Daten fittet bzw. die <span class="math inline">\(H_1\)</span>-Hypothese, dass die Daten mittels des Modells nicht gut gefittet werden können. Allerdings ist die Nährung über die <span class="math inline">\(\chi^2\)</span>-Verteilung oft fragwürdig <span class="citation" data-cites="kleinbaum2010">(<a href="references.html#ref-kleinbaum2010" role="doc-biblioref">Kleinbaum und Klein 2010</a>)</span>.</p>
+</section>
+<section id="logistische-regression-in-r" class="level2" data-number="7.7">
+<h2 data-number="7.7" class="anchored" data-anchor-id="logistische-regression-in-r"><span class="header-section-number">7.7</span> Logistische Regression in <code>R</code></h2>
+<p>Um eine logistische Regression in <code>R</code> durchzuführen, muss die Funktion <code>glm()</code> aus dem Package <code>MASS</code> verwendet werden. Als erster Parameter wird wie beim <code>lm()</code> eine Formula mit <code>~</code> erwartet. In Abgrenzung zu <code>lm()</code> muss eine Verteilungsfamilie für die Residuen <span class="math inline">\(e_i\)</span> bzw. eine Link Funktion angegeben werden, da <code>glm()</code> nicht nur eine logistische Regression fitten kann. Für das Beispiel der Handballdaten, die im tibble <code>shots</code> gespeichert sind, folgt daher.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">glm</span>(treffer <span class="sc">~</span> d, shots, <span class="at">family=</span><span class="fu">binomial</span>())</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = treffer ~ d, family = binomial(), data = shots)
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)  
+(Intercept)  12.8351     5.3028   2.420   0.0155 *
+d            -1.6101     0.6672  -2.413   0.0158 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 26.920  on 19  degrees of freedom
+Residual deviance: 18.173  on 18  degrees of freedom
+AIC: 22.173
+
+Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+</div>
+<p>Mittels der <code>summary()</code>-Funktion wird eine Ausgabe ähnlich derjenigen von <code>lm()</code> erhalten. Hier können die Koeffizienten <span class="math inline">\(\beta_i\)</span>, deren Standardfehler, die Teststatistik, in diesem Fall, <span class="math inline">\(z\)</span> und der dazugehörige p-Wert abgelesen werden.</p>
+<!--#
+## Vorhersagen
+
+
+::: {.cell}
+
+:::
+
+
+## Die logistische Regression als Klassifikationsalgorithmus
+
+
+|   Tatsächlich          | Vorhergesagt: Positive | Vorhergesagt: Negative |
+|------------------------|---------------------|---------------------|
+| **Positive**   | True Positive (TP)  | False Negative (FN) |
+| **Negative**   | False Positive (FP) | True Negative (TN)  |
+
+: Konfusionsmatrix {#tbl-mlm-log-confusion-matrix}
+
+
+| Metrik | Berechnung |
+| --- | ---- |
+| **Accuracy** | $(TP + TN) / \text{Total Samples}$ |
+| **Precision**, **(Positive Predictive Value)** | $TP / (TP + FP)$ |
+| **Recall (Sensitivity)** | $TP / (TP + FN)$ |
+| **F1 Score** | $\frac{2}{\frac{1}{\text{Precision}} + \frac{1}{\text{Sensitivity}}}$ |
+
+: Klassifikationsmetriken {#tbl-mlm-log-classification-metric}
+
+Welche Eigenschaften sind wichtig für einen Klassifikationsalgorithmus?
+
+- Discrimination
+- Calibration
+
+### Diskriminierung 
+
+::: {#def-discrimination}
+### Diskriminierung 
+Discrimination refers to a model's ability to distinguish between positive and negative cases. Discrimination assesses how well a model separates different outcome classes.  
+
+:::
+
+**Intuition**:
+
+Discrimination tells us *how well* the model differentiates between classes, regardless of the predicted probability values being perfectly aligned with real-world outcomes.  
+
+
+### Kalibrierung 
+
+::: {#def-calibration}
+###  Kalibrierung
+
+Calibration refers to the agreement between predicted probabilities and the observed proportions of outcomes. A well-calibrated model outputs probabilities that reflect the true likelihood of an event.  
+
+:::
+**Intuition**:
+Calibration ensures that the model's predictions are not just *accurate* in classification but also *reliable* as probability estimates.  
+
+
+### Receiver Operator Characteristic (ROC) 
+
+$$
+\text{True Positive Rate (TPR, Sensitivity)} = \frac{\text{True Positives}}{\text{True Positives + False Negatives}}
+$$
+
+$$
+\text{False Positive Rate (FPR)} = \frac{\text{False Positives}}{\text{False Positives + True Negatives}}
+$$
+
+$$
+\text{Specificity} = \frac{\text{True Negatives}}{\text{True Negatives + False Positives}}
+$$
+
+$$
+\text{FPR} = 1 - \text{Specificity}
+$$
+
+
+
+::: {.cell}
+::: {.cell-output-display}
+![](mlm_logistic_files/figure-html/unnamed-chunk-21-1.png){width=672}
+:::
+:::
+
+
+
+ROC curve
+
+::: {.cell}
+::: {.cell-output-display}
+![Example of a ROC curve](mlm_logistic_files/figure-html/unnamed-chunk-22-1.png){width=672}
+:::
+:::
+
+
+Area under the curve (AUC) 
+
+
+::: {.cell}
+::: {.cell-output-display}
+![Example of AUC](mlm_logistic_files/figure-html/unnamed-chunk-23-1.png){width=672}
+:::
+:::
+
+
+### Calibration curve
+
+
+::: {.cell}
+::: {.cell-output-display}
+![Example of a calibration curve (red) and perfect calibration (black)](mlm_logistic_files/figure-html/unnamed-chunk-24-1.png){width=672}
+:::
+:::
+
+
+### Calculating a prediction curve
+
+
+### Kalibrierungskurven in `R`
+
+`CalibrationCurves`
+
+
+::: {.cell}
+::: {.cell-output-display}
+![](mlm_logistic_files/figure-html/unnamed-chunk-25-1.png){width=672}
+:::
+:::
+
+
+
+### Take-aways Diskriminierung vs. Kalibrierung 
+
+| **Aspect**        | **Discrimination**                      | **Calibration**                      |
+|-------------------|-----------------------------------------|--------------------------------------|
+| **Focus**         | Ability to distinguish classes          | Accuracy of predicted probabilities  |
+| **Measurement**   | AUC, ROC curves                         | Calibration curves                   |
+| **Key Question**  | "How well does the model rank cases?"   | "Are the probabilities realistic?"   |
+-->
+</section>
+<section id="zusammenfassung" class="level2" data-number="7.8">
+<h2 data-number="7.8" class="anchored" data-anchor-id="zusammenfassung"><span class="header-section-number">7.8</span> Zusammenfassung</h2>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-kleinbaum2010" class="csl-entry" role="listitem">
+Kleinbaum, David G, und Mitchel Klein. 2010. <em>Logistic regression: a self-learning text</em>. 3. Aufl. Springer.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Kopiert");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Kopiert");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./mlm_basics.html" class="pagination-link" aria-label="Multiple Lineare Regression">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Multiple Lineare Regression</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./mlm_lmm.html" class="pagination-link" aria-label="Gemischte Lineare Modelle">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Gemischte Lineare Modelle</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

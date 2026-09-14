@@ -1,0 +1,561 @@
+# Messfehler und Reliabilität
+
+Diese Kapitel beschäftigt sich mit der Güte von Messinstrumenten. Trotzdem eigentlich ein zentrales Thema bei der Erhebung von Messdaten wird diese Thema in den vielen Fällen gar nicht oder nur unzureichend betrachtet.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+source('_common.R')
+```
+
+
+```{r reliability_defs}
+lil <- readr::read_delim('data/lilquist_2021_tbl_05.txt',
+                         delim = ' ')
+lil_w <- lil |> tidyr::pivot_longer(-Subject,
+                                    names_to = 'day',
+                                    values_to = 'emg')
+```
+
+## Genauigkeit versus Präzision
+
+Die ersten beiden wichtigen Eigenschaften eines Messinstruments sind die Genauigkeit und die Präzision. Beide sind Eigenschaften sind zentrale zur Beurteilung der Qualität eines Messinstruments. **Genauigkeit** beschreibt, wie nahe eine Messung am tatsächlichen oder wahren Wert liegt. Ein Messinstrument mit hoher Genauigkeit liefert Werte, die nur eine geringe Abweichung vom *realen Wert* aufweisen. Die mittlere Abweichung vom tatsächlichen Wert wird auch als **bias** bezeichnet. **Präzision** hingegen bezieht sich auf die Wiederholbarkeit von Messungen. Ein präzises Instrument liefert bei mehrfacher Messung ähnliche oder identische Werte, unabhängig davon, ob diese dem wahren Wert nahekommen. Die Streuung wird auch oft als Rauschen (engl. noise) bezeichnet. Ein Messinstrument kann also präzise, aber ungenau sein, wenn die Werte zwar eng beieinanderliegen, jedoch systematisch vom tatsächlichen Wert abweichen. Idealerweise sollte ein Messinstrument sowohl genau als auch präzise sein, um verlässliche Ergebnisse zu liefern [siehe auch @luchette2024].
+
+In @fig-ed-rel-precision sind Präzision und Genauigkeit anhand einer Zielscheibe noch einmal verdeutlicht.
+
+```{r}
+#| fig-cap: "Genauigkeit versus Präzision"
+#| label: fig-ed-rel-precision
+
+plot_precision_accuracy <- function() {
+  bull <- function(x=0,y=0,r=1,n=100,n_rings=3) {
+    theta <- seq(0, 2*pi, length.out=n)
+    tibble(
+      x = x + sin(theta) * rep(seq(1, r/(n_rings+1), length.out=3), each=n),
+      y = y + cos(theta) * rep(seq(1, r/(n_rings+1), length.out=3), each=n),
+      g = rep(1:n_rings, each=n)
+    )
+  }
+  pts <- function(x=0,y=0,s=0.1,n=10) {
+    tibble(
+      x = rnorm(n,x,s),
+      y = rnorm(n,y,s)
+    )
+  }
+  set.seed(1)
+  ggplot() +
+    geom_path(data = bull(), aes(x,y,group=g)) +
+    geom_path(data = bull(0,3), aes(x,y,group=g)) +
+    geom_path(data = bull(3,0), aes(x,y,group=g)) +
+    geom_path(data = bull(3,3), aes(x,y,group=g)) +
+    geom_point(data = pts(0,3), aes(x,y), size=2, color='red') +
+    geom_point(data = pts(3.5,3.5), aes(x,y), size=2, color='red') +
+    geom_point(data = pts(0,0,.3), aes(x,y), size=2, color='red') +
+    geom_point(data = pts(3.5,0.5,.3), aes(x,y), size=2, color='red') +
+    geom_text(data = tibble(x = c(-1,-1,2,2),y = c(4,1,4,1)+0.3,
+                             label=c('genau und präzise','genau und unpräzise',
+                                     'ungenau und präzise','ungenau und unpräzise')), 
+              aes(x,y,label=label), hjust='left') +
+    coord_equal(xlim=c(-1,5)) +
+    theme_void()
+}
+plot_precision_accuracy()
+```
+
+Bevor eine Messung durchgeführt werden soll, ist es daher notwendig über die Genauigkeit und die Präzision eines Messgeräts Bescheid zu wissen. In manchen Fällen kann beispielsweise eine geringere Genauigkeit eines Messgeräts weniger problematisch sein als eine geringere Präzision. Wenn zum Beispiel nur Unterschiede gemessen werden sollen, dann ist in bestimmten Fällen die absolute Genauigkeit weniger von Bedeutung da die Abweichungen vom *realen* Wert durch den Vergleich subtrahiert werden. Wird zum Beispiel eine Waage verwendet um die Veränderungen im Gewicht an Untersuchungspersonen über die Zeit verglichen werden sollen. Die Waage sei aber nicht korrekt geeicht und zeigt immer $2$ kg zu viel an. Dadurch ist der absolute, angezeigte Wert verfälscht. Werden aber die beobachteten Gewichte über die Messzeitpunkte voneinander abgezogen, dann ist der *Unterschied* zwischen den Messzeitpunkten dennoch korrekt. Die Annahme dabei ist allerdings, dass sich die Genauigkeit über den Beobachtungszeitung nicht verändert. Die Eigenschaften des *Messinstruments* können anhand zweier Eigenschaften bestimmt werden. Dies sind der Messfehler und die Reliabilität.
+
+## Übereinstimmung versus Reliabilität
+
+Ein Problem in der Literatur ist, dass die Eigenschaften von Messinstrumenten in verschiedenen Disziplinen entwickelt wurden und dadurch Überschneidungen in der Verwendung der Terminologie auftreten [@devet2006].
+
+Die erste Frage die sich bei der Behandlung von Messinstrumenten stellt ist die Frage ob ein gegebenes Instrument bezüglich der Übereinstimmung (engl. agreement) oder bezüglich der Reliabilität (engl. reliability) untersucht werden soll [@kottner2011;@devet2006]. Unter agreement stellt sich die Frage: Wie nahe beieinander sind wiederholte Messungen am gleichen Objekt? Im Gegensatz dazu beschäftigt sich die Reliabilität mit der Frage: Wie gut können Objekte voneinander unterschieden werden. 
+
+In @fig-ed-reliability-terminology ist ein schematischer Datensatz abgebildet an dem der Unterschied zwischen agreement und reliability veranschaulicht werden kann.
+
+```{r}
+#| fig-height: 1.5 
+#| label: fig-ed-reliability-terminology
+#| fig-cap: "Drei wiederholte Messungen an drei Versuchspersonen."
+
+df <- tibble(
+  x = c(0.9,1,1.1, 1.9,2.0,2.1,2.05,2.15,2.25)-0.8,
+  y = 1,
+  VP = rep(c('A','B','C'), each=3)
+)
+ggplot(df, aes(x,y,color=VP)) +
+  geom_point(aes(shape=VP), size=4) +
+  scale_x_continuous("", breaks=seq(0,2,.5), limits=c(0.,1.5)) +
+  scale_y_continuous("", breaks=NULL) +
+  theme_minimal() +
+  theme(legend.position = 'bottom')
+```
+
+Es wurden drei Personen dreimal gemessen. Zwischen den Personen sind Unterschiede in den Messwerten zu erkennen aber auch innerhalb einer Person sind Schwankungen zu sehen. Die Übereinstimmung (agreement) der Messung wird durch die Schwankung innerhalb **einer Person** beschrieben. Dies ist der Messfehler des Instruments. Dagegen beschreibt die **Reliabilität** das **Verhältnis** der Schwankung innerhalb einer Person zur Schwankung zwischen den Personen. D.h. die Reliabilität beschreibt wie gut das Messinstrument zwischen den Personen **diskriminieren** kann [@stratford1997].
+
+Die Diskriminierungsfähigkeit ist daher abhängig davon wie groß die Streuung innerhalb einer Person im Verhältnis zu der Streuung zwischen den Personen. Beispielsweise ist das Messinstrument sehr gut in der Lage zwischen den Versuchspersonen A und B bzw. A und C zu unterscheiden. Dagegen ist die Unterscheidung zwischen den Personen B und C nicht mehr so gut, da die Streuung der Messwerte innerhalb von B und C in der Größenordnung der Unterschiede zwischen den beiden Personen liegen.
+
+Bei der Beurteilung eines Messinstruments sollten daher beide Komponenten: die Reliabilität und die Übereinstimmung berücksichtigt werden [@berchtold2016]. Unglücklicherweise wird diese Terminologie schon nicht immer benutzt und es wird eine Unterscheidung in absolute und relative Reliabilität verwendet. Die absolute Reliabilität bezeichnet dabei die Übereinstimmung (agreement) und die relative Reliabilität die Reliabilität im eigentlichen Sinne [@baumgartner1989]. Leider wird aber auch diese Einteilung in der Literatur nicht immer stringent eingehalten. Im folgenden wird zunächst die Reliabilität untersucht.
+
+## Reliabilität
+
+Um die Herleitung der Reliabilität zu veranschaulichen wird ein konkretes Beispiel betrachtet. In @tbl-ed-rel-emg ist dazu ein Ausschnitt von EMG-Daten aus @liljequist2019 abgetragen.
+
+```{r}
+#| tbl-cap: "Beispieldaten von Lijequist (2019), EMG Median Frequenz (Hz), linke lumbale Rückenmuskulator über drei Tage"
+#| label: tbl-ed-rel-emg
+
+lil |> head() |> knitr::kable(
+             linesep = '',
+             col.names = c('Subject','Day 1', 'Day 2', 'Day 3'))
+```
+
+Insgesamt wurde bei $N = 10$ Personen die Muskelaktivierung in der Rückenmuskulatur über drei Tage jeweils an der gleichen Stelle gemessen. Ziel war eine Abschätzung zu erhalten, wie stabil bzw. ähnlich die EMG-Messungen über die verschiedenen Tage sind. In @fig-ed-rel-emg sind die Daten noch einmal graphisch dargestellt.
+
+```{r}
+#| fig-cap: "EMG Daten nach Liljequist et al. (2019). Die roten Punkte sind die Mittelwerte mit Standardabweichungen, schwarze gestrichtelte Linien sind die einzelnen Personen."
+#| label: fig-ed-rel-emg
+
+lil_hat <- lil_w |> dplyr::group_by(day) |> 
+  dplyr::summarize(m = mean(emg),
+            s = sd(emg),
+            Subject = 11)
+ggplot(lil_w, aes(day, emg, group=Subject)) +
+  geom_pointrange(data = lil_hat,
+                  aes(y = m, ymin = m - s, ymax = m + s),
+                  size = 1.4, col = 'red') +
+  geom_line(position = position_jitter(seed = 123, width=.05), linetype='dashed') +
+  geom_point(position = position_jitter(seed = 123, width=.05), size=3) +
+  scale_x_discrete('Messzeitpunkt', labels = paste('Tag', 1:3)) +
+  labs(y = 'Median EMG Frequenz') 
+```
+
+Wie in @fig-ed-rel-emg zu sehen ist, schwanken die Werte über die drei Messzeitpunkte. Einmal sind innerhalb der Personen Unterschiede zu erkennen, aber auch die Mittelwerte für die Messtage über die zehn Personen hinweg verändern sich über die Messzeitpunkte. D.h. die gewählte Messmethodik weist selbst Schwankungen auf. Die Größe der Schwankungen müssen bei der Erstellung eines Untersuchungsdesigns berücksichtigt werden. Sollen beispielsweise Unterschiede zwischen zwei Gruppen mit Hilfe dieser Messmethodik untersucht werden, aber wenn sich die zu erwartenden Unterschiede zwischen den Gruppen in der Größenordnung der Schwankungen oder möglicherweise sogar darunter, dann wird es sehr schwierig bis unmöglich werden diese Unterschiede in einem Experiment nachweisen zu können.
+
+Um den Begriff der Reliabilität klar zu definieren, ist die Erstellung eines theoretischen Modells erforderlich. Soll ein *Wert* bestimmt werden, der die Eigenschaft eines Objekts beschreibt, dann ist eine plausible Annahme das es einen *wahren* Wert gibt. Zum Beispiel ist direkt einsichtig, dass ein gegebener Holzstab eine bestimmte Länge hat. Oder eine Hantelscheibe hat ein bestimmtes Gewicht. Solange keine Manipulation an der Scheibe durchgeführt wird, sollte sich dieses Gewicht nicht ändern. Dieser Wert soll nun als *true-score* bezeichnet werden und der true-score erhält das Zeichen $\tau$. Während $\tau$ für eine Hantelscheibe noch relativ direkt einsichtig ist, ist dies nicht mehr ganz so einfach sobald biologische Objekte ins Spiel kommen. Soll beispielsweise die Körpergröße einer Person bestimmt werden, dann ist klar das die Körpergröße keine feststehende Größe ist, sondern im Verlauf eines Tages einer Schwankung unterliegt [@tyrrell1985]. In @fig-ed-rel-height ist beispielsweise die Veränderung der Körperhöhe im Verlauf eines Tages abgetragen.
+
+```{r}
+#| fig-cap: "Veränderung der Körpergröße über den Tag (adaptiert nach Tyrrell et al. (1985))."
+#| label: fig-ed-rel-height
+
+height <- tibble(
+  time = c(0, 3.2, 7, 8, 9, 10, 12, 15.5, 20, 24),
+  height = c(3.5, 16.8, 22, 13.9, 11.6, 8.6, 5.86, 4.4, 3.94, 3.9)
+)
+ggplot(height, aes(time,height)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_continuous('Zeit nach Mitternacht [Stunden]', breaks=seq(0,24,2)) +
+  scale_y_continuous('Höhenveränderung\nzu Mitternacht [mm]')
+```
+
+Es soll nun aber davon ausgegangen werden, dass der wahre Wert $\tau$ wohldefiniert ist. Dann besteht aber nach wie vor das Problem, selbst bei der Hantelscheibe, dass dieser Wert mit Hilfe eines Messmethodik bestimmt werden muss. Zum Beispiel im Fall der Hantelscheibe muss eine Waage verändert werden um das Gewicht zu bestimmen. Diese Waage ist aber selbst unweigerlich mit *Messfehlern* behaftet. Vielleicht ist bei der Eichung was schief gegangen, vielleicht ist die Feder mit Zeit ausgeleiert, oder die Umgebungstemperatur entspricht nicht den Vorgaben usw. und sofort. Das führt dazu, dass der *gemessene* Wert nicht gleich dem wahren Wert $\tau$ entspricht. Um den gemessenen Wert vom wahren Wert zu unterscheiden wird ein weiteres Symbol $Y$ verwendet. $Y$ ist dementsprechend der *beobachtete* Wert. Die Messfehler werden weiterhin mit dem Symbol $\epsilon$ bezeichnet. Dies führt insgesamt zu folgendem Modell:
+
+\begin{equation}
+Y = \tau + \epsilon
+\label{eq-ed-reliability-model}
+\end{equation}
+
+D.h. der beobachtete Wert $Y$ setzt sich zusammen aus dem wahren Wert $\tau$ und dem Messfehler $\epsilon$. Der Messfehler geht in diesem Modell additiv in den Wert $Y$ ein. Eine weitere Annahme soll nun dahin gehend bestehen, dass die Messfehler zufällig sind und bei wiederholter Messung im *Mittel* gleich $0$ sind. Formal ist der Erwartungswert $E[\epsilon_0] = 0$, wie das auch schon im Rahmen der Regression verwendet wurde. Weiterhin besteht kein Zusammenhang zwischen der Größe des Messfehlers und der Größe von $\tau$. Beispielsweise bei der Messung der Körpergröße verändert sich die Größe des Messfehlers nicht mit der Größer der Probandinnen sondern bleibt konstant. Formal führt dies zu $\text{Cov}(\epsilon,\tau) = 0$.
+
+Werden nun mehrere bzw. $N$ Messungen durchgeführt, dann wird entsprechend nicht nur ein wiederholter, konstanter Wert beobachtet sondern eine Menge von Werten. Um diese zu unterscheiden wird entsprechend ein Index $i$ eingeführt.
+
+\begin{equation}
+Y_i = \tau_i + \epsilon_i, \quad i \in [1,\ldots,N]
+\end{equation}
+
+Um die beiden Komponenten abschätzen zu können ist es daher notwendig, dass von dem zu messenden Objekt mehrere Messungen vorliegen. Wenn mehrere Werte für jedes Objekt zur Verfügung stehen, dann kann für diese beobachteten Wert $Y_i$ eine Varianz berechnet werden und, zumindest theoretisch, auch eine Varianz für die $\tau_i$s abgeschätzt werden. Dies ermöglicht nun auch eine formale Definition der Reliabilität unter dem gegebenen Modell.
+
+::: {#def-reliability}
+## Reliabilität - Definition 
+
+Die Reliabilität ist definiert als das Verhältnis der Varianz der *True-Score-Variablen* $\sigma_{\tau}$ zur *Gesamtvarianz* der Testvariablen $\sigma_{Y}$. [@moosbrugger2020, p.282]
+
+\begin{equation}
+\text{Rel} = \frac{\sigma_{\tau}^2}{\sigma_{Y}^2} = \frac{\sigma_{\tau}^2}{\sigma_{\tau}^2+\sigma_{\epsilon}^2}
+\label{eq-ed-reliability}
+\end{equation}
+
+Der Wertebereich der Reliabilität liegt in $\text{Rel} \in [0,1]$ wobei eine Wert $0$ keine Reliabilität anzeigt, während ein Wert von $\text{Rel} = 1$ auf eine perfekte Reliabilität hindeutet.
+:::
+
+Veranschaulicht, wenn der Messfehler gleich Null ist, also $\sigma_{\epsilon}^2 = 0$ gilt, dann ist $\text{Rel} = 1$, während wenn der Messfehler sehr groß im Verhältnis zu $\sigma_{\tau}^2$ ist, dann geht der $\text{Rel}$ gegen Null. Diese Herleitung unterstreicht noch einmal die Abhängigkeit der Reliabilität von der Varianz der Stichprobe. Für einen gegebenen Messfehler wird die Reliabilität besser wenn die Varianz der Messobjekte $\sigma_{\tau}^2$ größer wird. Andersherum, für eine gegebene Varianz $\sigma_{\tau}^2$ zwischen den Objekten wird die Reliabilität größer wenn der Messfehler $\sigma_{\epsilon}^2$ kleiner wird. Daher ist die Reliabilität eine Funktion der Streuung in der Population und eine gegebene Reliabiltät ist nicht unbedingt ein Indikator für einen guten Test [@tighe2010].
+
+::: {.callout-note}
+
+Das Modell das zur Verwendung der Definition für die Reliabilität verwendet wurde mit $Y = \tau + \epsilon$ folgt der sogenannten klassischen Testtheorie (KTT). Unter der klassischen Testtheorie fließen noch weitere Annahmen in das Modell ein. So sind nicht nur die Messfehler und der wahre Wert unkorreliert $Cov(\epsilon,\tau)=0$ sondern, die Messfehler sind auch voneinander unabhängig $Cov(\epsilon_i, \epsilon_j) = 0$ und die Varianzen der Messfehler $\sigma^2(\epsilon_i)$ bleiben über Wiederholungen konstant, sprich gleich groß. Dies führt dann zu einer Aufteilung der *totalen* Varianz von $Y$ in die beiden Komponenten: Varianz der wahren Werte $\sigma^2(\tau_i)$ und Varianz der Messfehler $\sigma^2(\epsilon_i)$.
+
+\begin{equation}
+\sigma^2(Y) = \sigma^2(\tau_i) + \sigma^2(\epsilon_i)
+\label{eq-y-tau-variance}
+\end{equation}
+
+:::
+
+Für die Interpretation der Reliabilität hat sich in der Literatur eine Kategorisierung entlang der Werte in @tbl-ed-rel-interpretation etabliert, die allerdings auch wieder nur als Orientierungshilfe zu betrachten ist.
+
+| Bereich | Interpretation |
+| --- | --- |
+| $<0.5$ | poor |
+| $0.5-0.75$ | moderate |
+| $0.75-0.9$ | good |
+| $>0.9$ | excellent |
+
+: Interpretation der Reliablität nach @koo2016 {#tbl-ed-rel-interpretation}
+
+Es gibt unterschiedliche Arten wie die Reliabilität bestimmt werden kann [@baumgartner1989]. Die **Test-Retest-Reliabilität** beschreibt die Stabilität eines Tests über die Zeit, indem die gleichen Objekte zu unterschiedlichen Zeitpunkten getestet werden. Die **Interrater-Reliabilität** bezieht sich auf die Übereinstimmung der Bewertungen durch verschiedene Beobachter oder Rater der gleichen Objekte und wird auch als Objektivität im Rahmen der Testgütekriterien bezeichnet. Die **Paralleltest-Reliabilität** vergleicht die Ergebnisse zweier gleichwertiger Testformen, um die Konsistenz zu überprüfen. 
+
+### Intraclass correlation coefficient
+
+Ein Maß das in der Literatur zur Bestimmung der Reliabilität sehr oft angewendet wird, ist der Intraklassen-Korrelationskoefficient (intraclass correlation coefficient) ICC. In der Literatur gibt es ein ganze Reihe von unterschiedlichen Arten den ICC zu berechnen. Es werden allerdings in den meisten Fällen einer von drei verschiedene Typen angewendet. **ICC(1)** basiert auf einem einfachen Modell mit nur einen zufälligen Faktor. Unter diesem Modell wird jede Bewertungseinheit von unterschiedlichen, zufällig ausgewählten Beurteilern bewertet. ICC(1) ist für die Betrachtungen hier nicht weiter von großem Interesse. **ICC(2)** verwendet ein komplizierteres Modell bei dem alle Beurteiler alle Bewertungsobjekte bewerten. Dabei sind sowohl Beurteiler als auch die Objekte zufällig und werden als Stichproben aus einer größeren Stichprobe angesehen. D.h. die Ergebnisse sind geeignet um über die Beobachtungsobjekte und Bewerter hinaus zu verallgemeinern. **ICC(3)** nutzt ebenfalls ein Zweiweg-Modell. Unter ICC(3) werden die Beurteiler als feste Objekte betrachtet. Daher kann nicht auf andere Beurteiler generalisiert werden. Der Hauptunterschied zwischen ICC(2) und ICC(3) liegt also in der Annahme, ob die Beurteiler zufällig oder fest sind [@wong1996]. Daraus resultiert die folgende Systematik der ICCs (siehe @fig-ed-reliability-icc-sys)
+
+```{r}
+#| out-width: "80%"
+#| label: fig-ed-reliability-icc-sys
+#| fig-cap: "Adaptiert nach Liljequist et al. (2019)"
+
+knitr::include_graphics('pics/liljequist_2019.png')
+```
+
+Tatsächlich unterscheidet sich die Berechnung unter Modell 2 und Modell 3 nicht voneinander. Beide Modelle gibt es in zwei unterschiedlichen Typen: Konsistenz und Agreement. Die Agreementmodelle modellieren die Varianz zwischen den Bewertern im Gegensatz zu den Konsistenzmodellen bei denen diese Variabilität vernachlässigt wird. Die Bezeichnung **agreement** ist dabei **nicht** die Gleiche wie sie oben verwendet wurde, sondern wohl eher eine historischer Unfall. Beide Modelle sind vor Maße für die Reliabilität und nicht für die Übereinstimmung nach der Verwendung, wie nahe wiederholte Werte zusammen liegen.
+
+Um die Modellanahmen der verschiedenen Modell besser nachvollziehen zu können, ist es hilfreich das Datenmodell für die Berechnung des ICC zu konkretisieren (siehe @tbl-ed-reliability-data).
+
+| Bewertungsobjekt | Bewerter 1 | Bewerter 2 | $\cdots$ | Bewerter k | 
+| --- | --- | --- | --- | --- | 
+| 1 | $x_{11}$ | $x_{12}$ | $\cdots$ | $x_{1k}$  |
+| 2 | $x_{21}$ | $x_{22}$ | $\cdots$ | $x_{2k}$  |
+| $\vdots$ |$\vdots$ |$\vdots$ | |$\vdots$ |
+| n | $x_{n1}$ | $x_{n2}$ | $\cdots$ | $x_{nk}$ $ |
+| Mean | $M_1$ | $M_2$ | $\cdots$ | $M_k$ | 
+
+: Datenmodell für die Berechnung des ICC {#tbl-ed-reliability-data}
+
+D.h. für jedes Bewertungsobjekt werden mehrere Bewertungen abgegeben. Die Bewerter können dabei auch unterschiedliche Messapparaturen sein und müssen nicht unbedingt Personen sein. Generell ergibt sich eine Aufteilung in $r$ Zeilen und $c$ Spalten. Daher kann auch die Streuung entlang dieser beiden Dimensionen ermittelt werden. Eine Streuung zwischen den Bewertern entlang der Zeilen $\sigma^2_r$ und eine Streuung entlang der Spalten zwischen den Objekten $\sigma^2_c$. Daraus können die Modelle wie folgt voneinander unterschieden werden (siehe @tbl-ed-reliability-models-var}.
+
+| Bezeichnung | Modell | 
+| --- | -------- | 
+| Model 1 | $x_{ij} = \mu + \underbrace{r_i + e_{ij}}_{\text{zufällig}}$| 
+| Model 2 | $x_{ij} = \mu + \underbrace{r_i + \overbrace{c_j}^{bias} + e_{ij}}_{\text{zufällig}}$  | 
+| Model 3 | $x_{ij} = \mu + \underbrace{r_i}_{\text{zufällig}} + \overbrace{c_j}^{\text{fixed}} + \underbrace{e_{ij}}_{\text{zufällig}}$ |
+
+: Übersicht über die Modelle {#tbl-ed-reliability-models-var}
+
+Die Unterschied zwischen den Bewertern wird dabei als **Bias** bezeichnet. D.h. die Tendenz eines Bewerters eher *zu hohe* bzw. eher *zu niedrige* Werte zu geben. Dies Unterschiede können entweder zufällig sein, wenn die Bewerter als Stichprobe aus einer *Population von Bewertern* angesehen werden, oder als feste Effekte, wenn nur die Unterschiede der beobachteten Bewerter von Bedeutung sind. Daraus resultieren unterschiedliche Arten der Berechnung für den ICC in Abhängigkeit vom gewählten Modell und ob der Einfluss der Streuung zwischen den Bewertern (fälschlich als agreement bezeichnet) oder ohne diesen (consistency) berechnet werden soll.
+
+| Modell | Modell 1 | Modell 2 | Modell 3 |
+|:--- | --- | --- | --- |
+| Konsistenz |$\rho_{1}=\frac{\sigma_r^2}{\sigma_r^2 + \sigma_{\epsilon}^2}$  | $\rho_{2C} = \frac{\sigma_r^2}{\sigma_r^2 + \sigma_e^2}$  | $\rho_{3C} = \frac{\sigma_r^2}{\sigma_r^2 + \sigma_e^2}$ |
+| Übereinstimmung |   | $\rho_{2A} = \frac{\sigma_r^2}{\sigma_r^2+\sigma_c^2 + \sigma_e^2}$  | $\rho_{3A} = \frac{\sigma_r^2}{\sigma_r^2 + \theta_c^2 + \sigma_e^2}$  |
+
+: Berechnung des ICC $\rho$ in Abhängigkeit vom gewählten Modell {#tbl-ed-reliab-icc-calc}
+
+Je nach Modellannahmen und intendierter Zielgröße ergeben sich somit unterschiedliche Berechnungsarten. Insbesondere sind die ICC $\rho$-Werte für die Berechnung der Konsistenz immer mindestens so groß wie diejenigen für die Übereinstimmung, da hier die Varianz $\sigma_r^2$ zwischen den Bewertern zusätzlich durch den Faktor $\sigma_c^2$ unter Modell 2 bzw. $\Theta_c^2$ unter Modell 3 geteilt wird. Für die Dokumentation ist es daher wichtig die Art des berechneten ICCs genau anzugeben bzw. wenn ICCs aus der Literatur interpretiert werden sollen ist die Kenntnis der Berechnungsart zwingend notwendig [@liljequist2019;@qin2019;@koo2016].
+
+Dazu sei noch einmal betont, dass der ICC ein Reliabilitätsmaß ist und somit von der **Streuung in der Stichprobe** abhängt und als *absolutes* Maß schwierig zu interpretieren ist [@mueller1994]. Die folgende Abbildung veranschaulicht diesen Zusammenhang noch einmal anhand einer einfachen Schematik (siehe @fig-ed-reliability-icc-change).
+
+```{r}
+#| label: fig-ed-reliability-icc-change
+#| fig-cap: "Veränderung der ICC-Werte für verschiedene Zusammenhängen zwischen Bewertung und für zwei verschiedene Bereiche."
+
+icc_tostr <- function(icc) {
+  paste(paste(icc$type, '=', round(icc$icc,3)), collapse=', ')
+}
+
+x_1 <- 1:5
+x_2 <- seq(1,10,2)
+
+df <- tibble(
+  x = c(rep(x_1, 3), rep(x_2, 3)),
+  y = c(x_1, x_1 + 3, 2*x_1, x_2, x_2+ 3, 2*x_2),
+  var = rep(c('x=1-5','x=1-9'), each=15),
+  type = factor(rep(rep(c('y=x','y=x+3','y=2x'), each=5), 2),
+                levels=c('y=x', 'y=x+3', 'y=2x'))
+)
+
+df_labs <- df |> 
+  group_by(var, type) |> 
+  summarize(label = icc_tostr(icc(cbind(x,y))))
+
+ggplot(df, aes(x,y)) + 
+  geom_point() +
+  geom_label(data = df_labs, aes(x=1, y=15, label = label), size=3, 
+             vjust=1, hjust=0) +
+  facet_grid(type ~ var) +
+  scale_x_continuous("X", breaks = 1:9) +
+  scale_y_continuous("Y", limits=c(0,15))
+```
+
+In @fig-ed-reliability-icc-change sind sechs verschiedene synthetische Datensätze abgebildet. Die Datensätz sind unterteilt nach zwei verschiedenen $X$ Mengen und nach drei unterschiedlichen Arten wie die $Y$ Werte sich von den $X$ Werten unterscheiden. Für beide $X$ Mengen ist der ICC unter allen drei Berechnungsmethoden (zwischen Modell 3 und Modell 2 wird hier auf Grund der gleichen Berechnung nicht unterschieden) einen Wert von $r = 1$ einnehmen. Wenn die $Y$ Werte gegen $X$ um eine konstante, im Beispiel $3$ verschoben sind, ist der Konsistenzwert immer noch $r = 1$, während der ICC(2,A) ungleich $1$ ist. Dabei besteht jedoch ein Abhängigkeit von der Streuung der $X$ Werte. Wenn die Streuung geringer ist (linke Spalte), dann resultiert ein geringerer ICC im Vergleich zu wenn die Streuung der $X$-Werte größer ist (rechte Spalte). Der gleiche Effekt ist in der untersten Zeile für $y = 2x$ zu beobachten, wobei ICC(2,C) nun auch $<1$ ist. Dies verdeutlicht nochmal, dass der ICC nicht nur eine Funktion der Streuung der Bewerter (Messinstrumete) sondern ebenfalls der Stichprobe ist.
+
+### Spearman-Brown prophecy formula
+
+Eine Möglichkeit die Reliabilität eines Test zu verbessern, besteht darin, nicht nur eine einzelne Messung zu nehmen, sondern über mehrer Messungen den Mittelwert zu bestimmen. Beispielweise könnte bei einem Pre-Post Design, anstatt nur jeweils eine einzelne Messung zu den beiden Zeitpunkten mehrere $K$ Messungen genommen werden. Im Sinne der Terminologie sind diese mehrere Wiederholungen der Messung. Dies führt unter, der Annahme das die Messfehler zufällig mit einem Mittelwert von $E[\epsilon_i] = 0]$ sind, dazu, dass der der gemittelte Messwert näher am wahren Wert $\tau_i$ liegt. Der ICC für die gemittelte Testung $\rho^*$ hängt mit dem ICC für eine einzelne Testung $\rho$ über die folgende Formel die nach Spearman und Brown benannt ist:
+
+\begin{equation}
+\rho^* = \frac{K \cdot \rho}{1 + (K-1) \cdot \rho}
+\end{equation}
+
+Über diesen Zusammenhang kann einfach abgeschätzt werden zu welcher Verbesserung eine Erhöhung der Messwiederholungen führen würde [@baumgartner1989]. Die Anwendung der Spearman-Brown prophecy Formel erlaubt somit beispielsweise eine Abschätzung über die Anzahl der notwendigen Trials zu treffen bei der Erstellung eines Untersuchungsdesigns. In @fig-ed-reliability-sb-formula ist der Zusammenhang von $\rho^*$ für verschiedene $\rho$ und den Zusammenhang mit der Wiederholungszahl abgetragen. 
+
+```{r}
+#| label: fig-ed-reliability-sb-formula
+#| fig-cap: "Einfluss der Wiederholungen auf die Reliabilität für verschiedene $\\rho_{xx'}$"
+
+foo <- function(K,r) { K*r/(1+((K-1)*r)) }
+K_r <- tidyr::expand_grid(K = 1:20, r = seq(0.1, 0.9, 0.1)) |> 
+  dplyr::mutate(r_star = foo(K,r), r_f = ordered(r))
+ggplot(K_r, aes(K,r_star, group=r_f)) +
+  geom_line() +
+  geom_label(data = K_r |> dplyr::filter(K == 1), aes(label = r), size=2) +
+  scale_x_continuous('Anzahl der Wiederholungen K', breaks = 1:20) +
+  scale_y_continuous(expression(rho[xx*minute]^"*")) +
+  scale_color_discrete(expression(rho[xx*minute])) 
+```
+
+In @fig-ed-reliability-sb-formula ist zu erkennen, dass der Zuwachs der Reliabilität ab einer Wiederholungszahl von $K > 7$ für die meisten Ausgangsniveau $\rho$ nur noch sehr gering ist. Insbesondere wenn die Ausgangsreliabilität schlecht ist, dann ist selbst mit einer hohen Anzahl von Wiederholungen kein exzellentes Niveau zu erreichen.
+
+Ursprünglich ist die SB-Formel entwickelt worden um die Anzahl von Items in einem Fragebogen abzuschätzen die das gleiche Messkonstrukt abbilden, daher ist der Übertrag auf alle möglichen Kontexte in den Sportwissenschaft nicht immer gegeben. Beispielsweise scheint es angebracht, bei Performance Messungen wie Sprüngen und Shuttle runs das Ergebnis der SB-Formel eher als eine obere Grenze anzusehen [@baumgartner1968].
+
+
+@vet2017 und @warrens2017 haben einen interessanten Zusammenhang zwischen ICC und der Spearman-Brown-Formula gezeigt, die in zwei unterschiedlichen Disziplinen entwickelt wurden.
+
+\begin{equation*}
+\rho^*(K) = \frac{\sigma_{\tau}^2}{\sigma_{\tau}^2 + (\sigma_1^2 + \ldots + \sigma_q^2)/K}
+\end{equation*}
+
+D.h. eine direkte Umformung des ICCs in den Reliabilitätswerte, die zumindest für Modell 1 und Modell 2 zutrifft.
+
+### Intraclass Correlation in `R`
+
+In `R` kann der ICC relativ komfortable über das Package `psych` berechnet werden, welches die Funktion `ICC()` zur Verfügung stellt.
+
+```{r}
+#| echo: true
+
+icc_hat <- psych::ICC(lil[,-1])
+icc_hat
+```
+
+## Messfehler (Agreement)
+
+Im Folgenden werden verschiedene Maße für den Messfehler vorgestellt. Leider gibt es hier auch überschneidende Terminologie in der Literatur, die zum Teil auch in unterschiedlichen Berechnungsmethoden resultiert.
+
+### Standard Error of Measurement 
+
+In Abschnitt zur Reliabilität wurde anhand des KTT der Messfehler $\epsilon_i$ eingeführt. Die Varianz der Messfehler $\sigma^2(\epsilon_i)$ die zur Berechnung der Reliabilität verwendet wird, charakterisiert auch schon alleine für sich genommen auch schon ein wichtiges Merkmal des Messinstruments. Die Wurzel dieser Varianz wir als der Standardfehler des Messwerts (SEM) bezeichnet. Der SEM ist ein Maß dafür, wie stark die Ergebnisse wiederholter Messungen voneinander abweichen. Sei zum Beispiel der Sprunghöhe einer Athletin 20-mal hintereinander gemessen worden, dann schätzt die Standardabweichung dieser Messwerte den SEM ab [@patterson1955].
+
+\begin{equation*}
+SEM = \sqrt{\sigma^2(\epsilon_i)}
+\end{equation*}
+
+Der Vorteil des SEM besteht darin, dass der SEM in der gleichen Einheiten wie die Messvariable angegeben wird [@denegar1993]. Dies ermöglicht eine direkte Abschätzung der Größe des Messfehlers. Allerdings muss bemerkt werden, dass der SEM, trotzdem er einfach in der Berechnung ist, inhaltlich zu relativ viel Verwirrung in der Literatur geführt hat [@dudek1979;@payne1989;@mcmanus2012]. So herrscht beispielsweise bei der Berechnung des *richtigen* SEM keine Einigkeit in der Literatur, sondern es existieren mehrere unterschiedliche Berechnungsarten denen leider subtile Unterschiede zugrunde liegen. Die Unterschiede hängen dabei davon ab, welcher *Messfehler* bestimmt werden soll [@warneke2025]. Grundsätzlich können, ähnliche der Unterscheidung beim ICC in Agreement und Consistency folgend, zwei Arten unterschieden werden nach denen der SEM berechnet wird. Wie beim ICCs je nachdem ob die systematischen Unterschiede zwischen Ratern mit einbezogen oder vernachlässigt werden sollen.
+
+\begin{align*}
+SEM_{\text{agreement}} &= \sqrt{\sigma^2(\epsilon_i) + \sigma_r^2} \\
+SEM_{\text{consistency}} &= \sqrt{\sigma^2(\epsilon_i)} \\
+\end{align*}
+
+Eine alternative Methode zur Berechnung des SEM beruht auf der Standardabweichung der Differenzen zwischen wiederholten Messungen. D.h. wenn für jedes Messobjekt zwei Messungen vorliegen, $y_{i1}$ und $y_{i2}$, dann können die Differenzen $d_i = y_{i1} - y_{i2}$ berechnet werden und für diese Werte wird dann die Standardabweichung berechnet und noch mit einem Korrekturfaktor multipliziert. Der erhaltene Wert ist der $SEM_{\text{consistency}}$ Wert.
+
+\begin{equation*}
+SEM_{\text{consistency}} = \frac{SD_{\text{difference}}}{\sqrt{2}}
+\end{equation*}
+
+Eine weitere Möglichkeit den SEM zu berechnen beruht auf der algebraischen Umformung der Gleichung für die Reliabilität. Die Idee ist, anhand von Angaben in der Literatur den Wert für den ICC zu bestimmen.
+
+\begin{equation}
+SEM = \sigma_Y \sqrt{1 - \rho} 
+\label{eq-ed-SEM-ICC}
+\end{equation}
+
+In dieser Formel steht $\sigma_Y$ für die Standardabweichung der Stichprobenwerte anhand derer die Reliabilität bestimmt wurde. Unglücklicherweise ist diese Formel nicht korrekt, wenn der SEM-Wert für eine eigene Stichprobenmessung berechnet werden soll und dazu Werte aus der Literatur für den ICC übernommen werden. Wie bereits diskutiert, ist die Reliabilität immer an eine bestimmte Population gekoppelt. Wenn nun die eigene Population nicht der ursprünglichen Population anhand derer der ICC abgeschätzt wurde entspricht, dann kommt es zu einer Fehlabschätzung des SEM. @devet2011 raten daher von der Verwendung dieser Formel in solchen Fällen ab [p.112, vgl. auch @harvill1991].
+
+Die Reliabilität ist in Formel\eqref{eq-ed-reliability}, zusammen mit der Definition von $\sigma^2_Y$ in Formel \eqref{eq-y-tau-variance} folgt:
+
+\begin{align*}
+SEM &= \sigma_Y\sqrt{1-\rho} \\
+\Leftrightarrow SEM^2 &= \sigma^2_Y(1-\rho) \\
+&= \sigma^2_{Y}\left(1 - \frac{\sigma_{\tau}^2}{\sigma_{\tau}^2 + \sigma_{\epsilon}^2}\right) \\
+&= (\sigma_{\tau}^2 + \sigma_{\epsilon}^2)\left(1 - \frac{\sigma_{\tau}^2}{\sigma_{\tau}^2 + \sigma_{\epsilon}^2}\right) \\
+&= \sigma_{\tau}^2 + \sigma_{\epsilon}^2 - (\sigma_{\tau}^2 + \sigma_{\epsilon}^2)\frac{\sigma_{\tau}^2}{\sigma_{\tau}^2 + \sigma_{\epsilon}^2} \\
+&= \sigma_{\tau}^2 + \sigma_{\epsilon}^2 - \sigma_{\tau}^2 \\
+&= \sigma^2_{\epsilon} \\
+\Leftrightarrow SEM &= \sigma_{\epsilon}
+\end{align*}
+
+Daher ist unter den Annahmen der klassischen Testtheorie der Standardfehler tatsächlich ein von der Population unabhängig Maß [vgl. auch @tighe2010]. Dazu muss allerdings die Population anhand derer die Varianz der Werte $\sigma_Y^2$ der Population des Reliabilitätskoeffizienten $\rho$ entsprechen.
+
+Eine weitere hilfreiche Einsicht die aus Formel\eqref{eq-ed-SEM-ICC} folgt, ergibt sich für einen perfekten Test mit einer Reliabilität von $\rho = 1$. In diesem Fall folgt:
+
+\begin{equation*}
+SEM = \sigma_Y^2\sqrt{1-\rho} = \sigma_Y^2\sqrt{1-1} = 0
+\end{equation*}
+
+D.h. ein perfekter Test hätte keinen Standardmessfehler [@harvill1991]. Der Standardmessfehler kann dahingehend interpretiert werden, dass er den *nichtreliablen Anteil der Merkmalsvarianz* angibt [@buhner2011, S.193].
+
+::: {.callout-caution}
+In der Literatur sind immer wieder fehlerhafte Zusammenhängen zwischen dem Konfidenzintervall für die wahren Werte $\tau$ und dem SEM zu finden. Der SEM gibt ist Maß für die tatsächliche Streuung der Werte. D.h. wenn der wahre Wert $\tau_i$ bekannt wäre, dann liegen $68\%$ der Werte $\pm$SEM um diesen wahren Wert $\tau_i$. $tau_i$ ist aber nicht bekannt [vgl. @mcmanus2012] . Hier wird im weiteren nicht näher darauf eingegangen, da noch zusätzliche Hintergrundinformation dazu gezogen werden müsste und dass zu weit führen würde [siehe auch @dudek1979;@payne1989].
+:::
+
+### Variationskoeffizient 
+
+Ein weiteres oft verwendet Maß um eine Aussage über den Messfehler zu erhalten ist der Variationskoeffizient (CV, engl. coefficient of variation). Formal berechnet sich der CV als die Standardabweichung geteilt durch den Mittelwert der Stichprobe.
+
+\begin{equation*}
+CV = \frac{\sigma_Y}{\bar{Y}}
+\end{equation*}
+
+Der CV ist von besonderem Interesse, wenn die Daten Heteroskedastizität aufweisen. D.h. die Streuung der Daten ist mit der Größenordnung der Werte korreliert. Etwas, dass nach dem klassischen Testmodell, ausgeschlossen wird. Ein Beispiel wäre wenn die die Streuung der Wurfweite mit der Wurfweite zunimmt (siehe @fig-ed-reliability-heterosce für ein übertriebenes Beispiel).
+
+
+```{r}
+#| fig-cap: Synthetisches Beispiel für Heteroskedastizität bei Wurfweiten
+#| label: fig-ed-reliability-heterosce
+
+set.seed(55)
+n <- 3
+n_trial <- 12 
+x_true <- round(sort(runif(n, 10, 25)),1)
+id_s <- paste0('P', 1:n)
+df <- tibble(
+  id = rep(id_s, each=n_trial),
+  x = rep(x_true, each=n_trial) + rnorm(n*n_trial,0,.5),
+  y = x + rnorm(n*n_trial, 0, rep((x_true-9), each=n_trial))
+)
+ggplot(df, aes(x,y, color=id)) +
+  geom_point() +
+  scale_x_continuous(expression(paste('Mittlere Wurfweite ', bar(w), ' [m]')), 
+                     breaks=x_true) +
+  scale_y_continuous("Wurfweite[m]", limits = c(0, 40)) +
+  scale_color_discrete("Proband")
+```
+
+Durch die Normierung der Streuung anhand des Mittelwerts der jeweiligen Werte ist die Streuung vergleichbar. Da die Streuung und der Mittelwert die gleichen Einheiten haben, handelt es sich bei dem CV um eine Dimensionslose Größe. @bland1996cv zeigen, dass der CV als eine logarithmische Transformation der Daten interpretiert werden kann, die zu einer Varianzstabilisierung führt.
+
+### Limits of Agreement - Bland-Altman Plots
+
+Eine weitere Methode den Messfehler zu beurteilen sind die sogenannten Bland-Altman-Plots [@bland1986;@bland1999]. Ein Bland-Altman-Plot ist ein grafisches Werkzeug zur Bewertung der Übereinstimmung zwischen zwei verschiedenen Messmethoden, die dasselbe quantitative Merkmal erfassen. Der Ansatz beruht darauf, systematische Unterschiede zwischen Methoden aufzudecken und die Austauschbarkeit der Verfahren zu beurteilen. Dabei wird für jedes Messpaar die Differenz $d$ zwischen den beiden Methoden berechnet und gegen deren Mittelwert abgetragen. Diese Darstellung ermöglicht es, sowohl den mittleren Unterschied (engl. *Bias*) als auch die Streuung der Differenzen visuell zu beurteilen. Der Bland-Altman Plot stellt dabei ein annerkantes Verfahren das nicht auf der Berechnung einer Signifikanz bzw. vorgegebenen Schwellenwerten beruht.
+
+Der Bland-Altman Plot erlaubt die Darstellung sogenannter **Limits of Agreement** (LOA) \index{Limits of agreement}. Formal als der Mittelwert der Differenzen $\pm 1.96$-fache Standardabweichung der Differenzen ($s_d$). Dabei handelt es sich $95\%$ Limits of agreement ($1.96$ nach der Standardnormalverteilung). Die LOAs definieren den Bereich, innerhalb dessen die meisten Unterschiede zwischen den Messungen der beiden Methoden liegen werden und sind nicht mit einem Konfidenzintervall zu verwechseln [@bland1999,p.136]. Die LOAs sind eher im Sinne eines Referenzintervalls zu interpretieren [@atkinson2000]
+
+\begin{equation}
+\text{LOA} = \bar{d} \pm 1.96 \cdot s_d
+\end{equation}
+
+Dadurch wird ein Bereich ausgezeichnet, in dem etwa 95 % der Differenzen erwartet werden. Schmale LOAs deutet daher auf eine gute Übereinstimmung hin, während breite LOAs oder systematische Trends (z.B. zunehmende Differenzen bei höheren Werten) einen Hinweise auf mögliche methodische Probleme liefern können. In der Medizin, wo Bland-Altman-Plots weit verbreitet sind, ist diese Art der Analyse Standard, wenn ein neues Messverfahren mit einem etablierten Standard verglichen werden soll. Anhand der Plots wird entschieden, ob beide Methoden im praktischen Einsatz gegeneinander austauschbar sind.
+
+In @fig-ed-reliability-ba-01 ist der Bland-Altman für die EMG-Werte aus @tbl-ed-rel-emg abgebildet.
+
+```{r}
+#| fig-cap: "Bland-Altman Plot der EMG-Frequenzdaten (gestrichelte Linie: Bias, gepunkte Linien: Limits of Agreement)."
+#| label: fig-ed-reliability-ba-01
+
+lil <- lil |> dplyr::mutate(d = Day_1 - Day_2, m = (Day_1+Day_2)/2)
+lil_loa <- dplyr::summarize(lil, d_hat = mean(d), s_d = sd(d), n = dplyr::n(),
+                            loa_u = d_hat + 1.96 * s_d,
+                            loa_l = d_hat - 1.96 * s_d)
+p_loa <- ggplot(lil, aes(m,d)) + 
+  geom_point() +
+  geom_hline(yintercept = 0, color = 'gray') +
+  geom_hline(yintercept = lil_loa$d_hat, linetype = 'dashed') + 
+  geom_hline(yintercept = c(lil_loa$loa_u, lil_loa$loa_l),
+            linetype = 'dotted') +
+  labs(x = 'Mittlere EMG Frequenz\n(Day 1 + Day 2)/2',
+       y = 'Differenz\nDay 1 - Day 2\nder EMG Frequenzen') 
+print(p_loa)
+```
+
+In @fig-ed-reliability-ba-01 ist für den Bias (Abstand Nullline zur gestrichtelten Linie) nur eine geringe Abweichung zu beobachten. Für die Limits of agreements ist ein Bereich von etwa $[-13,12]$ ausgezeichnet. Ob diese zu erwartenden Schwankungen nun problematisch sind, hängt davon ab, welche Größe von Unterschieden als bedeutsam angesehen werden können. Da beide Werte bias und Limits of agreements nur Schätzer der *wahren* Werte sind, sind sie wie immer mit Unsicherheiten behaftet. Daher sollten auch immer Konfidenzintervalle für die Schätzer berechnet werden. Dafür können, unter der Annahme, dass die Differenzen normalverteilt sind, die folgenden Formeln verwendet werden [@bland1999].
+
+\begin{align*}
+CI95\%_{\text{bias}} &= \bar{d} \pm 1.96\frac{s_d}{\sqrt{n}} \\
+\text{LOA} &= \bar{d}\pm 1.96\ s_d \\
+Var(\bar{d}\pm1.96\ s_d) &= \left(\frac{1}{n}+\frac{1.96^2}{2(n-1)}\right)s_d^2\approx1.71^2\frac{s_d^2}{n} \\
+CI95\%_{\text{loa}} &= \text{LOA}\pm q_{t,\alpha,df=n-1}\times 1.71\frac{s_d}{\sqrt{n}}
+\end{align*}
+
+Für das Beispiel der EMG-Werte resultiert dies in der folgenden Darstellung (siehe @fig-ed-reliability-ba-02)
+
+```{r}
+#| fig-cap: "Bland-Altman Plot mit Konfidenzintervallen (bias:rot, loa:grün)"
+#| label: fig-ed-reliability-ba-02
+
+lil_loa <- lil_loa |> dplyr::mutate(bias_c = 1.96*s_d/sqrt(n),
+                         loa_c = qt(0.975, n-1)*1.71*s_d/sqrt(n))
+with(lil_loa, 
+p_loa + 
+  geom_ribbon(aes(ymin=d_hat - bias_c, ymax=d_hat + bias_c),
+              alpha=0.1, col = 'red', fill='red') +
+  geom_ribbon(aes(ymin=loa_u - loa_c, ymax=loa_u + loa_c),
+              alpha=0.1, col = 'green', fill='green') +
+  geom_ribbon(aes(ymin=loa_l - loa_c, ymax=loa_l + loa_c),
+              alpha=0.1, col = 'green', fill='green'))
+```
+
+Bei der Bewertung des Limit of Agreement gibt es keine festen Schwellenwerte, sondern, da die Werte abhängig von den verwendeten Einheiten sind erfolgt eine Abschätzung anhand der *relevanten* Fehlerschwellen. Da zwei Messungen praktisch nie zu den genau gleichen Werten führen werden ist daher die Bewertung immer abhängig von der Domäne und der intendierten Anwendung. Ein gegebenes LOAs kann in der einen Anwendungen vollkommen ausreichen sein, während es für eine andere Anwendung, bei der eine höhere Präzision notwendig ist, nicht anwendbar ist. Eine der Annahmen bei der Berechnung der LOAs ist, dass die Differenzen unabhängig von den Mittelwerten sind, d.h. es herrscht Homoskedastizität. Sollte dies nicht der Fall sein, dann sind in @bland1999 entsprechende Anpassungen zu finden. Weiterhin können Probleme entstehen, wenn die Varianzen der beiden Messungen sehr unterschiedlich sind. In diesem Fall kann beispielsweise durch wiederholte Messungen (repetitions) die Stabilität der Streuung verbessert werden [@mansournia2021].
+
+In der sportwissenschaftlichen Literatur besteht eine zum Teil etwas verwirrende Diskussionen darüber, ob LOAs tatsächlich anwendbar sind [siehe @hopkins2000;@atkinson2000;@warneke2025] bei der unglücklicherweise zum Teil auf falsche Aussagen gemacht werden. Eine gute Zusammenfassung und Antwort ist in @mansournia2021 zu finden.
+
+### Fehlerschwellen 
+
+Bei der Interpretation der Messfehler, sei es nach SEM, CV oder LOA ist immer eine Einordnung der Fehlergröße im Bezug auf die gewünschte Anwendung zu treffen. D.h. es werden bestimmte Fehlerschwellen definiert bei deren Überschreiten ein Messinstrument als zu unpräzise interpretiert wird. Zwei wichtige Konzepte in diesem Zusammenhang sind die Begrifflichkeiten **analytical goal** \index{analytical goal} und **smallest worthwhile effect** (SWE) \index{smallest worthwhile effect}. Das analytical goal definiert, welche Präzision ein Messverfahren erreichen muss, um als ausreichend zuverlässig für den praktischen Einsatz zu gelten. Die Größe orientieren sich an physiologisch relevanten Veränderungen oder klinischen Entscheidungsgrenzen. Der smallest worthwhile effect, auch Minimally Clinical Important Change, dagegen beschreibt die kleinste Veränderung eines Messwertes, die als bedeutsam oder relevant angesehen wird – sei es im Hinblick auf eine Leistungsverbesserung oder eine klinische Verbesserung. Der SWE beruht dabei auf einer Abwägung der Veränderung der Messgröße, der benötigten Ressourcen, der Risiken und der Bewertung durch den Patienten [vgl. @ferreira2012]. Der SWE stammt vor allem aus dem klinischen Bereich.
+
+Liegt der Messfehler eines Verfahrens über der SWE, kann eine beobachtete Veränderung nicht sicher als real (Zufallsprodukt) oder bedeutsam interpretiert werden. Das  analytical goals ist somit eher als eine Eigenschaft des Messinstruments zu verstehen, während SWE als eine praktisch relevante Größe interpretiert wird. Daher werden in vielen Fällen diese beiden Größen unterschiedlich voneinander sein. Weiterhin ist der SWE auch keine Konstante sondern verändert sich mit der untersuchten Population. Beispielsweise wäre eine Intervention die sehr viele Ressourcen benötigt aber die Mortalität in einer Population mit Krebspatientinnen anders zu beurteilen als wenn es um gesunde Probandinnen geht.
+
+In @fig-ed-reliability-swe ist ein hypothetisches Beispiel für das Zusammenspiel von analytical goal und SWE exemplarisch dargestellt.
+
+```{r}
+#| fig-cap: "Pre-Pre-Post Design um Limits of Agreement zu bestimmen."
+#| label: fig-ed-reliability-swe
+
+{
+s_1 <- 123
+set.seed(s_1)
+n <- 30
+mu_s <- c(10, 10, 12)
+R <- matrix(c(1,0.5,0.5,0.5,1,0.5,0.5,0.5,1), nr=3)
+S <- diag(rep(0.5,3))
+sigma <- S %*% R %*% S
+y_i <- MASS::mvrnorm(n, mu_s, sigma)
+sigma[3,1] <- sigma[1,3] <- 8;
+dat <- tibble::tibble(
+  time = rep(1:3, each=n),
+  y = c(y_i[,1], y_i[,2], y_i[,3]),
+  id = rep(paste('S',1:n), 3)
+) |> dplyr::arrange(id)
+
+loa_dat <- dat |> dplyr::filter(time != 3) |> dplyr::group_by(id) |> 
+  dplyr::summarize(d_i = diff(y)) |> 
+  dplyr::summarize(s_d = sd(d_i), d_hat = mean(d_i))
+y_hat_pre_1 <- dat |> dplyr::filter(time == 1) |> dplyr::summarize(m = mean(y))
+loa_l <- y_hat_pre_1$m - 1.96 * loa_dat$s_d
+loa_u <- y_hat_pre_1$m + 1.96 * loa_dat$s_d
+loa_tibl <- tibble::tibble(time = 2:3,
+                           ymin = c(loa_l, loa_l),
+                           ymax = c(loa_u, loa_u),
+                           y = 0)
+pos <- position_jitter(seed = s_1, width=.1)
+ggplot(dat, aes(time, y)) +
+  geom_boxplot(aes(group=time)) +
+  geom_line(data = tibble(time = c(1.9,3.1,1.9,3.1), y = c(11,11,9,9), group=c(1,1,2,2)),
+            aes(group=group), color = 'green', linewidth=2) +
+  geom_ribbon(data = loa_tibl, aes(ymin = ymin, ymax = ymax),
+              alpha = 0.1, col = 'red', fill = 'red') +
+  geom_point(aes(group=id), position = pos) +
+  geom_line(aes(group=id), position=pos, linetype='dotted') + 
+  scale_x_continuous('Zeit', breaks=1:3, label=c('Pre_0','Pre','Post')) +
+  scale_y_continuous('Abhängige Variable') 
+}
+```
+
+Es wurden drei Messzeitpunkte durchgeführt. Dabei dienen die ersten beiden Messzeitpunkte dazu die LOA zu bestimmen. Anhand der Literatur wurde eine Veränderung um zwei Einheit als relevant ermittelt. Daher gilt $\text{SWE}=2$ welcher anhand der grünen Balken in der Grafik eingezeichnet ist. Dadurch wird für die verwendet Messmethodik ein analytical goal von zwei Einheiten angegeben. Durch die Berechnung der LOA über die ersten beiden Messungen kann nun überprüft werden, ob die gewählte Methodik eine ausreichende Präzision hat um einen Unterschied in der Größenordnung des SWE aufzulösen. Wie in der Grafik zu sehen ist, sind die LOA innerhalb des SWE. D.h. die Messmethodik ist ausreichend präzise die gewünschte Veränderung zu identifizieren. Im Beispiel ist der Unterschied von Pre zu Post sogar deutlich außerhalb dieser Minimalanforderungen und es kann von einem relevanten Unterschied gesprochen werden. Ein ähnlicher Ansatz kann über den SEM erreicht werden. Im klinischen Bereich wird die kleinste unterscheidbare Größe auch als **minimum detectable change** bezeichnet [@turner2010]. 
+
+Eine weiter im klinischen Kontext verwendete Zielgröße ist der sogenannte **Minimal important change (MIC)**, d.h. die kleinste, wichtige Veränderung einer Zielgröße. In der Medizin wird der MIC als die kleinste Veränderung definiert, die von Patienten als vorteilhaft angesehen wird [@terwee2009]. Der MIC wird vor allem im Zusammenhang mit Fragebögen verwendet die Patienten vor und nach einer Interventionsphase ausfüllen. Der MIC wird dann als der Unterschied zwischen denjenigen Personen die eine kleine Verbesserung bemerken im Vergleich zu Personen die keine Verbesserung dokumentieren. @terwee2009 zeigen, dass in diesem Fall der MIC viermal größer als der SEM sein muss, damit MIC vom Messfehler unterschieden werden kann. 
+
+Der MIC ist dabei eine sogenannte **anchor-based** Schwelle [@norman2001]. Bei anchor-based Schwellen wird eine unabhängige Messmethode, ein externes Kriterium, verwendet um zu bestimmen was eine relevante Veränderung darstellt [@lydick1993;@terwee2021]. Im Falle des MIC ist dies ein externer Fragebogen der die Patienten zu ihrem Wohlbefinden befragt. Die anchor-based Schwellen sind dabei von den **distribution-based** Schwellen zu unterscheiden. Bei den distribution-based Schwellen wird der Unterschied in ein Verhältnis zu der Streuung der Daten, wie zum Beispiel bei Cohen's D [@norman2001]. Schwellen basierend auf dem SEM bzw. LOA sind daher den distribution-based Schwellen zuzuordnen. In den meisten Fällen sind anchor-based Methoden den distribution-based Methoden vorzuziehen, da ein vorliegender Unterschied basierend auf der Verteilung für sich genommen keine Aussage über die Relevanz der Veränderung erlaubt [@turner2010]. Allerdings zeigte @wyrwich1999 das zumindest für den Bereich von Herzpatienten ein Schwellenwert von $1\times$SEM ähnlich Einschätzungen liefert wie eine expertenbasierte Schwelle [vgl. auch @wyrwich1999b]. Insgesamt muss zu den verschiedenen Begrifflichkeiten aus dem klinischen Bereich wie MIC und MDC die Anwendungen vor allem Bereich der psychometrischen Testungen entwickelt wurden und daher nicht klar ist, wie weit dies für den sportwissenschaftlichen Bereich der Leistungserfassung ebenfalls zutrifft. 
+
+## Zum Nachlesen 
+
+Die Themen Reliabiltät und Messfehler sind hier sehr selektiv beschrieben worden, weiteführende Diskussion sind in @atkinson1998 und @baumgartner1989 zu finden. Zum Limits of agreement Ansatz sind @bland1999 und @atkinson2000 gute Quellen, während analytical goals in @brown2007, @atkinson1998 und @fraser1990 besprochen werden. Ein gute Quelle zu SEM @denegar1993 und @devet2011.
+

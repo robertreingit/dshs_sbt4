@@ -1,0 +1,14 @@
+# Weitere Untersuchungsdesigns 
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+source('_common.R')
+```
+
+## Blocked Designs
+
+## Split-Plot Designs
+
+## Cross-Over Designs

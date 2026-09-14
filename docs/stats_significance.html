@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>2&nbsp; Statistische Signifikanz – Skriptum - Fortgeschrittene Statistik</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./stats_estimation.html" rel="next">
+<link href="./stats_basics.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-631496449bf32ff9b0bb69a6bfd9195d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Keine Treffer",
+    "search-matching-documents-text": "Treffer",
+    "search-copy-link-title": "Link in die Suche kopieren",
+    "search-hide-matches-text": "Zusätzliche Treffer verbergen",
+    "search-more-match-text": "weitere Treffer in diesem Dokument",
+    "search-more-matches-text": "weitere Treffer in diesem Dokument",
+    "search-clear-button-title": "Zurücksetzen",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Abbrechen",
+    "search-submit-button-title": "Abschicken",
+    "search-label": "Suchen"
+  }
+}</script>
+<script>
+
+  MathJax = {
+
+    tex: {
+
+      tags: 'ams'  // should be 'ams', 'none', or 'all'
+
+    }
+
+  };
+
+</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./stats_title.html">Statistik - Die Grundlagen</a></li><li class="breadcrumb-item"><a href="./stats_significance.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Statistische Signifikanz</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Suchen" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Skriptum - Fortgeschrittene Statistik</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Suchen"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vorwort</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./stats_title.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Statistik - Die Grundlagen</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./stats_basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Eine kleine Welt der Unsicherheit</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./stats_significance.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Statistische Signifikanz</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./stats_estimation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Hypothesentests</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./slm_title.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Das einfache Regressionmodell</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slm_basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Grundlagen und Inferenz</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slm_model_fit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modellfit</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./mlm_title.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Das Lineare Modell und Erweiterungen</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mlm_basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Multiple Lineare Regression</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mlm_logistic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Logistische Regression</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mlm_lmm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Gemischte Lineare Modelle</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./ed_title.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Experimentelles Design</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ed_basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Einführung</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ed_causal_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Kausale Inferenz</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ed_reliability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Messfehler und Reliabilität</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ed_factorial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Faktorielle Untersuchungsdesigns</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ed_misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Weitere Untersuchungsdesigns</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Literatur</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Inhaltsverzeichnis</h2>
+   
+  <ul>
+  <li><a href="#wie-treffe-ich-eine-entscheidung" id="toc-wie-treffe-ich-eine-entscheidung" class="nav-link active" data-scroll-target="#wie-treffe-ich-eine-entscheidung"><span class="header-section-number">2.1</span> Wie treffe ich eine Entscheidung</a></li>
+  <li><a href="#lage--und-skalenparameter" id="toc-lage--und-skalenparameter" class="nav-link" data-scroll-target="#lage--und-skalenparameter"><span class="header-section-number">2.2</span> Lage- und Skalenparameter</a>
+  <ul class="collapse">
+  <li><a href="#mittelwert-mu-der-population" id="toc-mittelwert-mu-der-population" class="nav-link" data-scroll-target="#mittelwert-mu-der-population"><span class="header-section-number">2.2.1</span> Mittelwert <span class="math inline">\(\mu\)</span> der Population</a></li>
+  <li><a href="#standardabweichung-sigma-der-population" id="toc-standardabweichung-sigma-der-population" class="nav-link" data-scroll-target="#standardabweichung-sigma-der-population"><span class="header-section-number">2.2.2</span> Standardabweichung <span class="math inline">\(\sigma\)</span> der Population</a></li>
+  <li><a href="#mittelwert-und-standardabweichung-in-r" id="toc-mittelwert-und-standardabweichung-in-r" class="nav-link" data-scroll-target="#mittelwert-und-standardabweichung-in-r"><span class="header-section-number">2.2.3</span> Mittelwert und Standardabweichung in <code>R</code></a></li>
+  </ul></li>
+  <li><a href="#entscheidungen-und-mu-und-sigma" id="toc-entscheidungen-und-mu-und-sigma" class="nav-link" data-scroll-target="#entscheidungen-und-mu-und-sigma"><span class="header-section-number">2.3</span> Entscheidungen und <span class="math inline">\(\mu\)</span> und <span class="math inline">\(\sigma\)</span></a></li>
+  <li><a href="#welche-verteilung-setzen-wir-an" id="toc-welche-verteilung-setzen-wir-an" class="nav-link" data-scroll-target="#welche-verteilung-setzen-wir-an"><span class="header-section-number">2.4</span> Welche Verteilung setzen wir an?</a></li>
+  <li><a href="#statistisch-signifikanter-wert" id="toc-statistisch-signifikanter-wert" class="nav-link" data-scroll-target="#statistisch-signifikanter-wert"><span class="header-section-number">2.5</span> Statistisch <em>signifikanter</em> Wert</a></li>
+  <li><a href="#der-p-wert" id="toc-der-p-wert" class="nav-link" data-scroll-target="#der-p-wert"><span class="header-section-number">2.6</span> Der p-Wert</a></li>
+  <li><a href="#things-to-know" id="toc-things-to-know" class="nav-link" data-scroll-target="#things-to-know"><span class="header-section-number">2.7</span> Things to know</a></li>
+  <li><a href="#weitere-literatur" id="toc-weitere-literatur" class="nav-link" data-scroll-target="#weitere-literatur"><span class="header-section-number">2.8</span> Weitere Literatur</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./stats_title.html">Statistik - Die Grundlagen</a></li><li class="breadcrumb-item"><a href="./stats_significance.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Statistische Signifikanz</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Statistische Signifikanz</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Im vorherigen Kapitel wurde gezeigt, wie Unsicherheit ein zentrales Problem bei der Interpretation von experimentellen Ergebnissen bzw. Daten im Allgemeinen ist. Im folgenden Abschnitt wird nun ein Prozess hergeleitet, der es ermöglicht, vor dem Hintergrund dieser Unsicherheit rationale Entscheidung zu treffen.</p>
+<section id="wie-treffe-ich-eine-entscheidung" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="wie-treffe-ich-eine-entscheidung"><span class="header-section-number">2.1</span> Wie treffe ich eine Entscheidung</h2>
+<p>In dem kleinen Weltbeispiel bestand die komfortable Position, dass bekannt war , was passiert bzw. welcher Prozess die beobachteten Datenpunkt erzeugt hat. Das heißt, der <strong>datengenerierenden Prozess</strong> war bekannt.</p>
+<div id="def-dgp" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2.1 (Datengenerierender Prozess (DGP))</strong></span> Der Prozess in der realen Welt, der die beobachteten Daten und damit die daraus folgende Statistik erzeugt, wird als datengenerierender Prozess bezeichnet.</p>
+</div>
+<p>Letztendlich zielt jedwede Untersuchung darauf ab, Informationen über den DGP zu erhalten. Diese Information erlaubt es, Aussagen über die reale Welt zu treffen und eben Prozesse zu verstehen bzw. Voraussagen zu treffen. Dabei muss allerdings beachtet werden, dass dieser Prozess in den allermeisten Fällen eine starke Vereinfachung des tatsächlichen Prozesses in der Realität darstellt. Meistens sind die Abläufe in der Realität zu komplex, um sie in ihrer Gänze abzubilden. Somit wird fast immer nur ein vereinfachtes Modell verwendet.</p>
+<p>Wenn nun ein Experiment durchgeführt wird, wird normalerweise nur eine einzige Statistik beobachtet. Im bisherigen Beispiel war dies der berechnete Unterschied <span class="math inline">\(D\)</span> in der Kraftfähigkeit nach der Intervention zwischen der Kontroll- und der Interventionsgruppe.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sts-sig-result-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sts-sig-result-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="stats_significance_files/figure-html/fig-sts-sig-result-1-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sts-sig-result-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.1: Beobachteter Unterschied nach der Durchführung unseres Experiments
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In <a href="#fig-sts-sig-result-1" class="quarto-xref">Abbildung&nbsp;<span>2.1</span></a> ist der beobachtete Wert <span class="math inline">\(d = 50\)</span> abgetragen. Es ist von vorneherein bekannt, dass dieser Wert beeinflusst ist durch die zufällige Wahl der Stichprobe und die daran geknüpfte Streuung der Werte in der Population. Wie kann nun überhaupt eine Aussage darüber getroffen werden, ob das Krafttraining effektiv ist? Ob es nur einen sehr kleinen Effekt zeigt? Oder ob es möglicherweise sogar schädlich ist und zu einer Abnahme der Kraft führt?</p>
+<p>Um sich der Lösung zu nähern, ist zunächst eine Überlegung hilfreich, welche Prozesse den beobachteten Wert generiert haben könnten. Im vorherigen Kapitel wurden bereits zwei Prozesse vorgestellt. Einmal der Prozess mit <span class="math inline">\(\Delta = 100\)</span> sowie den Prozess mit <span class="math inline">\(\Delta = 0\)</span>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sts-sig-dgp-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sts-sig-dgp-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="stats_significance_files/figure-html/fig-sts-sig-dgp-1-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sts-sig-dgp-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.2: Mögliche datengenerierende Prozesse für den beobachteten Unterschied <span class="math inline">\(D\)</span> (rot)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In <a href="#fig-sts-sig-dgp-1" class="quarto-xref">Abbildung&nbsp;<span>2.2</span></a> ist wieder der beobachtete Wert <span class="math inline">\(d = 50\)</span> und die beiden Verteilungen abgetragen. Leider kann nicht eindeutig gesagt werden, welche der beiden Verteilungen bzw. deren zugrundeliegende Prozesse den beobachteten Wert erzeugt haben könnte. Der beobachteter Wert <span class="math inline">\(d\)</span> liegt genau zwischen den beiden Maxima der Verteilungen. Etwas motiviertes Starren auf die Abbildung könnten einen allerdings auf die Idee bringen, dass der beobachtete Wert nicht nur von diesen beiden Verteilungen erzeugt worden sein muss, sondern durchaus noch mehr Verteilungen in Frage kommen können.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sts-sig-dgp-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sts-sig-dgp-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="stats_significance_files/figure-html/fig-sts-sig-dgp-2-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sts-sig-dgp-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.3: Beispiele für weitere mögliche Verteilungen als DGP.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><a href="#fig-sts-sig-dgp-2" class="quarto-xref">Abbildung&nbsp;<span>2.3</span></a> zeigt, dass selbst die Verteilungen mit <span class="math inline">\(\Delta = -250N\)</span> und <span class="math inline">\(\Delta = 350N\)</span> nicht unplausibel sind, den beobachteten Wert erzeugt zu haben. Warum aber bei diesen fünf Verteilungen aufhören? Warum sollte <span class="math inline">\(\Delta\)</span> nicht <span class="math inline">\(-50\)</span> oder <span class="math inline">\(127\)</span> sein? Und überhaupt, niemand kann behaupten, die Natur kenne nur ganzzahlige Werte (siehe <span class="math inline">\(\pi\)</span>). Warum sollte <span class="math inline">\(D\)</span> also nicht auch <span class="math inline">\(123.4567N\)</span> sein?</p>
+<p>Wenn diese Überlegung weitergeführt wird, dann wird schnell klar, dass letztendlich eine unendliche Anzahl von Verteilungen in der Lage ist, den beobachteten Wert plausibel zu generieren. D.h. selbst wenn ein positiver Effekt gefunden wurde, könnte dieser Effekt auch von einer Verteilung bei der kein Effekt vorliegt generiert worden sein. Diese Einsicht ist natürlich etwas unbefriedigend, da nach dem ganzen Aufwand der notwendig ist, scheinbar keine klare Aussage darüber getroffen werden kann ob nun ein Effekt vorliegt oder nicht. Dass heißt es ist immer noch nicht klar, welcher datengenerierende Prozess den beobachteten Daten zugrundeliegt. Um dennoch ein Aussage anhand der Daten machen zu können seien im nächsten Schritt bestimmte Annahmen dazugenommen. Zum Beispiel könnte eine Annahme sein, dass der <em>wahren</em> Verteilung ein <span class="math inline">\(\Delta = -350N\)</span> zugrundeliegt. Dies führt zum der folgenden Verteilung (siehe <a href="#fig-sts-sig-dgp-3" class="quarto-xref">Abbildung&nbsp;<span>2.4</span></a>).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sts-sig-dgp-3" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sts-sig-dgp-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="stats_significance_files/figure-html/fig-sts-sig-dgp-3-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sts-sig-dgp-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.4: Verteilung für <span class="math inline">\(\Delta = -350N\)</span> und der beobachtete Wert <span class="math inline">\(D\)</span>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Der beobachtete Wert unter der Annahme, dass das <em>wahre</em> <span class="math inline">\(\Delta = -350N\)</span> ist, ist nicht vollkommen unmöglich, aber so richtig <em>wahrscheinlich</em> erscheint er auch nicht. Der Wert liegt relativ weit am Rand der Verteilung. Die Kurve ist dort schon ziemlich nahe bei Null. Das bedeutet, der beobachtete Wert ist zwar durchaus möglich, aber es wäre schon überraschend, wenn bei einer einzigen Durchführung des Experiments ausgerechnet so ein extremer Wert beobachtet werden würde, wenn das angenommenes <span class="math inline">\(\Delta\)</span> korrekt ist.</p>
+<p>Wie stellt sich der Sachverhalt dar, wenn dagegen von der Annahme ausgegangen wird, dass dem DGP der Wert <span class="math inline">\(\Delta = 50N\)</span> zugrunde liegt? Dies würde z der Verteilung in <a href="#fig-sts-sig-dgp-4" class="quarto-xref">Abbildung&nbsp;<span>2.5</span></a> führen. Zunächst ist dieser Wert unter der Annahme auch durchaus möglich. Zusätzlich liegt der beobachtete Wert mitten in dem Teil der Verteilung, der auch zu erwarten wäre. Das bedeutet, der beobachtete Wert ist durchaus <em>plausibel</em> unter der Annahme. Bei einer einmaligen Durchführung des Experiments würde der beobachtete Wert nicht unbedingt überraschen, wenn die Annahme von <span class="math inline">\(\Delta = 50N\)</span> für den wahren Wert korrekt ist.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sts-sig-dgp-4" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sts-sig-dgp-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="stats_significance_files/figure-html/fig-sts-sig-dgp-4-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sts-sig-dgp-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.5: Verteilung für <span class="math inline">\(\Delta = 50N\)</span> und der beobachtete Wert <span class="math inline">\(D\)</span>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Der bisherige Ansatz kann nun so zusammengefasst werden, dass eine Annahme getroffen wird, die dazu führt das eine bestimmte Verteilung verwendet wird, dann kann der <strong>beobachtete</strong> Wert anhand der <strong>angenommen</strong> Verteilung bewertet werden. Die Auswahl der beiden Verteilungen eben war vollkommen willkürlich, d.h. wenn dieser Ansatz verfolgt werden soll, dass wird eine bestimmte Verteilung, so etwas wie eine Referenzverteilung benötigt, um den beobachteten Wert <span class="math inline">\(\delta\)</span>, den Unterschied zwischen den beiden Gruppen, bewerten zu können. Es könnte zum Beispiel die Annahme getroffen werden, dass der Unterschied zwischen den beiden Gruppen <span class="math inline">\(\Delta_{\text{wahr}} = 75N\)</span> ist. Das heißt, dies wäre der <em>wahre</em> Unterschied zwischen den beiden Gruppen. Der <em>wahre</em> Unterschied wird im Experiment aller Voraussicht nach nicht genau getroffen, da eine Zufallsstichprobe gezogen wird und die Stichprobenvariabilität dazu führt, dass nicht genau der <em>wahre</em> Unterschied getroffen wird. Allerdings wird etwas Nachdenken über den Wert <span class="math inline">\(75N\)</span> zu der Einsicht führen, dass <span class="math inline">\(75\)</span> vollkommen willkürlich ist. Warum nicht <span class="math inline">\(85N\)</span> oder <span class="math inline">\(25N\)</span>, oder warum überhaupt ganzzahlig? Schließlich ist <span class="math inline">\(\pi\)</span> auch keine ganze Zahl, also könnte genauso gut <span class="math inline">\(74.1234N\)</span> angenommen werden. Schnell wird daher klar, dass keine Zahl so richtig gut begründet werden kann. Es wird eine spezifische Zahl benötigt, um den Analyseapparat mit Verteilungen ansetzen zu können.</p>
+<p>Tatsächlich gibt es eine Zahl, die zwar letzendlich auch willkürlich ist, aber doch etwas besser begründet werden kann, nämlich die Zahl <span class="math inline">\(\Delta_{\text{wahr}} = 0\)</span>. Warum ist der Wert <span class="math inline">\(0\)</span> in diesem Fall speziell? Nun, er bedeutet, dass davon ausgegangen wird, dass zwischen den beiden Gruppen kein Unterschied besteht. Die Intervention würde überhaupt nichts bringen. Dies ist zwar keine wirklich interessante Annahme, aber sie hat trotz ihrer Willkürlichkeit doch etwas mehr Gewicht als eine beliebige andere Zahl. Die Annahme die für die Referenzverteilung angesetzt wird der Konvention nach als <span class="math inline">\(H_0\)</span>-Hypothese bezeichnet. Die <span class="math inline">\(0\)</span> bei <span class="math inline">\(H\)</span> bedeutet dabei nicht unbedingt, dass die <span class="math inline">\(H_0\)</span> davon ausgeht, dass nichts passiert, sondern nur, dass dies unsere Ausgangsannahme ist. In vielen Fällen hat die <span class="math inline">\(H_0\)</span> tatsächlich auch die Annahme und historisch war die <span class="math inline">\(H_0\)</span> zunächst auch gleich <span class="math inline">\(0\)</span>. Dies muss aber nicht immer der Fall sein. Für das vorliegende Beispiel sei nun die Referenzverteilung die Hypothese (siehe Formel <span class="math inline">\(\eqref{eq-stats-sig-H0}\)</span>):</p>
+<p><span class="math display">\[\begin{equation}
+H_0: \Delta = 0
+\label{eq-stats-sig-H0}
+\end{equation}\]</span></p>
+<p>Graphisch führt dies wie bereits gezeigt zu <a href="#fig-stats-sig-null-01" class="quarto-xref">Abbildung&nbsp;<span>2.6</span></a>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-stats-sig-null-01" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-stats-sig-null-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="stats_significance_files/figure-html/fig-stats-sig-null-01-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stats-sig-null-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.6: Verteilung unter der <span class="math inline">\(H_0: \Delta = 0\)</span> und der beobachtete Wert (rot)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Wie bereits besprochen, ist der beobachtete Wert plausibel mit der Annahme der <span class="math inline">\(H_0: \Delta = 0\)</span>. Der Wert ist liegt sehr nahe dem Bereich der auch am <em>wahrscheinlichsten</em> unter der <span class="math inline">\(H_0\)</span>. Anders, der beobachtete Wert ist unter der Annahme <span class="math inline">\(H_0: \Delta = 0\)</span> nicht überraschend. Der Fall wäre anders gelegen, wenn der beoachtete Wert bei <span class="math inline">\(d = 500\)</span> oder <span class="math inline">\(d = -500\)</span> liegen würde (siehe <a href="#fig-stats-sig-null-02" class="quarto-xref">Abbildung&nbsp;<span>2.7</span></a>).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-stats-sig-null-02" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-stats-sig-null-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="stats_significance_files/figure-html/fig-stats-sig-null-02-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stats-sig-null-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.7: Verteilung unter der <span class="math inline">\(H_0: \Delta = 0\)</span> und beobachtete Wert (rot) bei <span class="math inline">\(\pm 500\)</span>N
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In diesem Fall, wenn einer dieser Werte beobachtet werden würde, dann wäre das Ergebnis schon überraschend. Die Werte sind offensichtlich nicht unmögliche unter der Annahme der <span class="math inline">\(H_0: \Delta = 0\)</span> aber doch eher unwahrscheinlich. In diesem Fall könnte die Werte als Evidenz gegen die Korrektheit der Annahme <span class="math inline">\(H_0: \Delta = 0\)</span> angesehen werden. Die <em>Überraschung</em> wäre noch größer, wenn der beobachtete Werte noch weiter in den Rändern liegen würde (siehe <a href="#fig-stats-sig-null-03" class="quarto-xref">Abbildung&nbsp;<span>2.8</span></a>)</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-stats-sig-null-03" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-stats-sig-null-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="stats_significance_files/figure-html/fig-stats-sig-null-03-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stats-sig-null-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.8: Verteilung unter der <span class="math inline">\(H_0: \Delta = 0\)</span> und beobachtete Wert (rot) bei <span class="math inline">\(\pm 500\)</span>N
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Der Wert wäre nicht unmöglich aber doch schon sehr überraschend. D.h. mittels des Grads der <em>Überraschung</em> erscheint es möglich eine Metrik herzuleiten, die als Evidenz für oder gegen die Korrektheit der Annahme der <span class="math inline">\(H_0\)</span> verwendet werden kann. Wenn der beobachtete Wert unter der <span class="math inline">\(H_0\)</span> nicht überrascht, dann deutet das Ergebnis eher darauf hin, dass die <span class="math inline">\(H_0\)</span> korrekt ist. Ist der Wert dagegen sehr überraschend, dann kann der beobachtete Wert als Evidenz gegen die Korrektheit der Annahme der <span class="math inline">\(H_0\)</span> angesehen werden. Um diese Überraschungsmetrik nun zu präzisieren werden nun allerdings zunächst ein paar weitere Konzepte eingeführt werden.</p>
+</section>
+<section id="lage--und-skalenparameter" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="lage--und-skalenparameter"><span class="header-section-number">2.2</span> Lage- und Skalenparameter</h2>
+<p>In <a href="#fig-sts-sig-dgp-2" class="quarto-xref">Abbildung&nbsp;<span>2.3</span></a> sind bereits mehrere Verteilungen einmal abgebildet worden. Die Verteilungen haben die gleiche Form, sind aber gegeneinander verschoben. Das bedeutet, sie unterscheiden sich bezüglich ihrer Position bzw. Lage. Der Parameter, der bei einer Verteilung die Lage steuert, ist der sogenannte Erwartungswert <span class="math inline">\(\mu\)</span>, der auch als Mittelwert bezeichnet wird. Dieser Mittelwert <span class="math inline">\(\mu\)</span> unterscheidet sich allerdings von dem bekannten Mittelwert <span class="math inline">\(\bar{x}\)</span> in der Stichprobe. In einem späteren Abschnitt werden wir genauer berechnet, wie der Mittelwert <span class="math inline">\(\mu\)</span> berechnet wird.</p>
+<section id="mittelwert-mu-der-population" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="mittelwert-mu-der-population"><span class="header-section-number">2.2.1</span> Mittelwert <span class="math inline">\(\mu\)</span> der Population</h3>
+<p>Da der Mittelwert <span class="math inline">\(\mu\)</span> die Position der Verteilung bestimmt, ist <span class="math inline">\(\mu\)</span> ein <strong>Parameter</strong> der Verteilung. Die Beschreibung als Parameter der Verteilung bedeutet somit, dass die Verteilung von <span class="math inline">\(\mu\)</span> abhängt, oder formaler, dass die Verteilung eine Funktion von <span class="math inline">\(\mu\)</span> ist. Dies ist das gleiche Prinzip wie bei den Funktionen die im Kapitel mit Funktionen in <code>R</code> behandelt wurden.Eine Funktionen <span class="math inline">\(f\)</span> von <span class="math inline">\(x\)</span> wird formal als <span class="math inline">\(f(x)\)</span> dargestellt. Wenn nun die Funktion <span class="math inline">\(f\)</span> die Verteilung beschreibt, , dann wird die Abhängigkeit von <span class="math inline">\(\mu\)</span> mittels <span class="math inline">\(f(\mu)\)</span> dargestellt.</p>
+<p>Seien nun zwei Verteilungen betrachtet, die sich bezüglich ihrer Mittelwerte <span class="math inline">\(\mu\)</span> unterscheiden. Zum Beispiel seien <span class="math inline">\(\mu_1 = 0\)</span> und <span class="math inline">\(\mu_2 = 3\)</span>. Wie in <a href="#fig-sts-sig-dist-mu" class="quarto-xref">Abbildung&nbsp;<span>2.9</span></a> zu sehen ist, führt dies dazu, dass die beiden Verteilungen gegeneinander verschoben sind.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sts-sig-dist-mu" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sts-sig-dist-mu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="stats_significance_files/figure-html/fig-sts-sig-dist-mu-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sts-sig-dist-mu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.9: Verteilungen mit zwei unterschiedlichen Mittelwerten
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Wie bereits erwähnt, wird der Mittelwert <span class="math inline">\(\mu\)</span> der Verteilung auch als Erwartungswert bezeichnet. Dies kann dahingehend interpretiert werden, dass, wenn Stichproben aus dieser Verteilung gezogen werden, im Mittel der Wert <span class="math inline">\(\mu\)</span> erwartet werden kann. Soweit ist dies eigentlich noch nichts wirklich Neues, sondern es wurde bereits vorher im Zusammenhang mit allen möglichen Unterschiede zwischen der Kontrollgruppe und der Interventionsgruppe beobachtet, dass der Mittelwert der Verteilung auf dem tatsächlichen Unterschied <span class="math inline">\(\Delta\)</span> zwischen den beiden Gruppen zentriert war.</p>
+<p>Nun zum Unterschied zwischen <span class="math inline">\(\mu\)</span> und <span class="math inline">\(\bar{x}\)</span>. Der Mittelwert <span class="math inline">\(\mu\)</span> ist eine Eigenschaft der Population, also letztendlich ein Wert, den niemals direkt beobachtet werden kann, ohne das die gesamte Population untersucht wird. Der Mittelwert <span class="math inline">\(\bar{x}\)</span> dagegen, ist eine Eigenschaft der Stichprobe aus der Population. Der Mittelwert ist also der konkrete Wert, der anhand der Stichprobe berechnet worden ist (siehe <a href="#fig-stats-sig-mu-bar" class="quarto-xref">Abbildung&nbsp;<span>2.10</span></a>).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-stats-sig-mu-bar" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-stats-sig-mu-bar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="stats_significance_files/figure-html/fig-stats-sig-mu-bar-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stats-sig-mu-bar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.10: Zusammenhang zwischen dem Erwartungswert <span class="math inline">\(\mu\)</span> der Population und dem Mittelwert <span class="math inline">\(\bar{x}\)</span> in der Stichprobe.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In vielen Fällen wird im Rahmen einer statistischen Analyse versucht, über <span class="math inline">\(\bar{x}\)</span> einen Rückschluss auf <span class="math inline">\(\mu\)</span> zu ziehen. D.h. der Mittelwert der Stichprobe wird als ein <em>guter</em> Wert angesehen, um den Erwartungswert <span class="math inline">\(\mu\)</span> der Population abzuschätzen.</p>
+<section id="detour---schätzer" class="level4" data-number="2.2.1.1">
+<h4 data-number="2.2.1.1" class="anchored" data-anchor-id="detour---schätzer"><span class="header-section-number">2.2.1.1</span> Detour - Schätzer</h4>
+<p>Schauen wir uns noch einmal den Mittelwert <span class="math inline">\(\mu\)</span> der Population und den Mittelwert <span class="math inline">\(\bar{x}\)</span> der Stichprobe und deren Zusammenhang an. Der Mittelwert <span class="math inline">\(\bar{x}\)</span> der Stichprobe wird als sogenannter Schätzer verwendet. Diesen Begriff werden wir später noch genauer untersuchen. Im Moment reicht es, sich zu merken, dass ein Schätzer eine Statistik ist, mit der wir einen Parameter der Population, z. B. <span class="math inline">\(\mu\)</span>, abschätzen wollen. Wie schon mehrmals erwähnt, werden wir den wahren Wert <span class="math inline">\(\mu\)</span> aus der Population mittels unserer Stichprobe niemals zu 100% korrekt bestimmen können. Wir können aber mittels geschickt gewählter Statistiken Schätzer konstruieren, die bestimmte Eigenschaften haben.</p>
+<p>Nehmen wir zum Beispiel den Mittelwert <span class="math inline">\(\bar{x}\)</span>. In unserer kleinen Welt kennen wir den Mittelwert <span class="math inline">\(\mu\)</span> unserer Population. Der Wert beträgt <span class="math inline">\(\mu = 2291.3\)</span>. Schauen wir uns einmal an, was passiert, wenn wir alle möglichen Stichproben der Größe <span class="math inline">\(N = 10\)</span> unserer kleinen Welt bestimmen und die Verteilung der Mittelwerte abtragen (siehe <a href="#fig-stats-sig-mean-n3" class="quarto-xref">Abbildung&nbsp;<span>2.11</span></a>).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-stats-sig-mean-n3" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-stats-sig-mean-n3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="stats_significance_files/figure-html/fig-stats-sig-mean-n3-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stats-sig-mean-n3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.11: Verteilung der Mittelwerte von Stichproben der Größe <span class="math inline">\(n=10\)</span>, Kleine Welt Population <span class="math inline">\(\mu\)</span> (rot)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In <a href="#fig-stats-sig-mean-n3" class="quarto-xref">Abbildung&nbsp;<span>2.11</span></a> sehen wir, dass im Mittel der Stichprobenmittelwert <span class="math inline">\(\bar{x}\)</span> tatsächlich um den wahren Populationsmittelwert <span class="math inline">\(\mu\)</span> herum zentriert ist. Einzelne Ausgänge des <em>Experiments</em> können zwar daneben liegen, der Großteil der Experimente gruppiert sich jedoch um <span class="math inline">\(\mu\)</span> herum. Der Stichprobenmittelwert <span class="math inline">\(\bar{x}\)</span> ist daher eine <em>gute</em> Statistik, um den tatsächlichen Populationsmittelwert <span class="math inline">\(\mu\)</span> abzuschätzen.</p>
+</section>
+</section>
+<section id="standardabweichung-sigma-der-population" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="standardabweichung-sigma-der-population"><span class="header-section-number">2.2.2</span> Standardabweichung <span class="math inline">\(\sigma\)</span> der Population</h3>
+<p>Die zweite Eigenschaft von Verteilungen beziffert die Streuung in der Population. Die Streuung in der Population wird als Varianz bezeichnet und mit dem Symbol <span class="math inline">\(\sigma^2\)</span> gekennzeichnet. Sei zunächst betrachtet, welchen Einfluss <span class="math inline">\(\sigma^2\)</span> auf die Form der Verteilung hat. In <a href="#fig-sts-sig-dist-sigma" class="quarto-xref">Abbildung&nbsp;<span>2.12</span></a> sind zwei Verteilungen abgetragen. Dieses Mal ist der Erwartungswert <span class="math inline">\(\mu\)</span> in beiden Fällen gleich, aber die Varianzen <span class="math inline">\(\sigma^2\)</span> sind mit <span class="math inline">\(\sigma_1^2 = 2\)</span> und <span class="math inline">\(\sigma_2^2 = 1\)</span> unterschiedlich groß.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sts-sig-dist-sigma" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sts-sig-dist-sigma-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="stats_significance_files/figure-html/fig-sts-sig-dist-sigma-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sts-sig-dist-sigma-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.12: Verteilungen mit unterschiedlichen Varianzen
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Wie in <a href="#fig-sts-sig-dist-sigma" class="quarto-xref">Abbildung&nbsp;<span>2.12</span></a> zu sehen ist, führt dies dazu, dass beide Verteilungen ihren Mittelpunkt an der gleichen Stelle haben, aber die rote Verteilung mit <span class="math inline">\(\sigma_1^2=2\)</span> breiter ist als die türkise Verteilung. Dies bedeutet, dass die Werte in der rote Verteilung stärker um den Mittelwert herum streuen als in der türkisen Verteilung. Wenn nun Werte aus der türkisen Verteilung gezogen werden, dann sollten diese näher um den Mittelwert <span class="math inline">\(\mu = 0\)</span> liegen als bei der roten Verteilung.</p>
+<p>Die Varianz <span class="math inline">\(\sigma^2\)</span> ist daher, wie auch der Mittelwert, ein Parameter der Verteilung. Die Varianz bestimmt die Form der Verteilung. Das heißt, wenn in der Schreibweise von eben und die Funktion <span class="math inline">\(f\)</span>, die die Verteilung beschreibt, dann gilt <span class="math inline">\(f(\sigma^2)\)</span> oder eben zusammen mit dem Mittelwert <span class="math inline">\(\mu\)</span>: <span class="math inline">\(f(\mu, \sigma^2)\)</span>. D.h. die Verteilung ist eine Funktion des Erwartungswertes <span class="math inline">\(\mu\)</span> und der Varianz <span class="math inline">\(\sigma^2\)</span>.</p>
+<p>Wenn aus der Varianz <span class="math inline">\(\sigma^2\)</span> die Wurzel gezogen wird, dann wird der resultierende Wert <span class="math inline">\(\sigma\)</span> als Standardabweichung bezeichnet. Da die Varianz <span class="math inline">\(\sigma^2\)</span> nur positive Werte annehmen kann, ist die Wurzelfunktion bzw. deren Umkehrung, die Quadrierung, eineindeutig. Wenn die Standardabweichung bekannt ist, ist automatisch auch die Varianz bekannt.</p>
+<p>In der Stichprobe wird die Standardabweichung meistens mit dem Zeichen <span class="math inline">\(s\)</span> bezeichnet. Insgesamt resultieren daraus die vier Bezeichnungen, <span class="math inline">\(\mu\)</span> Erwartungswert bzw. Mittelwert der Population, <span class="math inline">\(\sigma^2\)</span> bzw. <span class="math inline">\(\sigma\)</span> die Varianz bzw. Standardabweichung in der Population, <span class="math inline">\(\bar{x}\)</span> der Mittelwert in der Stichprobe und <span class="math inline">\(s^2\)</span> bzw. <span class="math inline">\(s\)</span> die Varianz bzw. Stichprobe in der Stichprobe.</p>
+<p>Die Standardabweichung <span class="math inline">\(s\)</span> in der Stichprobe wird mittels der folgenden Formel berechnet:</p>
+<p><span class="math display">\[\begin{equation}
+s = \sqrt{\frac{\sum_{i=1}^n (x_i - \bar{x})^2}{n-1}}
+\label{eq-std}
+\end{equation}\]</span></p>
+<p>Das bedeutet, die Standardabweichung ist die mittlere quadrierte Abweichung vom Mittelwert (siehe Formel <span class="math inline">\(\eqref{eq-std}\)</span>). Wenn die Werte stärker Streuen, dementsprechend stärker um den Mittelwert herum schwanken, dann wird <span class="math inline">\(s\)</span> größer bzw. wenn die Werte näher um den Mittelwert herum schwanken, dann wird <span class="math inline">\(s\)</span> kleiner. Da die Abweichung vom Mittelwert <span class="math inline">\(\bar{x}\)</span> nach Formel <span class="math inline">\(\eqref{eq-std}\)</span> quadriert werden, hat die Standardabweichung den Vorteil gegenüber der Varianz, dass die Standardabweichung die gleichen Einheiten hat wie der Mittelwert. Während die Varianz als das Quadrat der Standardabweichung die quadrierte Einheiten des Mittelwerts hat. Deswegen wird in der deskriptiven bevorzugt die Standardabweichung verwendet, da die Standardabweichung üblicherweise direkt interpretiert werden kann. Wären zum Beispiel Weitsprungdaten erhoben worden und die mittlere Weite wäre <span class="math inline">\(\bar{x} = 5\)</span>m mit einer Standardabweichung von <span class="math inline">\(s = 1.5\)</span>m, dann ist dies einfache zu interpretieren als eine Varianz von <span class="math inline">\(s^2 = 2.25\text{m}^2\)</span>.</p>
+<p>Konkret im ersten Beispiel aus der kleinen Welt, bei dem in der Kontrollgruppe die Personen <span class="math inline">\(i = \{3,8,9\}\)</span> gezogen wurden, können für diese Stichprobe die folgende Standardabweichung bei einem Mittelwert von <span class="math inline">\(\bar{x} = 2198\)</span> berechnet werden:</p>
+<p><span class="math display">\[\begin{equation*}
+s = \sqrt{\frac{(2178-2198)^2+(2117-2198)^2+(2298-2198)^2}{2}} = 92
+\end{equation*}\]</span></p>
+</section>
+<section id="mittelwert-und-standardabweichung-in-r" class="level3" data-number="2.2.3">
+<h3 data-number="2.2.3" class="anchored" data-anchor-id="mittelwert-und-standardabweichung-in-r"><span class="header-section-number">2.2.3</span> Mittelwert und Standardabweichung in <code>R</code></h3>
+<p>Um den Mittelwert und die Standardabweichung bzw. die Varianz zu berechnen, gibt es in <code>R</code> entsprechende Funktionen mit den Namen <code>mean()</code>, <code>sd()</code> und <code>var()</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(x)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(x)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.581139</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(x)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2.5</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="entscheidungen-und-mu-und-sigma" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="entscheidungen-und-mu-und-sigma"><span class="header-section-number">2.3</span> Entscheidungen und <span class="math inline">\(\mu\)</span> und <span class="math inline">\(\sigma\)</span></h2>
+<p>Zurück nun zum eigentlichen Problem für eine gegenbene <span class="math inline">\(H_0\)</span>-Hypothese den Grad der <em>Überraschung</em> zu spezifizieren. Die Kenntnis des Erwartungswertes <span class="math inline">\(\mu\)</span> und der Standardabweichung <span class="math inline">\(\sigma\)</span> erlaubt eine Verteilung in verschiedene Bereiche einzuteilen. Sei zum Beispiel die folgende Verteilung mit Erwartungswert <span class="math inline">\(\mu\)</span> gegeben und werden die Bereiche <span class="math inline">\(\mu \pm \sigma, \mu \pm 2 \sigma\)</span> und <span class="math inline">\(\mu \pm 3 \sigma\)</span> eingezeichnet, dann ergibt sich die folgende Darstellung (siehe <a href="#fig-stats-sig-norm-sigmas" class="quarto-xref">Abbildung&nbsp;<span>2.13</span></a>).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-stats-sig-norm-sigmas" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-stats-sig-norm-sigmas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="stats_significance_files/figure-html/fig-stats-sig-norm-sigmas-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stats-sig-norm-sigmas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.13: Verteilung mit verschiedenen Vielfachen der Standardabweichung <span class="math inline">\(\sigma\)</span>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Ein Großteil der Werte liegt im Bereich <span class="math inline">\(\mu \pm 1\times\sigma\)</span>. Der Bereich <span class="math inline">\(\mu \pm 2\times\sigma\)</span> umfasst fast alle Werte, während der Bereich <span class="math inline">\(\mu \pm 3\times\sigma\)</span> nahezu alle Werte beinhaltet. Wenn nun die Verteilung noch weiter nach links und rechts abgetragen werden würde, könnten würde sichtbar, dass auch Werte jenseits von <span class="math inline">\(\mu \pm 3\times\sigma\)</span> liegen. Die Höhe der Kurve ist aber in diesem Bereich sehr niedrig und die Flanken der Verteilung gehen asymptotisch gegen <span class="math inline">\(0\)</span>. Insgesamt, kann jedoch diese Einsicht dazu verwendet werden, um umgekehrt zu denken: Sei angenommen, dass die gewählte Statistik dieser Verteilung folgt, welche Werte würden überraschend wirken? Anders, welche Werte würden als Evidenz angesehen werden, um zu folgern: <em>Ich glaube nicht, dass die beobachtete Statistik aus der angenommenen Verteilung stammt</em>?</p>
+<p>Ein Beispiel: Wenn der Wert mehr als <span class="math inline">\(3\times\sigma\)</span> vom Mittelwert <span class="math inline">\(\mu\)</span> entfernt ist, wäre es zwar nicht unmöglich, aber ziemlich unwahrscheinlich, einen solchen Wert zu beobachten. Ein weniger strenger Schwellenwert wäre, einen Wert, der mehr als <span class="math inline">\(2\times\sigma\)</span> von <span class="math inline">\(\mu\)</span> entfernt liegt, bereits als überraschend zu betrachten. Tatsächlich liegt die Wahrscheinlichkeit, einen Wert jenseits von <span class="math inline">\(2\times\sigma\)</span> zu beobachten, bei etwa <span class="math inline">\(5\%\)</span>. Das heißt, es könnte ein Entscheidungsprozess aufgestellt werden, bei dem die folgende Regel aufgestellt wird: Wenn für die gewählte Statistik eine bestimmte Verteilung angenommen wird und in der Stichprobe einen Wert beobachtet wird der weiter als <span class="math inline">\(2\times\sigma\)</span> von <span class="math inline">\(\mu\)</span> entfernt ist, dann ist dieser überraschend. Auf Grund dieser <em>Überraschung</em> wird der beobachtete Wert als Evidenz gegen die Verteilungsannahme angesehen.</p>
+<p>Zusammengefasst:</p>
+<ol type="1">
+<li>Setze eine Verteilung der Statistik mit definierten <span class="math inline">\(\mu\)</span> und <span class="math inline">\(\sigma\)</span> als Annahme an.</li>
+<li>Ziehe eine Zufallsstichprobe.</li>
+<li>Berechne die Statistik auf der Stichprobe.</li>
+<li>Überprüfe, wie viele Standardabweichungen <span class="math inline">\(\sigma\)</span> die Statistik von <span class="math inline">\(\mu\)</span> entfernt liegt.</li>
+</ol>
+</section>
+<section id="welche-verteilung-setzen-wir-an" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="welche-verteilung-setzen-wir-an"><span class="header-section-number">2.4</span> Welche Verteilung setzen wir an?</h2>
+<p>In der eben definierten Abfolge wurde abstrakt von der Verteilung der Stichprobe gesprochen. Im Beispiel aus der kleinen Welt wurde der Unterschied zwischen den Mittelwerten der Gruppen als Statistik verwendet und dessen Stichprobenverteilung ermittelt. Um die Entscheidungsabfolge anwenden zu können ist aber die Kenntnis der Stichprobenverteilung also die funktionale Form der Verteilung, deren Erwartungswert <span class="math inline">\(\mu\)</span> und Streuung unter der <span class="math inline">\(H_0\)</span> notwendig. Erst wenn die Form der Referenzverteilung bekannt ist, kann ein Entscheidung über die Überraschung getroffen werden. Hier ist noch eine kleine Unterscheidung notwendig. Die Streuung in der Stichprobenverteilung wird nicht als Standardabweichung bezeichnet sondern als <strong>Standardfehler</strong>. Nochmal, die Streuung in der Referenz- bzw. Stichprobenverteilung wird als Standardfehler bezeichnet, im Gegensatz zur Streuung in der Population <span class="math inline">\(\sigma\)</span> und in der Stichprobe <span class="math inline">\(s\)</span>. D.h. der Standardfehler <span class="math inline">\(s_e\)</span> ist nichts anderes als die Standardabweichung der Statistik.</p>
+<div id="def-standarderror" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2.2 (Standardfehler )</strong></span> Die theoretische Streuung einer berechneten Statistik, also deren Standardabweichung, wird als Standardfehler bezeichnet und mit dem Symbol <span class="math inline">\(\sigma_e\)</span> gekennzeichnet. Wird dieser Wert anhand der Stichprobe abgeschätzt, dann hat der Standardfehler das Symbol <span class="math inline">\(s_e\)</span>.</p>
+</div>
+<p>Nochmal zusammengefasst. Eine Population ist durch einen Mittelwert <span class="math inline">\(\mu\)</span> und eine Standardabweichung <span class="math inline">\(\sigma\)</span> gekennzeichnet. Wird eine Stichprobe aus der Population gezogen, dann können darauf ein Mittelwert <span class="math inline">\(\bar{x}\)</span> und eine Standardabweichung <span class="math inline">\(s\)</span> bestimmt werden. Diese sind beide Schätzer für die jeweiligen Populationsparameter. Beide Parameter stellen dabei Statistiken dar. Wird eine bestimmte Statistik verwendet um eine Aussage in Bezug auf eine <span class="math inline">\(H_0\)</span>-Hypothese zu treffen, dann wird bei <strong>wiederholten Durchführung</strong> des Experiments diese Statistik ebenfalls eine Streuung aufweisen. Im Beispiel wurde gezeigt, dass der Unterschied <span class="math inline">\(\Delta\)</span> zwischen den Gruppen eine Streuung aufweise. Diese Streuung wird als Standardfehler <span class="math inline">\(\sigma_e\)</span> bezeichnet. Der Standardfehler kann nun dazu verwendet werden um eine Überraschungsmetrik (z.B. <span class="math inline">\(2\times \sigma_e\)</span>) in Bezug auf den Erwartungswert der Statistik aufzustellen. Wird der Standardfehler mittels der Stichprobe berechnet erhält er den Wert <span class="math inline">\(s_e\)</span>. Anhand der erstellten Metrik kann der <em>Grad der Überraschung</em> bestimmt werden und je nach Ausprägung der beobachteten Statistik die Evidenz für oder gegen die <span class="math inline">\(H_0\)</span> interpretiert werden.</p>
+<p>Die Verwendung des Standardfehlers <span class="math inline">\(\sigma_e\)</span> bzw. dessen geschätzten Wert <span class="math inline">\(s_e\)</span> kann dabei als eine Art Kalibrierung angesehen werden. Wenn eine Verteilung sehr stark streut, dann muss die Abweichung von <span class="math inline">\(\mu\)</span> größer sein, damit sie als überraschend angesehen wird. Wenn dagegen die Verteilung weniger streut, dann muss die Abweichung nicht mehr ganz so groß sein. Ausgedrückt in <span class="math inline">\(\sigma_e\)</span>-Einheiten bleibt dabei die relative Abweichung immer gleich. Bei der stark streuenden Verteilung ist <span class="math inline">\(\sigma_e\)</span> größer, während bei der weniger stark streuenden Verteilung <span class="math inline">\(\sigma_e\)</span> kleiner ist. In beiden Fällen ist dann ein Abweichung von beispielsweise <span class="math inline">\(2 \times \sigma_e\)</span> als gleich überraschend zu werten.</p>
+</section>
+<section id="statistisch-signifikanter-wert" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="statistisch-signifikanter-wert"><span class="header-section-number">2.5</span> Statistisch <em>signifikanter</em> Wert</h2>
+<p>Als letztem Schritt fehlt nun noch das Konzept des <strong>statistisch signifikanten Wertes</strong>. Im vorhergehenden Kapitel wurde eine Stichprobenverteilung für die Statistik, den Unterschied zwischen den Mittelwerten der beiden Gruppen, hergeleitet. Bei der Verteilung wurde davon ausgegangen, dass es keinen Unterschied zwischen den beiden Gruppen gibt. Dies ist gleichbedeutend mit der Annahme der Hypothese <span class="math inline">\(H_0: \Delta = 0\)</span>. <span class="math inline">\(H_0: \Delta=0\)</span> hat somit die Bedeutung, dass das Krafttraining nicht effektiv war. Informell wurde dann im vorhergehenden Abschnitt das Kriterium eingeführt, dass Werte, die mehr als <span class="math inline">\(2\)</span> Standardfehler <span class="math inline">\(s_e\)</span> vom Mittelwert entfernt sind, als unwahrscheinlich ansehen werden. Das Beobachten von Werten in diesem liegt etwa bei <span class="math inline">\(5\%\)</span>. Da der angenommene Mittelwertsunterschied, die gemessene bzw. beobachtete Statistik, mit <span class="math inline">\(\Delta = 0\)</span> zu <span class="math inline">\(\mu = 0\)</span> wird, bedeutet dies, dass Werte, die entweder kleiner als <span class="math inline">\(-2\times s_e\)</span> oder größer als <span class="math inline">\(2\times s_e\)</span> sind, als <em>unwahrscheinlich</em> unter der Annahme von <span class="math inline">\(H_0: \mu = 0\)</span> betrachtet werden. Als <strong>Entscheidungsregel</strong> bezüglich der Annahme über die <span class="math inline">\(H_0: \Delta = 0\)</span> folgt somit:</p>
+<p><span class="math display">\[
+|\text{beobachteter Wert }| &gt; 2\times \sigma_e \Rightarrow \text{ Evidenz gegen } H_0
+\]</span></p>
+<p>Wenn der beobachtete Wert der Statistik mehr als zwei Standardfehler vom Mittelwert unter der <span class="math inline">\(H_0\)</span> entfernt liegt, wird dies als Evidenz gegen die Korrektheit der Annahme der <span class="math inline">\(H_0\)</span> gesehen. Es wird getan als ob die <span class="math inline">\(H_0\)</span> in der Realität zutrifft, dann wird ein Wert beobachtet und wenn dieser Wert weiter als zwei Standardfehler in Plus- oder Minusrichtung vom Mittelwert unter der <span class="math inline">\(H_0\)</span> entfernt ist, dann wird so getan als ob die <span class="math inline">\(H_0\)</span> nicht zutrifft. Die <span class="math inline">\(H_0\)</span> wird abgelehnt. In <a href="#fig-stats-sig-decision-regions" class="quarto-xref">Abbildung&nbsp;<span>2.15</span></a> ist die Entscheidungsregel noch einmal graphisch dargestellt.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-stats-sig-decision-graph" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-stats-sig-decision-graph-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<pre class="mermaid mermaid-js" data-label="fig-stats-sig-decision-graph">flowchart TD
+    A[Statistik T] --&gt; B{Entscheidung: T &gt; 2xs_e}
+    B --&gt; D(Nein)
+    D --&gt; E[H0 beibehalten]
+    B --&gt; F(Ja)
+    F --&gt; G[H0 ablehnen]
+</pre>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stats-sig-decision-graph-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.14: Entscheidungsregel zur <span class="math inline">\(H_0\)</span>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Es wird eine Stichprobenverteilung unter der <span class="math inline">\(H_0\)</span> bestimmt, beispielsweise <span class="math inline">\(H_0: \mu = \Delta = 0\)</span> und es werden rechts und links jeweils ein Bereich der Verteilung abgeschnitten. Dieser Bereich wird als <em>unwahrscheinlich</em> unter dieser speziellen <span class="math inline">\(H_0\)</span> angesehen. Wenn der beobachteter Wert in diesem Bereich liegt, dann wird diese Beobachtung als Evidenz <strong>gegen die Korrektheit der Annahme</strong>, dass die <span class="math inline">\(H_0\)</span> gilt, angesehen. Die <span class="math inline">\(H_0\)</span> wird abgelehnt.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-stats-sig-decision-regions" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-stats-sig-decision-regions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="stats_significance_files/figure-html/fig-stats-sig-decision-regions-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stats-sig-decision-regions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.15: Die <span class="math inline">\(H_0\)</span> Verteilung wenn nichts passiert unterteilt in Regionen die zur Entscheidung für die <span class="math inline">\(H_0\)</span> (grün) und gegen die <span class="math inline">\(H_0\)</span> (rot) führen.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Wenn der Stichprobenwert der Statistik in der roten Region auftritt (siehe <a href="#fig-stats-sig-decision-regions" class="quarto-xref">Abbildung&nbsp;<span>2.15</span></a>), dann wird von einem <strong>statistisch signifikanten Ergebnis</strong> gesprochen: <em>Unter der <span class="math inline">\(H_0\)</span> bin ich überrascht, diesen Wert zu sehen!</em> Allerdings ist dieser Wert <strong>nicht unmöglich</strong>, sondern lediglich unwahrscheinlich, wenn die Annahme <span class="math inline">\(H_0\)</span> korrekt ist. Unwahrscheinlich ist dabei kein absolutes Maß, sondern nur eine <strong>willkürliche</strong> Festsetzung, die getroffen wurde. Als nächstes soll die Bedeutung der <span class="math inline">\(5\%\)</span> noch etwas genauer betrachtet werden. Dazu wird eine neues Konzept, der p-Wert benötigt.</p>
+</section>
+<section id="der-p-wert" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="der-p-wert"><span class="header-section-number">2.6</span> Der p-Wert</h2>
+<p>Sei der <strong>p-Wert</strong> zunächst mit Hilfe seiner Definition eingeführt. Da mittlerweile hoffentlich schon einiges an Intuition aufgebaut haben, sollte die Definition einigermaßen verständlich sein.</p>
+<div id="def-p-value" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2.3 (p-Wert )</strong></span> Der p-Wert gibt die Wahrscheinlichkeit für den beobachteten oder einen noch extremeren Wert unter der <span class="math inline">\(H_0\)</span> an.</p>
+</div>
+<p>In <a href="#fig-stats-sig-p-value-01" class="quarto-xref">Abbildung&nbsp;<span>2.16</span></a> ist eine Verteilung unter der <span class="math inline">\(H_0\)</span> eingezeichnet, zusammen mit dem Bereichen für den ein beobachteter Wert einen p-Wert von kleiner <span class="math inline">\(P = 0.05\)</span> hat.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-stats-sig-p-value-01" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-stats-sig-p-value-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="stats_significance_files/figure-html/fig-stats-sig-p-value-01-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stats-sig-p-value-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.16: Der beobachtete Wert der Statistik (schwarzer Punkt) zusammen mit der Verteilung unter der <span class="math inline">\(H_0\)</span>. Die gelben Flächen zeigen den p-Wert für den Wert der beobachteten Statistik an.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Der p-Wert ist nun die Wahrscheinlichkeit, unter der Annahme der <span class="math inline">\(H_0\)</span>, das beobachtete oder ein extremeren Wert auftritt. Dies resultiert in der gelben Fläche. Ein extremerer Wert bedeutet in diesem Fall einen größeren Wert, also alle Werte rechts vom beobachteten Wert. Jetzt irritiert allerdings, dass auf der linken Seite ebenfalls eine gelbe Fläche eingezeichnet. Was hier passiert, ist, dass der beobachtete Wert an <span class="math inline">\(\mu\)</span> in den anderen Randbereich der Verteilung <em>gespiegelt</em> (salopp) wurde und wieder das gleiche Prinzip mit den extremeren Werten angewendet. Hier bedeutet “extremer” links vom gespiegelten beobachteten Wert. Es wieder eine Fläche erhalten und somit eine Wahrscheinlichkeit. Die beiden gelben Flächen zusammen ergeben dann den p-Wert.</p>
+<p>Dass die Wahrscheinlichkeit für eine Seite dazugenommen wird, bei der gar kein Wert beobachtet haben, wird später verständlich, wenn der Unterschied zwischen gerichteten und ungerichteten Hypothesen betrachtet wird. Hier reicht zunächst die Einstufung, dass Werte als überraschend betrachtet werden, anhand ihres Abstandes zum Mittelwert egal ob der Abstand in positiver oder negativer Richtung vorliegt. D.h. ein beobachteter Wert von <span class="math inline">\(d = 2.5\)</span> hat den gleichen Überraschungswert wie ein beobachteter werden von <span class="math inline">\(d = -2.5\)</span>. Zur Begrifflichkeit “extrem” kann schon mal zusammengefasst werden, dass “extrem” immer in Bezug auf das <span class="math inline">\(\mu\)</span> der Stichprobenverteilung zu verstehen ist, also weiter weg vom Mittelwert <span class="math inline">\(\mu\)</span>.</p>
+<p>In <a href="#fig-stats-sig-p-value-02" class="quarto-xref">Abbildung&nbsp;<span>2.17</span></a> sind verschiedene Beispiele für beobachtete Werte und die dazugehörigen p-Werte und deren Flächen abgebildet.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-stats-sig-p-value-02" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-stats-sig-p-value-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="stats_significance_files/figure-html/fig-stats-sig-p-value-02-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stats-sig-p-value-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.17: Verschiedene P-Werte und die dazugehörenden Flächen.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In <a href="#fig-stats-sig-p-value-02" class="quarto-xref">Abbildung&nbsp;<span>2.17</span></a> ist zu erkennen wie, wenn der beobachtete Wert (roter Punkt) näher an <span class="math inline">\(\mu\)</span> herankommt, die Fläche unter der Kurve, die den p-Wert repräsentiert immer größer wird. Dabei ist der Abstand symmetrisch in positiver und negative Richtung.</p>
+<p>Da der p-Wert eines der am meisten missverstandenen Konzepte ist, hier noch mal ein paar Statements und Erklärungen rund um den p-Wert von verschiedenen Autoren und Institutionen.</p>
+<p><em>“[A] p-value is the probability under a specified statistical model that a statistical summary of the data (e.g., the sample mean difference between two compared groups) would be equal to or more extreme than its observed value.”</em> <span class="citation" data-cites="wasserstein2016">(<a href="references.html#ref-wasserstein2016" role="doc-biblioref">Wasserstein und Lazar 2016, p.131</a>)</span></p>
+<p><em>“[T]he P value is the probability of seeing data that are as weird or more weird than those that were actually observed.”</em> <span class="citation" data-cites="christensen2018">(<a href="references.html#ref-christensen2018" role="doc-biblioref">Christensen 2018, p.38</a>)</span></p>
+<p>Die Missinterpretation des p-Wertes hat dazu geführt, dass von der American Statistical Association ein Sonderband veröffentlicht wurde. Hier eine Zusammenfassung der wichtigsten Punkte aus einem dazugehörenden Übersichtsartikel <span class="citation" data-cites="wasserstein2016">(<a href="references.html#ref-wasserstein2016" role="doc-biblioref">Wasserstein und Lazar 2016</a>)</span>.</p>
+<ol type="1">
+<li>P-values can indicate how incompatible the data are with a specified statistical model.</li>
+<li>P-values do not measure the probability that the studied hypothesis is true, or the probability that the data were produced by random chance alone.</li>
+<li>Scientific conclusions and business or policy decisions should not be based only on whether a p-value passes a specific threshold.</li>
+<li>Proper inference requires full reporting and transparency.</li>
+<li>A p-value, or statistical significance, does not measure the size of an effect or the importance of a result.</li>
+<li>By itself, a p-value does not provide a good measure of evidence regarding a model or hypothesis.</li>
+</ol>
+<p>In <a href="#fig-stats-sig-altman" class="quarto-xref">Abbildung&nbsp;<span>2.18</span></a> ist ein kurzer Abschnitt aus <span class="citation" data-cites="altman1995">Altman und Bland (<a href="references.html#ref-altman1995" role="doc-biblioref">1995</a>)</span> abgebildet, der noch mal auf eine weitere Missinterpretation eines statistisch signifikanten Ergebnisses eingeht, also wenn der p-Wert <span class="math inline">\(&lt;\alpha\)</span> gilt.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-stats-sig-altman" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-stats-sig-altman-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="pics/altman_1995.png" class="img-fluid figure-img" style="width:80.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stats-sig-altman-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.18: Ausschnitt aus Altman et al.&nbsp;(1995)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Kurz gesagt, wenn wir kein statistisch signifikantes Ergebnis gefunden haben, bedeutet dies nicht, dass es keinen Unterschied gibt. Tatsächlich wird der beobachtete Wert der Statistik praktisch nie exakt <span class="math inline">\(=0\)</span> sein, und wir werden daher praktisch immer einen Unterschied finden. Allerdings ist der beobachtete Unterschied nicht <em>überraschend</em> unter der <span class="math inline">\(H_0\)</span> aufgrund der Stichprobenvariabilität. Dennoch gilt: Die Abwesenheit von Evidenz ist nicht gleichzusetzen mit der Evidenz für Abwesenheit.</p>
+<p>Es wurde bereits erwähnt, dass Werte jenseits von <span class="math inline">\(2\times \sigma_e\)</span> etwa eine Wahrscheinlichkeit von <span class="math inline">\(5\%\)</span> unter der <span class="math inline">\(H_0\)</span> haben. Dies bedeutet, dass die Wahrscheinlichkeit, Werte in diesem Bereich zu beobachten, bei etwa <span class="math inline">\(5\%\)</span> liegt, <strong>wenn die <span class="math inline">\(H_0\)</span> zutrifft</strong>. Die Art und Weise wie der p-Wert hier eingeführt wurde, folgt der ursprüngliche Interpretation nach <span class="citation" data-cites="fisher1935b">R. A. Fisher (<a href="references.html#ref-fisher1935b" role="doc-biblioref">1935</a>)</span>. Unter dieser Betrachtungsweise wird der Größe des p-Werts eine Bedeutung zugemessen. D.h. ein kleinerer p-Wert wird als stärkere Evidenz gegen die <span class="math inline">\(H_0\)</span> angesehen, als eine größerer p-Wert. Der p-Wert hat Beweiskraft (evidential value, <span class="citation" data-cites="greenland2023">Greenland (<a href="references.html#ref-greenland2023" role="doc-biblioref">2023</a>)</span>). Allerdings hat Fisher selbst unterstrichen, dass ein einzelnes Experiment wenig Aussagekraft hat und eine <strong>signifikantes</strong> Ergebnis erst vorliegt, wenn “<em>[…] a phenomenon is experimentally demonstrable when we know how to conduct an experiment which will rarely fail to give us a statistically significant result</em>” <span class="citation" data-cites="fisher1935">(<a href="references.html#ref-fisher1935" role="doc-biblioref">Ronald A. Fisher 1935, p.16</a>)</span></p>
+<p>Die Interpretation der Größe des p-Wert führt oft leider zu einer Missinterpretation. Der p-Wert erlaubt erscheint darüber eine Aussage zu machen, mit welcher Wahrscheinlichkeit die <span class="math inline">\(H_0\)</span> zutrifft. Dies ist leider nicht korrekt. Ob die <span class="math inline">\(H_0\)</span> zutrifft oder nicht, als <span class="math inline">\(P(H_0)\)</span> hat entweder die Wahrscheinlichkeit <span class="math inline">\(P(H_0) = 1\)</span> oder <span class="math inline">\(P(H_0) = 0\)</span>. Entweder die <span class="math inline">\(H_0\)</span> trifft zu oder sie trifft nicht zu. Daher die Wert <span class="math inline">\(1\)</span> oder <span class="math inline">\(0\)</span>. Über diese Wahrscheinlichkeit wird hier keine Aussage gemacht, sondern nur, ob unter der Annahme, dass die <span class="math inline">\(H_0\)</span> zutrifft, der beobachtete Wert in einem <em>wahrscheinlichen</em> oder einem <em>unwahrscheinlichen</em> Bereich liegt. Was dabei als <em>wahrscheinlich</em> gilt, ist dabei durch eine willkürliche Festlegung bestimmt. Eine gewählte Grenze von <span class="math inline">\(P = 0.05\)</span> hat keine physikalische Realität!</p>
+<p>Um diesen Punkt nochmal zu klarer zum machen eine kleine Simulation in <code>R</code>. Es werden <span class="math inline">\(1000\)</span> Zufallsstichproben der Größe <span class="math inline">\(N = 10\)</span> aus einer Standardnormalverteilung mit Mittelwert <span class="math inline">\(\mu = 0\)</span> und <span class="math inline">\(\sigma = 1\)</span> gezogen (was dies genau bedeutet wird in späteren Kapiteln genauer erklärt). Für jede dieser Stichprobe wird der Mittelwert und der dazugehörende p-Wert berechnet. Die genaue Berechnung ist zunächst irrelevant. Die angenommene <span class="math inline">\(H_0: \mu\)</span>, also per Konstruktion genau der gewählte DGB. D.h. die <span class="math inline">\(H_0\)</span> ist korrekt.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-stats-sig-p-value-distribution" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-stats-sig-p-value-distribution-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="stats_significance_files/figure-html/fig-stats-sig-p-value-distribution-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stats-sig-p-value-distribution-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;2.19: Verteilung der p-Wert unter der korrekten <span class="math inline">\(H_0\)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In <a href="#fig-stats-sig-p-value-distribution" class="quarto-xref">Abbildung&nbsp;<span>2.19</span></a> ist die Verteilung der p-Werte aus den <span class="math inline">\(1000\)</span> Simulationsdurchgängen abgetragen. Es ist zu erkennen, dass die p-Werte ziemlich gleichmäßig zwischen <span class="math inline">\(0\)</span> und <span class="math inline">\(1\)</span> verteilt sind. Tatsächlich wenn die Anzahl der Simulationen erhöht werden würde, dann würde die Streuung immer geringer werden. Diese <em>Gleichverteilung</em> lässt sich auch ganz heuristisch gut nachvollziehen (Warum?). Letztendlich ist die wichtige Einsicht hier, dass die Wahrscheinlichkeit für die Korrektheit der <span class="math inline">\(H_0\)</span> per Konstruktion gleich <span class="math inline">\(P(H_0) = 1\)</span> ist. D.h. die Simulation wurde ja genau so konstruiert, dass die <span class="math inline">\(H_0\)</span> zutrifft. Es werden aber p-Wert gleichmäßig zwischen <span class="math inline">\(0\)</span> und <span class="math inline">\(1\)</span> beobachtet. Dies zeigt, dass kein Zusammenhang zwischen der Korrektheit der <span class="math inline">\(H_0\)</span>, also der Wahrscheinlichkeit für ihr Zutreffen <span class="math inline">\(P(H_0)\)</span> und der Größe des p-Werts besteht. Die <span class="math inline">\(H_0\)</span> ist korrekt aber es werden genauso sehr große p-Werte wie auch sehr kleine p-Werte beobachtet. Dies sollte nun dazu führen, dass zukünftig Aussagen wie: “Es wurde ein p-Wert von <span class="math inline">\(p = 0.00001\)</span> beobachtet und somit ist die Wahrscheinlichkeit für die <span class="math inline">\(H_0\)</span>, also <span class="math inline">\(P(H_0) = 0.0001\)</span>.” immer als falsch identifiziert werden können.</p>
+<p>Damit ist jetzt auch die erste größere Hürde genommen und das Prinzip der statistischen Signifikanz hergeleitet worden. Wie schon angesprochen, geht diese Interpretation von beobachteten Daten auf R.A. Fisher zurück <span class="citation" data-cites="fisher1935">(siehe <a href="references.html#ref-fisher1935" role="doc-biblioref">Ronald A. Fisher 1935</a>)</span>, der als der Vater der modernen Statistik angesehen wird. Fisher neben seinen mathematischen Genie vor allem auch immer in der angewandten Forschung eingebettet. Daher war eine zentrale Forderung an seine Sichtweise aus Daten Evidenz zu extrahieren beruhend auf einzelnen Experimenten. Im folgenden Kapitel wird wir ein alternativer Ansatz entwickelt der auf die Arbeiten von <span class="citation" data-cites="neyman1933">Neyman und Pearson (<a href="references.html#ref-neyman1933" role="doc-biblioref">1933</a>)</span> zurückgeht und bei der die Wahrscheinlichkeit sich zu irren zentral ist.</p>
+</section>
+<section id="things-to-know" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="things-to-know"><span class="header-section-number">2.7</span> Things to know</h2>
+<ul>
+<li>Datengenerierender Prozess</li>
+<li>Lage- und Skalenparameter</li>
+<li>Mittelwert, Varianz und Standardabweichung</li>
+<li>Standardfehler</li>
+<li>Statistische Signifikanz</li>
+<li>Schätzer</li>
+<li>p-Wert</li>
+<li>Referenzverteilung</li>
+</ul>
+</section>
+<section id="weitere-literatur" class="level2" data-number="2.8">
+<h2 data-number="2.8" class="anchored" data-anchor-id="weitere-literatur"><span class="header-section-number">2.8</span> Weitere Literatur</h2>
+<p>Ein interessanter Artikel, der die Auswirkungen beleuchtet, wenn Studien zu wenig Power haben: <span class="citation" data-cites="button2013">Button u.&nbsp;a. (<a href="references.html#ref-button2013" role="doc-biblioref">2013</a>)</span>. In <span class="citation" data-cites="djulbegovic2007">Djulbegovic und Hozo (<a href="references.html#ref-djulbegovic2007" role="doc-biblioref">2007</a>)</span> findet sich eine interessante Diskussion darüber, unter welchen Bedingungen statistisch signifikante Ergebnisse als wahr angesehen werden sollten. In <span class="citation" data-cites="borg2023">Borg u.&nbsp;a. (<a href="references.html#ref-borg2023" role="doc-biblioref">2023</a>)</span> ist eine Untersuchung zu der unerwartet hohen Anzahl von statistisch signifikanten Ergebnissen in der sportwissenschaftlichen Literatur dokumentiert (siehe auch <span class="citation" data-cites="haeffel2022">Haeffel (<a href="references.html#ref-haeffel2022" role="doc-biblioref">2022</a>)</span>). In <span class="citation" data-cites="sandercock2024">Sandercock (<a href="references.html#ref-sandercock2024" role="doc-biblioref">2024</a>)</span> wird ein Beispiel dokumentiert, das zeigt, wie häufig der Standardfehler mit der Standardabweichung verwechselt wird (siehe auch <span class="citation" data-cites="kadlec2022">Kadlec u.&nbsp;a. (<a href="references.html#ref-kadlec2022" role="doc-biblioref">2022</a>)</span>).</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-altman1995" class="csl-entry" role="listitem">
+Altman, Douglas G, und J Martin Bland. 1995. <span>„Statistics notes: Absence of evidence is not evidence of absence“</span>. <em>Bmj</em> 311 (7003): 485.
+</div>
+<div id="ref-borg2023" class="csl-entry" role="listitem">
+Borg, David N, Adrian G Barnett, Aaron R Caldwell, Nicole M White, und Ian B Stewart. 2023. <span>„The bias for statistical significance in sport and exercise medicine“</span>. <em>Journal of science and medicine in sport</em> 26 (3): 164–68.
+</div>
+<div id="ref-button2013" class="csl-entry" role="listitem">
+Button, K. S., J. P. Ioannidis, C. Mokrysz, u.&nbsp;a. 2013. <span>„Power failure: why small sample size undermines the reliability of neuroscience“</span>. <em>Nat Rev Neurosci</em> 14 (5): 365–76. <a href="https://doi.org/10.1038/nrn3475">https://doi.org/10.1038/nrn3475</a>.
+</div>
+<div id="ref-christensen2018" class="csl-entry" role="listitem">
+Christensen, Ronald. 2018. <em>Analysis of variance, design, and regression: Linear modeling for unbalanced data</em>. CRC Press.
+</div>
+<div id="ref-djulbegovic2007" class="csl-entry" role="listitem">
+Djulbegovic, B., und I. Hozo. 2007. <span>„When should potentially false research findings be considered acceptable?“</span> <em>PLoS Med</em> 4 (2): e26. <a href="https://doi.org/10.1371/journal.pmed.0040026">https://doi.org/10.1371/journal.pmed.0040026</a>.
+</div>
+<div id="ref-fisher1935b" class="csl-entry" role="listitem">
+Fisher, R. A. 1935. <em>The Design of Experiments</em>. Book. Oliver; Boyd.
+</div>
+<div id="ref-fisher1935" class="csl-entry" role="listitem">
+Fisher, Ronald A. 1935. <span>„The logic of inductive inference“</span>. <em>Journal of the royal statistical society</em> 98 (1): 39–82.
+</div>
+<div id="ref-greenland2023" class="csl-entry" role="listitem">
+Greenland, Sander. 2023. <span>„Divergence versus decision P-values: A distinction worth making in theory and keeping in practice: Or, how divergence P-values measure evidence even when decision P-values do not“</span>. Journal Article. <em>Scandinavian Journal of Statistics</em> 50 (1): 54–88. https://doi.org/<a href="https://doi.org/10.1111/sjos.12625">https://doi.org/10.1111/sjos.12625</a>.
+</div>
+<div id="ref-haeffel2022" class="csl-entry" role="listitem">
+Haeffel, Gerald J. 2022. <span>„Psychology needs to get tired of winning“</span>. <em>Royal Society Open Science</em> 9 (6): 220099.
+</div>
+<div id="ref-kadlec2022" class="csl-entry" role="listitem">
+Kadlec, Daniel, Kristin L Sainani, und Sophia Nimphius. 2022. <span>„With Great Power Comes Great Responsibility: Common Errors in Meta-Analyses and Meta-Regressions in Strength &amp; Conditioning Research“</span>. <em>Sports Medicine</em>, 1–13.
+</div>
+<div id="ref-neyman1933" class="csl-entry" role="listitem">
+Neyman, Jerzy, und Egon Sharpe Pearson. 1933. <span>„On the problem of the most efficient tests of statistical hypotheses“</span>. <em>Philosophical Transactions of the Royal Society of London. Series A</em> 231 (694-706): 289–337.
+</div>
+<div id="ref-sandercock2024" class="csl-entry" role="listitem">
+Sandercock, Gavin. 2024. <span>„The Standard Error/Standard Deviation Mix-Up: Potential Impacts on Meta-Analyses in Sports Medicine“</span>. <em>Sports Medicine</em>, 1–10.
+</div>
+<div id="ref-wasserstein2016" class="csl-entry" role="listitem">
+Wasserstein, Ronald L, und Nicole A Lazar. 2016. <em>The ASA statement on p-values: context, process, and purpose</em>. Taylor &amp; Francis.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Kopiert");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Kopiert");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./stats_basics.html" class="pagination-link" aria-label="Eine kleine Welt der Unsicherheit">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Eine kleine Welt der Unsicherheit</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./stats_estimation.html" class="pagination-link" aria-label="Hypothesentests">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Hypothesentests</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

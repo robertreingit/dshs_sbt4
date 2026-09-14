@@ -1,0 +1,57 @@
+project:
+  type: book
+  output-dir: docs
+  
+execute: 
+  freeze: auto
+
+book:
+  title: "Skriptum - Fortgeschrittene Statistik"
+  subtitle: "SBT4"
+  author: "Robert Rein"
+  date: "14/09/2026"
+  chapters:
+    - index.qmd
+    - part: stats_title.qmd
+      chapters:
+        - stats_basics.qmd
+        - stats_significance.qmd
+        - stats_estimation.qmd
+    - part: slm_title.qmd
+      chapters:
+        - slm_basics.qmd
+        - slm_model_fit.qmd
+    - part: mlm_title.qmd
+      chapters: 
+        - mlm_basics.qmd
+        - mlm_logistic.qmd
+        - mlm_lmm.qmd
+    - part: ed_title.qmd
+      chapters:
+        - ed_basics.qmd
+        - ed_causal_inference.qmd
+        - ed_reliability.qmd
+        - ed_factorial.qmd
+        - ed_misc.qmd
+  appendices:
+    - references.qmd
+
+bibliography: bibliography.bib
+
+format:
+  html:
+    theme: cosmo
+    lang: de
+    callout-icon: true 
+    fig-height: 3
+    include-in-header: res/mathjax.html
+  pdf:
+    documentclass: scrreprt
+    fig-height: 2
+    include-in-header: 
+      text: |
+        \usepackage{makeidx,multirow}
+        \makeindex
+    include-after-body: 
+      text: |
+        \printindex
