@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>2&nbsp; Statistische Signifikanz – Skriptum - Fortgeschrittene Statistik</title>
+<title>2&nbsp; Statistische Signifikanz – Skriptum - SBT4 Quantitatitve Methoden</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,41 +25,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 /* CSS for citations */
 div.csl-bib-body { }
@@ -202,7 +167,7 @@ window.Quarto = {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">Skriptum - Fortgeschrittene Statistik</a> 
+      <a href="./">Skriptum - SBT4 Quantitatitve Methoden</a> 
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -250,7 +215,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="./slm_title.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Das einfache Regressionmodell</span></a>
+ <span class="menu-text">Das einfache Regressionsmodell</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -265,7 +230,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./slm_model_fit.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modellfit</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modellfit und Vorhersage</span></span></a>
   </div>
 </li>
       </ul>
@@ -372,7 +337,6 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#mittelwert-mu-der-population" id="toc-mittelwert-mu-der-population" class="nav-link" data-scroll-target="#mittelwert-mu-der-population"><span class="header-section-number">2.2.1</span> Mittelwert <span class="math inline">\(\mu\)</span> der Population</a></li>
   <li><a href="#standardabweichung-sigma-der-population" id="toc-standardabweichung-sigma-der-population" class="nav-link" data-scroll-target="#standardabweichung-sigma-der-population"><span class="header-section-number">2.2.2</span> Standardabweichung <span class="math inline">\(\sigma\)</span> der Population</a></li>
-  <li><a href="#mittelwert-und-standardabweichung-in-r" id="toc-mittelwert-und-standardabweichung-in-r" class="nav-link" data-scroll-target="#mittelwert-und-standardabweichung-in-r"><span class="header-section-number">2.2.3</span> Mittelwert und Standardabweichung in <code>R</code></a></li>
   </ul></li>
   <li><a href="#entscheidungen-und-mu-und-sigma" id="toc-entscheidungen-und-mu-und-sigma" class="nav-link" data-scroll-target="#entscheidungen-und-mu-und-sigma"><span class="header-section-number">2.3</span> Entscheidungen und <span class="math inline">\(\mu\)</span> und <span class="math inline">\(\sigma\)</span></a></li>
   <li><a href="#welche-verteilung-setzen-wir-an" id="toc-welche-verteilung-setzen-wir-an" class="nav-link" data-scroll-target="#welche-verteilung-setzen-wir-an"><span class="header-section-number">2.4</span> Welche Verteilung setzen wir an?</a></li>
@@ -582,30 +546,10 @@ Abbildung&nbsp;2.10: Zusammenhang zwischen dem Erwartungswert <span class="math 
 </div>
 </div>
 <p>In vielen Fällen wird im Rahmen einer statistischen Analyse versucht, über <span class="math inline">\(\bar{x}\)</span> einen Rückschluss auf <span class="math inline">\(\mu\)</span> zu ziehen. D.h. der Mittelwert der Stichprobe wird als ein <em>guter</em> Wert angesehen, um den Erwartungswert <span class="math inline">\(\mu\)</span> der Population abzuschätzen.</p>
-<section id="detour---schätzer" class="level4" data-number="2.2.1.1">
-<h4 data-number="2.2.1.1" class="anchored" data-anchor-id="detour---schätzer"><span class="header-section-number">2.2.1.1</span> Detour - Schätzer</h4>
-<p>Schauen wir uns noch einmal den Mittelwert <span class="math inline">\(\mu\)</span> der Population und den Mittelwert <span class="math inline">\(\bar{x}\)</span> der Stichprobe und deren Zusammenhang an. Der Mittelwert <span class="math inline">\(\bar{x}\)</span> der Stichprobe wird als sogenannter Schätzer verwendet. Diesen Begriff werden wir später noch genauer untersuchen. Im Moment reicht es, sich zu merken, dass ein Schätzer eine Statistik ist, mit der wir einen Parameter der Population, z. B. <span class="math inline">\(\mu\)</span>, abschätzen wollen. Wie schon mehrmals erwähnt, werden wir den wahren Wert <span class="math inline">\(\mu\)</span> aus der Population mittels unserer Stichprobe niemals zu 100% korrekt bestimmen können. Wir können aber mittels geschickt gewählter Statistiken Schätzer konstruieren, die bestimmte Eigenschaften haben.</p>
-<p>Nehmen wir zum Beispiel den Mittelwert <span class="math inline">\(\bar{x}\)</span>. In unserer kleinen Welt kennen wir den Mittelwert <span class="math inline">\(\mu\)</span> unserer Population. Der Wert beträgt <span class="math inline">\(\mu = 2291.3\)</span>. Schauen wir uns einmal an, was passiert, wenn wir alle möglichen Stichproben der Größe <span class="math inline">\(N = 10\)</span> unserer kleinen Welt bestimmen und die Verteilung der Mittelwerte abtragen (siehe <a href="#fig-stats-sig-mean-n3" class="quarto-xref">Abbildung&nbsp;<span>2.11</span></a>).</p>
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-stats-sig-mean-n3" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-stats-sig-mean-n3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="stats_significance_files/figure-html/fig-stats-sig-mean-n3-1.png" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stats-sig-mean-n3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Abbildung&nbsp;2.11: Verteilung der Mittelwerte von Stichproben der Größe <span class="math inline">\(n=10\)</span>, Kleine Welt Population <span class="math inline">\(\mu\)</span> (rot)
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>In <a href="#fig-stats-sig-mean-n3" class="quarto-xref">Abbildung&nbsp;<span>2.11</span></a> sehen wir, dass im Mittel der Stichprobenmittelwert <span class="math inline">\(\bar{x}\)</span> tatsächlich um den wahren Populationsmittelwert <span class="math inline">\(\mu\)</span> herum zentriert ist. Einzelne Ausgänge des <em>Experiments</em> können zwar daneben liegen, der Großteil der Experimente gruppiert sich jedoch um <span class="math inline">\(\mu\)</span> herum. Der Stichprobenmittelwert <span class="math inline">\(\bar{x}\)</span> ist daher eine <em>gute</em> Statistik, um den tatsächlichen Populationsmittelwert <span class="math inline">\(\mu\)</span> abzuschätzen.</p>
-</section>
 </section>
 <section id="standardabweichung-sigma-der-population" class="level3" data-number="2.2.2">
 <h3 data-number="2.2.2" class="anchored" data-anchor-id="standardabweichung-sigma-der-population"><span class="header-section-number">2.2.2</span> Standardabweichung <span class="math inline">\(\sigma\)</span> der Population</h3>
-<p>Die zweite Eigenschaft von Verteilungen beziffert die Streuung in der Population. Die Streuung in der Population wird als Varianz bezeichnet und mit dem Symbol <span class="math inline">\(\sigma^2\)</span> gekennzeichnet. Sei zunächst betrachtet, welchen Einfluss <span class="math inline">\(\sigma^2\)</span> auf die Form der Verteilung hat. In <a href="#fig-sts-sig-dist-sigma" class="quarto-xref">Abbildung&nbsp;<span>2.12</span></a> sind zwei Verteilungen abgetragen. Dieses Mal ist der Erwartungswert <span class="math inline">\(\mu\)</span> in beiden Fällen gleich, aber die Varianzen <span class="math inline">\(\sigma^2\)</span> sind mit <span class="math inline">\(\sigma_1^2 = 2\)</span> und <span class="math inline">\(\sigma_2^2 = 1\)</span> unterschiedlich groß.</p>
+<p>Die zweite Eigenschaft von Verteilungen beziffert die Streuung in der Population. Die Streuung in der Population wird als Varianz bezeichnet und mit dem Symbol <span class="math inline">\(\sigma^2\)</span> gekennzeichnet. Sei zunächst betrachtet, welchen Einfluss <span class="math inline">\(\sigma^2\)</span> auf die Form der Verteilung hat. In <a href="#fig-sts-sig-dist-sigma" class="quarto-xref">Abbildung&nbsp;<span>2.11</span></a> sind zwei Verteilungen abgetragen. Dieses Mal ist der Erwartungswert <span class="math inline">\(\mu\)</span> in beiden Fällen gleich, aber die Varianzen <span class="math inline">\(\sigma^2\)</span> sind mit <span class="math inline">\(\sigma_1^2 = 2\)</span> und <span class="math inline">\(\sigma_2^2 = 1\)</span> unterschiedlich groß.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-sts-sig-dist-sigma" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -614,50 +558,30 @@ Abbildung&nbsp;2.11: Verteilung der Mittelwerte von Stichproben der Größe <spa
 <img src="stats_significance_files/figure-html/fig-sts-sig-dist-sigma-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sts-sig-dist-sigma-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Abbildung&nbsp;2.12: Verteilungen mit unterschiedlichen Varianzen
+Abbildung&nbsp;2.11: Verteilungen mit unterschiedlichen Varianzen
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>Wie in <a href="#fig-sts-sig-dist-sigma" class="quarto-xref">Abbildung&nbsp;<span>2.12</span></a> zu sehen ist, führt dies dazu, dass beide Verteilungen ihren Mittelpunkt an der gleichen Stelle haben, aber die rote Verteilung mit <span class="math inline">\(\sigma_1^2=2\)</span> breiter ist als die türkise Verteilung. Dies bedeutet, dass die Werte in der rote Verteilung stärker um den Mittelwert herum streuen als in der türkisen Verteilung. Wenn nun Werte aus der türkisen Verteilung gezogen werden, dann sollten diese näher um den Mittelwert <span class="math inline">\(\mu = 0\)</span> liegen als bei der roten Verteilung.</p>
+<p>Wie in <a href="#fig-sts-sig-dist-sigma" class="quarto-xref">Abbildung&nbsp;<span>2.11</span></a> zu sehen ist, führt dies dazu, dass beide Verteilungen ihren Mittelpunkt an der gleichen Stelle haben, aber die rote Verteilung mit <span class="math inline">\(\sigma_1^2=2\)</span> breiter ist als die türkise Verteilung. Dies bedeutet, dass die Werte in der rote Verteilung stärker um den Mittelwert herum streuen als in der türkisen Verteilung. Wenn nun Werte aus der türkisen Verteilung gezogen werden, dann sollten diese näher um den Mittelwert <span class="math inline">\(\mu = 0\)</span> liegen als bei der roten Verteilung.</p>
 <p>Die Varianz <span class="math inline">\(\sigma^2\)</span> ist daher, wie auch der Mittelwert, ein Parameter der Verteilung. Die Varianz bestimmt die Form der Verteilung. Das heißt, wenn in der Schreibweise von eben und die Funktion <span class="math inline">\(f\)</span>, die die Verteilung beschreibt, dann gilt <span class="math inline">\(f(\sigma^2)\)</span> oder eben zusammen mit dem Mittelwert <span class="math inline">\(\mu\)</span>: <span class="math inline">\(f(\mu, \sigma^2)\)</span>. D.h. die Verteilung ist eine Funktion des Erwartungswertes <span class="math inline">\(\mu\)</span> und der Varianz <span class="math inline">\(\sigma^2\)</span>.</p>
 <p>Wenn aus der Varianz <span class="math inline">\(\sigma^2\)</span> die Wurzel gezogen wird, dann wird der resultierende Wert <span class="math inline">\(\sigma\)</span> als Standardabweichung bezeichnet. Da die Varianz <span class="math inline">\(\sigma^2\)</span> nur positive Werte annehmen kann, ist die Wurzelfunktion bzw. deren Umkehrung, die Quadrierung, eineindeutig. Wenn die Standardabweichung bekannt ist, ist automatisch auch die Varianz bekannt.</p>
 <p>In der Stichprobe wird die Standardabweichung meistens mit dem Zeichen <span class="math inline">\(s\)</span> bezeichnet. Insgesamt resultieren daraus die vier Bezeichnungen, <span class="math inline">\(\mu\)</span> Erwartungswert bzw. Mittelwert der Population, <span class="math inline">\(\sigma^2\)</span> bzw. <span class="math inline">\(\sigma\)</span> die Varianz bzw. Standardabweichung in der Population, <span class="math inline">\(\bar{x}\)</span> der Mittelwert in der Stichprobe und <span class="math inline">\(s^2\)</span> bzw. <span class="math inline">\(s\)</span> die Varianz bzw. Stichprobe in der Stichprobe.</p>
 <p>Die Standardabweichung <span class="math inline">\(s\)</span> in der Stichprobe wird mittels der folgenden Formel berechnet:</p>
-<p><span class="math display">\[\begin{equation}
+<p><span id="eq-std"><span class="math display">\[
 s = \sqrt{\frac{\sum_{i=1}^n (x_i - \bar{x})^2}{n-1}}
-\label{eq-std}
-\end{equation}\]</span></p>
+\tag{2.1}\]</span></span></p>
 <p>Das bedeutet, die Standardabweichung ist die mittlere quadrierte Abweichung vom Mittelwert (siehe Formel <span class="math inline">\(\eqref{eq-std}\)</span>). Wenn die Werte stärker Streuen, dementsprechend stärker um den Mittelwert herum schwanken, dann wird <span class="math inline">\(s\)</span> größer bzw. wenn die Werte näher um den Mittelwert herum schwanken, dann wird <span class="math inline">\(s\)</span> kleiner. Da die Abweichung vom Mittelwert <span class="math inline">\(\bar{x}\)</span> nach Formel <span class="math inline">\(\eqref{eq-std}\)</span> quadriert werden, hat die Standardabweichung den Vorteil gegenüber der Varianz, dass die Standardabweichung die gleichen Einheiten hat wie der Mittelwert. Während die Varianz als das Quadrat der Standardabweichung die quadrierte Einheiten des Mittelwerts hat. Deswegen wird in der deskriptiven bevorzugt die Standardabweichung verwendet, da die Standardabweichung üblicherweise direkt interpretiert werden kann. Wären zum Beispiel Weitsprungdaten erhoben worden und die mittlere Weite wäre <span class="math inline">\(\bar{x} = 5\)</span>m mit einer Standardabweichung von <span class="math inline">\(s = 1.5\)</span>m, dann ist dies einfache zu interpretieren als eine Varianz von <span class="math inline">\(s^2 = 2.25\text{m}^2\)</span>.</p>
 <p>Konkret im ersten Beispiel aus der kleinen Welt, bei dem in der Kontrollgruppe die Personen <span class="math inline">\(i = \{3,8,9\}\)</span> gezogen wurden, können für diese Stichprobe die folgende Standardabweichung bei einem Mittelwert von <span class="math inline">\(\bar{x} = 2198\)</span> berechnet werden:</p>
-<p><span class="math display">\[\begin{equation*}
+<p><span class="math display">\[
 s = \sqrt{\frac{(2178-2198)^2+(2117-2198)^2+(2298-2198)^2}{2}} = 92
-\end{equation*}\]</span></p>
-</section>
-<section id="mittelwert-und-standardabweichung-in-r" class="level3" data-number="2.2.3">
-<h3 data-number="2.2.3" class="anchored" data-anchor-id="mittelwert-und-standardabweichung-in-r"><span class="header-section-number">2.2.3</span> Mittelwert und Standardabweichung in <code>R</code></h3>
-<p>Um den Mittelwert und die Standardabweichung bzw. die Varianz zu berechnen, gibt es in <code>R</code> entsprechende Funktionen mit den Namen <code>mean()</code>, <code>sd()</code> und <code>var()</code>.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(x)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 3</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(x)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.581139</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(x)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2.5</code></pre>
-</div>
-</div>
+\]</span></p>
 </section>
 </section>
 <section id="entscheidungen-und-mu-und-sigma" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="entscheidungen-und-mu-und-sigma"><span class="header-section-number">2.3</span> Entscheidungen und <span class="math inline">\(\mu\)</span> und <span class="math inline">\(\sigma\)</span></h2>
-<p>Zurück nun zum eigentlichen Problem für eine gegenbene <span class="math inline">\(H_0\)</span>-Hypothese den Grad der <em>Überraschung</em> zu spezifizieren. Die Kenntnis des Erwartungswertes <span class="math inline">\(\mu\)</span> und der Standardabweichung <span class="math inline">\(\sigma\)</span> erlaubt eine Verteilung in verschiedene Bereiche einzuteilen. Sei zum Beispiel die folgende Verteilung mit Erwartungswert <span class="math inline">\(\mu\)</span> gegeben und werden die Bereiche <span class="math inline">\(\mu \pm \sigma, \mu \pm 2 \sigma\)</span> und <span class="math inline">\(\mu \pm 3 \sigma\)</span> eingezeichnet, dann ergibt sich die folgende Darstellung (siehe <a href="#fig-stats-sig-norm-sigmas" class="quarto-xref">Abbildung&nbsp;<span>2.13</span></a>).</p>
+<p>Zurück nun zum eigentlichen Problem für eine gegenbene <span class="math inline">\(H_0\)</span>-Hypothese den Grad der <em>Überraschung</em> zu spezifizieren. Die Kenntnis des Erwartungswertes <span class="math inline">\(\mu\)</span> und der Standardabweichung <span class="math inline">\(\sigma\)</span> erlaubt eine Verteilung in verschiedene Bereiche einzuteilen. Sei zum Beispiel die folgende Verteilung mit Erwartungswert <span class="math inline">\(\mu\)</span> gegeben und werden die Bereiche <span class="math inline">\(\mu \pm \sigma, \mu \pm 2 \sigma\)</span> und <span class="math inline">\(\mu \pm 3 \sigma\)</span> eingezeichnet, dann ergibt sich die folgende Darstellung (siehe <a href="#fig-stats-sig-norm-sigmas" class="quarto-xref">Abbildung&nbsp;<span>2.12</span></a>).</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-stats-sig-norm-sigmas" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -666,7 +590,7 @@ s = \sqrt{\frac{(2178-2198)^2+(2117-2198)^2+(2298-2198)^2}{2}} = 92
 <img src="stats_significance_files/figure-html/fig-stats-sig-norm-sigmas-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stats-sig-norm-sigmas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Abbildung&nbsp;2.13: Verteilung mit verschiedenen Vielfachen der Standardabweichung <span class="math inline">\(\sigma\)</span>
+Abbildung&nbsp;2.12: Verteilung mit verschiedenen Vielfachen der Standardabweichung <span class="math inline">\(\sigma\)</span>
 </figcaption>
 </figure>
 </div>
@@ -697,7 +621,7 @@ Abbildung&nbsp;2.13: Verteilung mit verschiedenen Vielfachen der Standardabweich
 <p><span class="math display">\[
 |\text{beobachteter Wert }| &gt; 2\times \sigma_e \Rightarrow \text{ Evidenz gegen } H_0
 \]</span></p>
-<p>Wenn der beobachtete Wert der Statistik mehr als zwei Standardfehler vom Mittelwert unter der <span class="math inline">\(H_0\)</span> entfernt liegt, wird dies als Evidenz gegen die Korrektheit der Annahme der <span class="math inline">\(H_0\)</span> gesehen. Es wird getan als ob die <span class="math inline">\(H_0\)</span> in der Realität zutrifft, dann wird ein Wert beobachtet und wenn dieser Wert weiter als zwei Standardfehler in Plus- oder Minusrichtung vom Mittelwert unter der <span class="math inline">\(H_0\)</span> entfernt ist, dann wird so getan als ob die <span class="math inline">\(H_0\)</span> nicht zutrifft. Die <span class="math inline">\(H_0\)</span> wird abgelehnt. In <a href="#fig-stats-sig-decision-regions" class="quarto-xref">Abbildung&nbsp;<span>2.15</span></a> ist die Entscheidungsregel noch einmal graphisch dargestellt.</p>
+<p>Wenn der beobachtete Wert der Statistik mehr als zwei Standardfehler vom Mittelwert unter der <span class="math inline">\(H_0\)</span> entfernt liegt, wird dies als Evidenz gegen die Korrektheit der Annahme der <span class="math inline">\(H_0\)</span> gesehen. Es wird getan als ob die <span class="math inline">\(H_0\)</span> in der Realität zutrifft, dann wird ein Wert beobachtet und wenn dieser Wert weiter als zwei Standardfehler in Plus- oder Minusrichtung vom Mittelwert unter der <span class="math inline">\(H_0\)</span> entfernt ist, dann wird so getan als ob die <span class="math inline">\(H_0\)</span> nicht zutrifft. Die <span class="math inline">\(H_0\)</span> wird abgelehnt. In <a href="#fig-stats-sig-decision-regions" class="quarto-xref">Abbildung&nbsp;<span>2.14</span></a> ist die Entscheidungsregel noch einmal graphisch dargestellt.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div id="fig-stats-sig-decision-graph" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -714,7 +638,7 @@ Abbildung&nbsp;2.13: Verteilung mit verschiedenen Vielfachen der Standardabweich
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stats-sig-decision-graph-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Abbildung&nbsp;2.14: Entscheidungsregel zur <span class="math inline">\(H_0\)</span>
+Abbildung&nbsp;2.13: Entscheidungsregel zur <span class="math inline">\(H_0\)</span>
 </figcaption>
 </figure>
 </div>
@@ -729,13 +653,13 @@ Abbildung&nbsp;2.14: Entscheidungsregel zur <span class="math inline">\(H_0\)</s
 <img src="stats_significance_files/figure-html/fig-stats-sig-decision-regions-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stats-sig-decision-regions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Abbildung&nbsp;2.15: Die <span class="math inline">\(H_0\)</span> Verteilung wenn nichts passiert unterteilt in Regionen die zur Entscheidung für die <span class="math inline">\(H_0\)</span> (grün) und gegen die <span class="math inline">\(H_0\)</span> (rot) führen.
+Abbildung&nbsp;2.14: Die <span class="math inline">\(H_0\)</span> Verteilung wenn nichts passiert unterteilt in Regionen die zur Entscheidung für die <span class="math inline">\(H_0\)</span> (grün) und gegen die <span class="math inline">\(H_0\)</span> (rot) führen.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>Wenn der Stichprobenwert der Statistik in der roten Region auftritt (siehe <a href="#fig-stats-sig-decision-regions" class="quarto-xref">Abbildung&nbsp;<span>2.15</span></a>), dann wird von einem <strong>statistisch signifikanten Ergebnis</strong> gesprochen: <em>Unter der <span class="math inline">\(H_0\)</span> bin ich überrascht, diesen Wert zu sehen!</em> Allerdings ist dieser Wert <strong>nicht unmöglich</strong>, sondern lediglich unwahrscheinlich, wenn die Annahme <span class="math inline">\(H_0\)</span> korrekt ist. Unwahrscheinlich ist dabei kein absolutes Maß, sondern nur eine <strong>willkürliche</strong> Festsetzung, die getroffen wurde. Als nächstes soll die Bedeutung der <span class="math inline">\(5\%\)</span> noch etwas genauer betrachtet werden. Dazu wird eine neues Konzept, der p-Wert benötigt.</p>
+<p>Wenn der Stichprobenwert der Statistik in der roten Region auftritt (siehe <a href="#fig-stats-sig-decision-regions" class="quarto-xref">Abbildung&nbsp;<span>2.14</span></a>), dann wird von einem <strong>statistisch signifikanten Ergebnis</strong> gesprochen: <em>Unter der <span class="math inline">\(H_0\)</span> bin ich überrascht, diesen Wert zu sehen!</em> Allerdings ist dieser Wert <strong>nicht unmöglich</strong>, sondern lediglich unwahrscheinlich, wenn die Annahme <span class="math inline">\(H_0\)</span> korrekt ist. Unwahrscheinlich ist dabei kein absolutes Maß, sondern nur eine <strong>willkürliche</strong> Festsetzung, die getroffen wurde. Als nächstes soll die Bedeutung der <span class="math inline">\(5\%\)</span> noch etwas genauer betrachtet werden. Dazu wird eine neues Konzept, der p-Wert benötigt.</p>
 </section>
 <section id="der-p-wert" class="level2" data-number="2.6">
 <h2 data-number="2.6" class="anchored" data-anchor-id="der-p-wert"><span class="header-section-number">2.6</span> Der p-Wert</h2>
@@ -743,7 +667,7 @@ Abbildung&nbsp;2.15: Die <span class="math inline">\(H_0\)</span> Verteilung wen
 <div id="def-p-value" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 2.3 (p-Wert )</strong></span> Der p-Wert gibt die Wahrscheinlichkeit für den beobachteten oder einen noch extremeren Wert unter der <span class="math inline">\(H_0\)</span> an.</p>
 </div>
-<p>In <a href="#fig-stats-sig-p-value-01" class="quarto-xref">Abbildung&nbsp;<span>2.16</span></a> ist eine Verteilung unter der <span class="math inline">\(H_0\)</span> eingezeichnet, zusammen mit dem Bereichen für den ein beobachteter Wert einen p-Wert von kleiner <span class="math inline">\(P = 0.05\)</span> hat.</p>
+<p>In <a href="#fig-stats-sig-p-value-01" class="quarto-xref">Abbildung&nbsp;<span>2.15</span></a> ist eine Verteilung unter der <span class="math inline">\(H_0\)</span> eingezeichnet, zusammen mit dem Bereichen für den ein beobachteter Wert einen p-Wert von kleiner <span class="math inline">\(P = 0.05\)</span> hat.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-stats-sig-p-value-01" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -752,7 +676,7 @@ Abbildung&nbsp;2.15: Die <span class="math inline">\(H_0\)</span> Verteilung wen
 <img src="stats_significance_files/figure-html/fig-stats-sig-p-value-01-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stats-sig-p-value-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Abbildung&nbsp;2.16: Der beobachtete Wert der Statistik (schwarzer Punkt) zusammen mit der Verteilung unter der <span class="math inline">\(H_0\)</span>. Die gelben Flächen zeigen den p-Wert für den Wert der beobachteten Statistik an.
+Abbildung&nbsp;2.15: Der beobachtete Wert der Statistik (schwarzer Punkt) zusammen mit der Verteilung unter der <span class="math inline">\(H_0\)</span>. Die gelben Flächen zeigen den p-Wert für den Wert der beobachteten Statistik an.
 </figcaption>
 </figure>
 </div>
@@ -760,7 +684,7 @@ Abbildung&nbsp;2.16: Der beobachtete Wert der Statistik (schwarzer Punkt) zusamm
 </div>
 <p>Der p-Wert ist nun die Wahrscheinlichkeit, unter der Annahme der <span class="math inline">\(H_0\)</span>, das beobachtete oder ein extremeren Wert auftritt. Dies resultiert in der gelben Fläche. Ein extremerer Wert bedeutet in diesem Fall einen größeren Wert, also alle Werte rechts vom beobachteten Wert. Jetzt irritiert allerdings, dass auf der linken Seite ebenfalls eine gelbe Fläche eingezeichnet. Was hier passiert, ist, dass der beobachtete Wert an <span class="math inline">\(\mu\)</span> in den anderen Randbereich der Verteilung <em>gespiegelt</em> (salopp) wurde und wieder das gleiche Prinzip mit den extremeren Werten angewendet. Hier bedeutet “extremer” links vom gespiegelten beobachteten Wert. Es wieder eine Fläche erhalten und somit eine Wahrscheinlichkeit. Die beiden gelben Flächen zusammen ergeben dann den p-Wert.</p>
 <p>Dass die Wahrscheinlichkeit für eine Seite dazugenommen wird, bei der gar kein Wert beobachtet haben, wird später verständlich, wenn der Unterschied zwischen gerichteten und ungerichteten Hypothesen betrachtet wird. Hier reicht zunächst die Einstufung, dass Werte als überraschend betrachtet werden, anhand ihres Abstandes zum Mittelwert egal ob der Abstand in positiver oder negativer Richtung vorliegt. D.h. ein beobachteter Wert von <span class="math inline">\(d = 2.5\)</span> hat den gleichen Überraschungswert wie ein beobachteter werden von <span class="math inline">\(d = -2.5\)</span>. Zur Begrifflichkeit “extrem” kann schon mal zusammengefasst werden, dass “extrem” immer in Bezug auf das <span class="math inline">\(\mu\)</span> der Stichprobenverteilung zu verstehen ist, also weiter weg vom Mittelwert <span class="math inline">\(\mu\)</span>.</p>
-<p>In <a href="#fig-stats-sig-p-value-02" class="quarto-xref">Abbildung&nbsp;<span>2.17</span></a> sind verschiedene Beispiele für beobachtete Werte und die dazugehörigen p-Werte und deren Flächen abgebildet.</p>
+<p>In <a href="#fig-stats-sig-p-value-02" class="quarto-xref">Abbildung&nbsp;<span>2.16</span></a> sind verschiedene Beispiele für beobachtete Werte und die dazugehörigen p-Werte und deren Flächen abgebildet.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-stats-sig-p-value-02" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -769,13 +693,13 @@ Abbildung&nbsp;2.16: Der beobachtete Wert der Statistik (schwarzer Punkt) zusamm
 <img src="stats_significance_files/figure-html/fig-stats-sig-p-value-02-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stats-sig-p-value-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Abbildung&nbsp;2.17: Verschiedene P-Werte und die dazugehörenden Flächen.
+Abbildung&nbsp;2.16: Verschiedene P-Werte und die dazugehörenden Flächen.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>In <a href="#fig-stats-sig-p-value-02" class="quarto-xref">Abbildung&nbsp;<span>2.17</span></a> ist zu erkennen wie, wenn der beobachtete Wert (roter Punkt) näher an <span class="math inline">\(\mu\)</span> herankommt, die Fläche unter der Kurve, die den p-Wert repräsentiert immer größer wird. Dabei ist der Abstand symmetrisch in positiver und negative Richtung.</p>
+<p>In <a href="#fig-stats-sig-p-value-02" class="quarto-xref">Abbildung&nbsp;<span>2.16</span></a> ist zu erkennen wie, wenn der beobachtete Wert (roter Punkt) näher an <span class="math inline">\(\mu\)</span> herankommt, die Fläche unter der Kurve, die den p-Wert repräsentiert immer größer wird. Dabei ist der Abstand symmetrisch in positiver und negative Richtung.</p>
 <p>Da der p-Wert eines der am meisten missverstandenen Konzepte ist, hier noch mal ein paar Statements und Erklärungen rund um den p-Wert von verschiedenen Autoren und Institutionen.</p>
 <p><em>“[A] p-value is the probability under a specified statistical model that a statistical summary of the data (e.g., the sample mean difference between two compared groups) would be equal to or more extreme than its observed value.”</em> <span class="citation" data-cites="wasserstein2016">(<a href="references.html#ref-wasserstein2016" role="doc-biblioref">Wasserstein und Lazar 2016, p.131</a>)</span></p>
 <p><em>“[T]he P value is the probability of seeing data that are as weird or more weird than those that were actually observed.”</em> <span class="citation" data-cites="christensen2018">(<a href="references.html#ref-christensen2018" role="doc-biblioref">Christensen 2018, p.38</a>)</span></p>
@@ -788,7 +712,7 @@ Abbildung&nbsp;2.17: Verschiedene P-Werte und die dazugehörenden Flächen.
 <li>A p-value, or statistical significance, does not measure the size of an effect or the importance of a result.</li>
 <li>By itself, a p-value does not provide a good measure of evidence regarding a model or hypothesis.</li>
 </ol>
-<p>In <a href="#fig-stats-sig-altman" class="quarto-xref">Abbildung&nbsp;<span>2.18</span></a> ist ein kurzer Abschnitt aus <span class="citation" data-cites="altman1995">Altman und Bland (<a href="references.html#ref-altman1995" role="doc-biblioref">1995</a>)</span> abgebildet, der noch mal auf eine weitere Missinterpretation eines statistisch signifikanten Ergebnisses eingeht, also wenn der p-Wert <span class="math inline">\(&lt;\alpha\)</span> gilt.</p>
+<p>In <a href="#fig-stats-sig-altman" class="quarto-xref">Abbildung&nbsp;<span>2.17</span></a> ist ein kurzer Abschnitt aus <span class="citation" data-cites="altman1995">Altman und Bland (<a href="references.html#ref-altman1995" role="doc-biblioref">1995</a>)</span> abgebildet, der noch mal auf eine weitere Missinterpretation eines statistisch signifikanten Ergebnisses eingeht, also wenn der p-Wert <span class="math inline">\(&lt;\alpha\)</span> gilt.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-stats-sig-altman" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -797,7 +721,7 @@ Abbildung&nbsp;2.17: Verschiedene P-Werte und die dazugehörenden Flächen.
 <img src="pics/altman_1995.png" class="img-fluid figure-img" style="width:80.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stats-sig-altman-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Abbildung&nbsp;2.18: Ausschnitt aus Altman et al.&nbsp;(1995)
+Abbildung&nbsp;2.17: Ausschnitt aus Altman et al.&nbsp;(1995)
 </figcaption>
 </figure>
 </div>
@@ -815,13 +739,13 @@ Abbildung&nbsp;2.18: Ausschnitt aus Altman et al.&nbsp;(1995)
 <img src="stats_significance_files/figure-html/fig-stats-sig-p-value-distribution-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stats-sig-p-value-distribution-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Abbildung&nbsp;2.19: Verteilung der p-Wert unter der korrekten <span class="math inline">\(H_0\)</span>.
+Abbildung&nbsp;2.18: Verteilung der p-Wert unter der korrekten <span class="math inline">\(H_0\)</span>.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>In <a href="#fig-stats-sig-p-value-distribution" class="quarto-xref">Abbildung&nbsp;<span>2.19</span></a> ist die Verteilung der p-Werte aus den <span class="math inline">\(1000\)</span> Simulationsdurchgängen abgetragen. Es ist zu erkennen, dass die p-Werte ziemlich gleichmäßig zwischen <span class="math inline">\(0\)</span> und <span class="math inline">\(1\)</span> verteilt sind. Tatsächlich wenn die Anzahl der Simulationen erhöht werden würde, dann würde die Streuung immer geringer werden. Diese <em>Gleichverteilung</em> lässt sich auch ganz heuristisch gut nachvollziehen (Warum?). Letztendlich ist die wichtige Einsicht hier, dass die Wahrscheinlichkeit für die Korrektheit der <span class="math inline">\(H_0\)</span> per Konstruktion gleich <span class="math inline">\(P(H_0) = 1\)</span> ist. D.h. die Simulation wurde ja genau so konstruiert, dass die <span class="math inline">\(H_0\)</span> zutrifft. Es werden aber p-Wert gleichmäßig zwischen <span class="math inline">\(0\)</span> und <span class="math inline">\(1\)</span> beobachtet. Dies zeigt, dass kein Zusammenhang zwischen der Korrektheit der <span class="math inline">\(H_0\)</span>, also der Wahrscheinlichkeit für ihr Zutreffen <span class="math inline">\(P(H_0)\)</span> und der Größe des p-Werts besteht. Die <span class="math inline">\(H_0\)</span> ist korrekt aber es werden genauso sehr große p-Werte wie auch sehr kleine p-Werte beobachtet. Dies sollte nun dazu führen, dass zukünftig Aussagen wie: “Es wurde ein p-Wert von <span class="math inline">\(p = 0.00001\)</span> beobachtet und somit ist die Wahrscheinlichkeit für die <span class="math inline">\(H_0\)</span>, also <span class="math inline">\(P(H_0) = 0.0001\)</span>.” immer als falsch identifiziert werden können.</p>
+<p>In <a href="#fig-stats-sig-p-value-distribution" class="quarto-xref">Abbildung&nbsp;<span>2.18</span></a> ist die Verteilung der p-Werte aus den <span class="math inline">\(1000\)</span> Simulationsdurchgängen abgetragen. Es ist zu erkennen, dass die p-Werte ziemlich gleichmäßig zwischen <span class="math inline">\(0\)</span> und <span class="math inline">\(1\)</span> verteilt sind. Tatsächlich wenn die Anzahl der Simulationen erhöht werden würde, dann würde die Streuung immer geringer werden. Diese <em>Gleichverteilung</em> lässt sich auch ganz heuristisch gut nachvollziehen (Warum?). Letztendlich ist die wichtige Einsicht hier, dass die Wahrscheinlichkeit für die Korrektheit der <span class="math inline">\(H_0\)</span> per Konstruktion gleich <span class="math inline">\(P(H_0) = 1\)</span> ist. D.h. die Simulation wurde ja genau so konstruiert, dass die <span class="math inline">\(H_0\)</span> zutrifft. Es werden aber p-Wert gleichmäßig zwischen <span class="math inline">\(0\)</span> und <span class="math inline">\(1\)</span> beobachtet. Dies zeigt, dass kein Zusammenhang zwischen der Korrektheit der <span class="math inline">\(H_0\)</span>, also der Wahrscheinlichkeit für ihr Zutreffen <span class="math inline">\(P(H_0)\)</span> und der Größe des p-Werts besteht. Die <span class="math inline">\(H_0\)</span> ist korrekt aber es werden genauso sehr große p-Werte wie auch sehr kleine p-Werte beobachtet. Dies sollte nun dazu führen, dass zukünftig Aussagen wie: “Es wurde ein p-Wert von <span class="math inline">\(p = 0.00001\)</span> beobachtet und somit ist die Wahrscheinlichkeit für die <span class="math inline">\(H_0\)</span>, also <span class="math inline">\(P(H_0) = 0.0001\)</span>.” immer als falsch identifiziert werden können.</p>
 <p>Damit ist jetzt auch die erste größere Hürde genommen und das Prinzip der statistischen Signifikanz hergeleitet worden. Wie schon angesprochen, geht diese Interpretation von beobachteten Daten auf R.A. Fisher zurück <span class="citation" data-cites="fisher1935">(siehe <a href="references.html#ref-fisher1935" role="doc-biblioref">Ronald A. Fisher 1935</a>)</span>, der als der Vater der modernen Statistik angesehen wird. Fisher neben seinen mathematischen Genie vor allem auch immer in der angewandten Forschung eingebettet. Daher war eine zentrale Forderung an seine Sichtweise aus Daten Evidenz zu extrahieren beruhend auf einzelnen Experimenten. Im folgenden Kapitel wird wir ein alternativer Ansatz entwickelt der auf die Arbeiten von <span class="citation" data-cites="neyman1933">Neyman und Pearson (<a href="references.html#ref-neyman1933" role="doc-biblioref">1933</a>)</span> zurückgeht und bei der die Wahrscheinlichkeit sich zu irren zentral ist.</p>
 </section>
 <section id="things-to-know" class="level2" data-number="2.7">

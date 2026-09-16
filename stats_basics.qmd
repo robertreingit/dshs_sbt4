@@ -7,7 +7,7 @@
 source('_common.R')
 ```
 
-In den einleitenden Problem aus dem vorhergehenden Abschnitt mit einem Vergleich zwischen zwei Gruppen ist warum überhaupt die Berechnung einer Statistik notwendig ist. Bei der Beantwortung der Frage sind wahrscheinlich Begründungen gefallen wie: *"Weil das Ergebnis zufällig sein könnte"* oder *"Weil wir wissen wollen ob der Unterschied auch signifikant ist"* und ähnliche. Diese Antworten sind im Grunde genommen alle korrekt aber es sind zunächst ein paar Konzepte einzuführen um das Problem tatsächlich strukturiert angehen zu können. Diese Konzepte werden in dem folgenden Kapitel entwickelt.
+In diem folgenden Abschnitt, wird die Frage behandelt: "Warum beschäftigen wir uns überhaupt mit der Berechnung einer Statistik wenn wir wissenschaftliche Daten untersuchen?". Bei der Beantwortung dieser Frage fallen einem wahrscheinlich meistens Antworten wie: *"Weil das Ergebnis zufällig sein könnte"* oder *"Weil wir wissen wollen ob ein Unterschied auch signifikant ist"* und ähnliche. Diese Antworten sind im Grunde genommen alle korrekt gehen aber an dem Grundlegenden Problem vorbei. Um dieses Problem zu verstehen, ist es notwendig zunächst ein paar Konzepte einzuführen. Diese Konzepte werden in diesem und dem folgenden Kapitel entwickelt.
 
 ```{r}
 n <- 20
@@ -20,7 +20,7 @@ d_gr <- 100
 d_x <- 2
 ```
 
-Zunächst wird einem übersichtlichen Konstrukt einer hypothetischen Welt gestartet um das notwendige statistische Modell so einfach wie möglich zu halten. Die Welt, über die eine Aussage getroffen werden soll, besteht aus nur insgesamt $20$ Personen. In @fig-small-world sind die Bewohner dieser Welt einzeln zu dargestellt. Um nicht $20$ Namen zu verwenden, sind die Bewohner durchnummeriert von $1$ bis $20$ mit einem Prefix $P$.
+Zunächst wird eine übersichtliche hypothetische Welt definiert. Die Welt, über die eine Aussage getroffen werden soll, besteht aus nur insgesamt $20$ Personen. In @fig-small-world sind die Bewohner dieser Welt einzeln zu dargestellt. Um keine $20$ Namen zu verwenden, sind die Bewohner durchnummeriert von $1$ bis $20$ mit einem Prefix $P$.
 
 ```{r}
 #| fig-cap: "Eine kleine Welt"
@@ -126,39 +126,13 @@ Eine Zufallsstichprobe\index{Zufallsstichprobe} ist eine Teilmenge von Objekten 
 
 Bei der Zufallsstichprobe haben alle Personen in der Population vor dem Experiment die gleiche Wahrscheinlichkeit, gezogen zu werden. Dadurch kann sichergestellt werden, dass in der Stichprobe unterliegende Störvariablen, ob messbar oder nicht messbar, ebenso in der Stichprobe verteilt sind.
 
-::: {exm-random-sample}
-
-Eine kleine Simulation veranschlicht das Prinzip. Sei eine Population der Größe $N = 100$ gegeben, in der $30$ Objekte das Merkmal A haben und $70$ Objekte das Merkmal B. Es werden nun wiederholt Zufallsstichproben der Größe $N = 20$ aus dieser Population gezogen und für jede Stichprobe wird der Anteil der As berechnet.
-
-```{r}
-set.seed(25)
-```
-
-In `R` lässt sich eine solche Simulation relativ einfach umsetzen, die hier der Übersicht halber $20$ mal durchgeführt wird.
-
-```{r}
-#| echo: true
-
-pop <- rep(c("A","B"), c(30,70))
-n_sam <- 20
-res <- numeric(n_sam)
-for (i in 1:n_sam) {
-  sam <- sample(pop, 20)
-  res[i] <- mean(sam == 'A')
-}
-res
-```
-
-Wir die Ausgabe von `res` zeigt, dass tatsächlich in den meisten Fällen der Anteil von As in der Stichprobe in der Nähe der $30\%$ aus der Population liegt. Nicht in allen Fällen, es gibt Schwankungen um diesen Wert herum, aber im Großen und Ganzen spiegelt die Stichprobe in Bezug auf die Verteilung von Merkmalen A und B die Population gut wieder. Das heißt, es handelt sich um eine *repräsentative* Stichprobe.
-:::
-
 In Abhängigkeit von der Forschungsfragestellung kann die Anzahl der Merkmale relativ schnell anwachsen, in diesem Fall spielt die Größe der Stichprobe ebenfalls eine wichtige Rolle. Seien zum Beispiel für eine Fragestellung möglicherweise $15$ Merkmale wie Alter, Geschlecht, sportliche Aktivität usw. relevant und es wird eine Stichprobe mit $N = 16$ gewählt, dann ist es natürlich gar nicht möglich die Merkmale selbst wenn bekannt gleichmäßig in zwei Gruppen zu unterteilen. Daher ist die Repräsentativität einer solchen Stichprobe nur sehr eingeschränkt.
 
 ```{r}
 id_s1 <- c(8, 9, 3, 7, 10, 20)
 ```
 
-Zurück zum *Kleine Welt Beispiel*. Um jetzt für das Experiment eine Stichprobe zu ermitteln, wird genutzt, dass die Population bereits durchnummeriert ist. Nun kann eine Zufallszahlengenerator verwendet werden, der zunächst sechs Zahlen für die Stichprobe bestimmt. Beispielsweise die Zahlen $i = \{`r paste(sort(id_s1), collapse=',')`\}$. Die entsprechenden Personen werden aus der Population anhand der ID ausgewählt. Anschließend teilt wieder ein Zufallszahlengenerator die sechs Personen in die beiden Gruppen auf (siehe @fig-stats-basics-sample-01).
+Zurück zum *Kleine Welt Beispiel*. Um jetzt für das Experiment eine Stichprobe zu ermitteln, wird genutzt, dass die Population bereits durchnummeriert ist. Nun kann ein Zufallszahlengenerator verwendet werden, der zunächst sechs Zahlen für die Stichprobe bestimmt. Beispielsweise die Zahlen $i = \{`r paste(sort(id_s1), collapse=',')`\}$. Die entsprechenden Personen werden aus der Population anhand der ID ausgewählt. Anschließend teilt wieder ein Zufallszahlengenerator die sechs Personen in die beiden Gruppen auf (siehe @fig-stats-basics-sample-01).
 
 ```{mermaid}
 %%| fig-cap: "Ablaufdiagramm der Gruppenzuweisung."

@@ -6,10 +6,9 @@ execute:
   freeze: auto
 
 book:
-  title: "Skriptum - Fortgeschrittene Statistik"
-  subtitle: "SBT4"
+  title: "Skriptum - SBT4 Quantitatitve Methoden"
   author: "Robert Rein"
-  date: "14/09/2026"
+  date: "09/15/2026"
   chapters:
     - index.qmd
     - part: stats_title.qmd

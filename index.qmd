@@ -1,3 +1,5 @@
 # Vorwort {.unnumbered}
 
-Dies ist das Skriptum für den Masterkurs-Fortgeschrittene Statistik und ist die Lernvorlage für den Kurs SBT4. Die Lehrinhalte sind auf ein Semester ausgelegt. Das Skriptum befindet sich derzeit noch in einem frühen Stadium, so dass die Inhalte zum Teil noch nicht vollständig ausgearbeitet sind und leider auch noch zahlreiche Rechtschreibfehler enthalten.
+Dies ist das Skriptum für den Seminar Quantitative Datenerhebung und inferenzstatistische Verfahren im Modul SBT4. Das Skriptum befindet sich derzeit noch in einem beta Stadium, so dass die Inhalte zum Teil noch nicht vollständig ausgearbeitet sind und leider auch noch zahlreiche Rechtschreibfehler enthalten.
+
+Weitere Information zum Modul sind im [Modulhandbuch](https://www.dshs-koeln.de/studium/vor-dem-studium/masterstudium/sport-und-bewegungstherapie-praevention-und-bewegungsbezogene-gesundheitsforschung) zu finden.

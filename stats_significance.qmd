@@ -288,39 +288,6 @@ foo_mu()
 
 In vielen Fällen wird im Rahmen einer statistischen Analyse versucht, über $\bar{x}$ einen Rückschluss auf $\mu$ zu ziehen. D.h. der Mittelwert der Stichprobe wird als ein *guter* Wert angesehen, um den Erwartungswert $\mu$ der Population abzuschätzen.
 
-#### Detour - Schätzer
-
-Schauen wir uns noch einmal den Mittelwert $\mu$ der Population und den Mittelwert $\bar{x}$ der Stichprobe und deren Zusammenhang an. Der Mittelwert $\bar{x}$ der Stichprobe wird als sogenannter Schätzer verwendet. Diesen Begriff werden wir später noch genauer untersuchen. Im Moment reicht es, sich zu merken, dass ein Schätzer eine Statistik ist, mit der wir einen Parameter der Population, z. B. $\mu$, abschätzen wollen. Wie schon mehrmals erwähnt, werden wir den wahren Wert $\mu$ aus der Population mittels unserer Stichprobe niemals zu 100% korrekt bestimmen können. Wir können aber mittels geschickt gewählter Statistiken Schätzer konstruieren, die bestimmte Eigenschaften haben.
-
-Nehmen wir zum Beispiel den Mittelwert $\bar{x}$. In unserer kleinen Welt kennen wir den Mittelwert $\mu$ unserer Population. Der Wert beträgt $\mu = `r mean(world[["Kraft"]])`$. Schauen wir uns einmal an, was passiert, wenn wir alle möglichen Stichproben der Größe $N = 10$ unserer kleinen Welt bestimmen und die Verteilung der Mittelwerte abtragen (siehe @fig-stats-sig-mean-n3).
-
-```{r}
-#| fig-cap: "Verteilung der Mittelwerte von Stichproben der Größe $n=10$, Kleine Welt Population $\\mu$ (rot)"
-#| label: fig-stats-sig-mean-n3
-
-bar <- function(world, k=3) {
-  n <- dim(world)[1]
-  x <- 1:n
-  N <- choose(n,k)
-  x_bars <- numeric(N)
-  # get all permutations
-  id_1 <- t(combn(x,k))
-  for (i in 1:nrow(id_1)) {
-    x_bars[i] <- mean(world$Kraft[id_1[i,]])
-  }
-  x_bars
-}
-x_bars <- bar(world, 10)
-mu <- mean(world$Kraft)
-ggplot(tibble(x=x_bars),aes(x)) +
-  geom_histogram(aes(y = after_stat(density)), bins = 30) +
-  geom_vline(xintercept = mu,
-             color = 'red', linetype = 'dashed') +
-  labs(x = 'Mittelwerte[N]', y = 'Häufigkeit') 
-```
-
-In @fig-stats-sig-mean-n3 sehen wir, dass im Mittel der Stichprobenmittelwert $\bar{x}$ tatsächlich um den wahren Populationsmittelwert $\mu$ herum zentriert ist. Einzelne Ausgänge des *Experiments* können zwar daneben liegen, der Großteil der Experimente gruppiert sich jedoch um $\mu$ herum. Der Stichprobenmittelwert $\bar{x}$ ist daher eine *gute* Statistik, um den tatsächlichen Populationsmittelwert $\mu$ abzuschätzen.
-
 ### Standardabweichung $\sigma$ der Population
 
 Die zweite Eigenschaft von Verteilungen beziffert die Streuung in der Population. Die Streuung in der Population wird als Varianz bezeichnet und mit dem Symbol $\sigma^2$ gekennzeichnet. Sei zunächst betrachtet, welchen Einfluss $\sigma^2$ auf die Form der Verteilung hat. In @fig-sts-sig-dist-sigma sind zwei Verteilungen abgetragen. Dieses Mal ist der Erwartungswert $\mu$ in beiden Fällen gleich, aber die Varianzen $\sigma^2$ sind mit $\sigma_1^2 = 2$ und $\sigma_2^2 = 1$ unterschiedlich groß.
@@ -357,10 +324,9 @@ In der Stichprobe wird die Standardabweichung meistens mit dem Zeichen $s$ bezei
 
 Die Standardabweichung $s$ in der Stichprobe wird mittels der folgenden Formel berechnet:
 
-\begin{equation}
+$$
 s = \sqrt{\frac{\sum_{i=1}^n (x_i - \bar{x})^2}{n-1}}
-\label{eq-std}
-\end{equation}
+$$ {#eq-std}
 			  
 Das bedeutet, die Standardabweichung ist die mittlere quadrierte Abweichung vom Mittelwert (siehe Formel \eqref{eq-std}). Wenn die Werte stärker Streuen, dementsprechend stärker um den Mittelwert herum schwanken, dann wird $s$ größer bzw. wenn die Werte näher um den Mittelwert herum schwanken, dann wird $s$ kleiner. Da die Abweichung vom Mittelwert $\bar{x}$ nach Formel \eqref{eq-std} quadriert werden, hat die Standardabweichung den Vorteil gegenüber der Varianz, dass die Standardabweichung die gleichen Einheiten hat wie der Mittelwert. Während die Varianz als das Quadrat der Standardabweichung die quadrierte Einheiten des Mittelwerts hat. Deswegen wird in der deskriptiven bevorzugt die Standardabweichung verwendet, da die Standardabweichung üblicherweise direkt interpretiert werden kann. Wären zum Beispiel Weitsprungdaten erhoben worden und die mittlere Weite wäre $\bar{x} = 5$m mit einer Standardabweichung von $s = 1.5$m, dann ist dies einfache zu interpretieren als eine Varianz von $s^2 = 2.25\text{m}^2$.
 
@@ -373,22 +339,9 @@ x_sd <- round(sd(world$Kraft[id]))
 
 Konkret im ersten Beispiel aus der kleinen Welt, bei dem in der Kontrollgruppe die Personen $i = \{`r paste(id, collapse=',')`\}$ gezogen wurden, können für diese Stichprobe die folgende Standardabweichung bei einem Mittelwert von $\bar{x} = `r x_bar`$ berechnet werden:
 
-\begin{equation*}
+$$
 s = \sqrt{\frac{`r sd_str`}{2}} = `r x_sd`
-\end{equation*}
-
-
-### Mittelwert und Standardabweichung in `R`
-
-Um den Mittelwert und die Standardabweichung bzw. die Varianz zu berechnen, gibt es in `R` entsprechende Funktionen mit den Namen `mean()`, `sd()` und `var()`.
-
-```{r}
-#| echo: true
-x <- c(1,2,3,4,5)
-mean(x)
-sd(x)
-var(x)
-```
+$$
 
 
 ## Entscheidungen und $\mu$ und $\sigma$
