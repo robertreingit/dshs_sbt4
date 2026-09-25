@@ -1,4 +1,4 @@
-# Einführung 
+# Grundlagen 
 
 ```{r}
 #| echo: false
@@ -10,124 +10,63 @@ library(knitr)
 library(ggplot2)
 ```
 
-Im Folgenden beschäftigen wir uns mit experimentellen Design. D.h. wir untersuchen wie wir ein Experiment aus statistischer Sicht erstellen sollten um die Wahrscheinlichkeit einen bestimmten Effekt zu beobachten möglichst Effizient zu erhöhen. Eine zentrale Größe wird dabei immer wieder der Standardfehler $\sigma_e$ der jeweiligen Statistik spielen die wählen um einen bestimmten Effekt zu untersuchen. Daher fangen wir erst einmal mit einem einfachen Beispiel an.
+Im folgenden Abschnitt beschäftigen wir uns mit experimentellen Design. Dazu gehört eine Betrachtung wie beobachtete Effekte überhaupt auf Ursachen zurück geführt werden können und welche Möglichkeiten in Form von verschiedenen Experimentellen Designs zur Verfügung stehen, gewünschte Effekte möglichst effektiv zu identifizieren. D.h. es geht unter anderem darum, wie ein Experiment aus statistischer Sicht so konzipiert werden kann,  um die Wahrscheinlichkeit einen bestimmten Effekt zu beobachten möglichst groß zu machen. Dazu schauen wir uns zunächst ein einfaches Beispiel an. Eine zentrale Größe wird dabei immer wieder der Standardfehler $\sigma_e$ spielen. 
 
 ## Zuteilung der Stichprobengrößen in zwei Gruppen
 
-Die folgenden Beispiele sind alle aus @goos2011 entnommen. Wir möchten Mittelwertsunterschied zwischen zwei Gruppen, Gruppe $1$ und Gruppe $2$, untersuchen. In Gruppe $1$ haben wir eine Stichprobengröße von $n_1$ und entsprechend eine Stichprobegröße $n_2$ in Gruppe $2$.
+Das folgenden Beispiel ist aus @goos2011 entnommen. Es soll ein Mittelwertsunterschied zwischen zwei Gruppen, Gruppe $1$ und Gruppe $2$, untersucht werden. In Gruppe $1$ haben wir eine Stichprobengröße von $n_1$ und entsprechend eine Stichprobegröße $n_2$ in Gruppe $2$. Wir interessieren uns nun für den Unterschied $D$ zwischen den beiden Gruppen.
 
-Um den Unterschied zwischen den beiden Gruppenmittelwerten zu berechnen, verwenden wir den unspektakulär:
-
-\begin{equation}
+$$
 D = \bar{X}_1 - \bar{X}_2
-\end{equation}
+$$
 
-Der Unterschied $D$ für sich ist noch relativ wenig informativ, da er mit den Einheiten und vor allem vor dem Hintergrund der Streuung der Werte zu betrachten ist. D.h. wir benötigen auch ein Maß um die Unsicherheit $\widehat{=}$ Streuung um einen gegebenen Unterschied zu bewerten. Den Standardfehler können wir mit den uns bekannten Rechenregeln für die Varianz relativ einfach herleiten und erhalten:
+Der Unterschied $D$ alleine für sich ist noch relativ wenig informativ, da er mit den Einheiten und vor allem vor dem Hintergrund der *Streuung* der Werte zu betrachten ist. D.h. wir benötigen auch ein Maß für die Unsicherheit von $D$. Dies ist wie bereits mehrmals besprochen der Standardfehler. Wenn wir eine lineares Modell ansetzen würden und Stift-und-Papier zücken würden, dann würde sich zeigen, dass der Standardfehler$\sigma^(D)$ von $D$ die folgende Form hat:
 
-\begin{equation}
+$$
 \sigma^2(D) = \frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2} 
-\end{equation}
+$$
 
-Um die Wahrscheinlichkeit zu erhöhen einen relevanten Unterschied $D$ zwischen den Gruppen zu finden wählen wir nun ein Design des Experiments, dass die Varianz $\sigma^2(D)$ bzw. den Standardfehler $\sigma_e(D)$ von $D$ möglichst klein werden lässt. Denn, umso kleiner der Standardfehler umso geringer sind die Streuungen der Stichprobenverteilung und umso geringer unsere Unsicherheit. 
+Sei nun der Unterschied $D$ gegeben. Zum Beispiel wollen wir eine Verbesserung in der Lebensqualität betrachten und dann wäre eine Verbesserung von einer Einheit als relevant zu betrachten. Um nun die Wahrscheinlichkeit zu erhöhen einen relevanten Unterschied $D$ zwischen den beiden Gruppen zu finden, wählen wir nun ein experimentelles Design, dass die Varianz $\sigma^2(D)$ bzw. den Standardfehler $\sigma_e(D)$ von $D$ möglichst klein werden lässt. Umso kleiner der Standardfehler umso geringer sind die Streuungen der Stichprobenverteilung und umso geringer unsere Unsicherheit. 
 
-Schauen wir uns an, was dies in einem konkreten Fall bedeutet. Gehen wir, der Übersichtlichkeit halber, von einer Gesamtstichprobengröße $N = 12$ aus mit Standardabweichungen in beiden Population von $\sigma^2_1 = \sigma^2_2 = \sigma^2 = 1$. D.h. wir nehmen an, dass in beiden Stichproben die gleiche Streuung vorliegt.
+Seien wir in unseren Ressourcen beschränkt und wir haben ein *Budget*, dass es uns erlaubt nur insgesamt $N = 12$ Personen in unser *Experiment* einzuschließen. Eine weitere Vereinfachung sei, dass die Standardabweichungen in beiden Population gleich sind, also $\sigma^2_1 = \sigma^2_2 = \sigma^2 = 1$. Die zentrale Frage ist nun: **Wie können wird diese $N = 12$ Personen auf die beiden Gruppen verteilen, um den Standardfehler möglichst klein zu halten?** In @fig-ed-basics-sample-01 sind die Varianz $\sigma^2(D)$ und der Standardfehler $\sigma_e(D)$ gegen die möglichen Verteilungen der Probanden abgetragen. 
 
 ```{r}
-#| tbl-cap: "Abhängigkeit der Varianz und des Standardfehler von $D$ mit der Stichprobenverteilung bei gleicher Varianz"
-#| label: tbl-ed-basics-sample-01
+#| fig-cap: "Abhängigkeit des Standardfehlers von $D$ mit der Stichprobenverteilung bei gleicher Varianz"
+#| label: fig-ed-basics-sample-01
 
 n <- 12
 var_d12 <- function(n_1,sigma_1,sigma_2) sigma_1/n_1 - sigma_2/(n_1-12)
 var_d <- function(n_1) var_d12(n_1, 1, 1)
-tibble(n_1 = 1:11, n_2 = seq(11,1), v_d = var_d(n_1), se_d = sqrt(v_d), eff = min(v_d)/v_d) |> 
-  kable(
-    booktabs = TRUE,
-    linesep = '',
-    escape = FALSE,
-    col.names = c('$n_1$','$n_2$', '$\\sigma^2(D)$', '$\\sigma_e(D)$', 'Effizienz'),
-    digits = 2
-  )
+ed_d1 <- tibble(n_1 = 1:11, n_2 = seq(11,1), v_d = var_d(n_1), se_d = sqrt(v_d), eff = min(v_d)/v_d) 
+ggplot(ed_d1, aes(n_1, se_d)) +
+  geom_line() +
+  geom_point() +
+  scale_x_continuous("Anzahl der Personen in Gruppe 1", breaks=1:11) +
+  scale_y_continuous(expression(sqrt(frac(1,n[1])~+~frac(1,n[2]))))
 ```
 
-In @tbl-ed-basics-sample-01 sind die Varianz $\sigma^2(D)$ und der Standardfehler $\sigma_e(D)$ gegen die Stichprobenverteilung abgetragen. Wir können sehen, dass bei gleicher Stichprobenanzahl in beiden Gruppen die Varianz und somit auch der Standardfehler den kleinsten Wert annehmen. In der fünften Spalte von @tbl-ed-basics-sample-01 ist ein Wert Effizient eingetragen. Dieser Wert berechnet sich aus dem Verhältnis der kleinstmöglichen Varianz zur jeweiligen Varianz. Wir können an diesem Wert abschätzen, das ein Design bei dem in einer der Gruppen nur eine einzige Person ist, die Effizienz nur noch ein Drittel dessen ist, was bei einer gleichmäßigen Stichprobenverteilung zu errreichen ist. D.h. so weit ist die übliche Herangehensweise, beide Gruppen möglichst gleichgroß zu gestalten vollkommmen sinnvoll.
-
-Schauen wir uns als Nächstes an, wie das aussieht wenn die Stichprobengröße $N$ anwächst. In @fig-ed-basics-sample-01 ist der Standardfehler $\sigma_e(D)$ gegen verschiedene Zuteilungen der Stichproben in die beiden Gruppen für verschiedene Stichprobengrößen abgebildet.
+Wir können sehen, dass bei gleicher Stichprobenanzahl in beiden Gruppen der Standardfehler den kleinsten Wert annimmt. D.h. bei gleicher Varianz ist die übliche Herangehensweise, beide Gruppen möglichst gleichgroß zu gestalten sinnvoll, aber nicht zwingend. Schauen wir uns daher als nächsten Fall an, was passiert wenn die Varianzen in den beiden Gruppen nicht mehr gleich sind. Sei zum Beispiel $\sigma^2 = 1$ und $\sigma^2 = 9$. Also ein recht extremer Unterschied zwischen den beiden Gruppen. In @fig-ed-basics-sample-02 sind wieder die verschiedenen Werte $\sigma_e(D)$ gegen die Gruppengröße von Gruppe 1 abgetragen. 
 
 ```{r}
-#| fig-cap: "Zusammenhang zwischen den Standardfehler und Verteilung der Stichproben in die Gruppen für verschiedene Stichprobengrößen"
-#| label: fig-ed-basics-sample-01
-
-sigma <- 1
-foo <- function(p, N, sigma) {
-  sqrt(1/(p*N) + 1/((1-p)*N))
-}
-bar <- function(p, n, sigma) {
-  purrr::map_dbl(p, ~foo(.x, n, sigma))
-}
-n_s <- c(10, 20, 40, 60, 80, 100)
-p_s <- seq(0.1, 0.9, 0.05)
-t_n <- tibble(
-  p = rep(p_s, length(n_s)),
-  y = purrr::as_vector(purrr::map(n_s, ~bar(p_s, .x, sigma))),
-  n = as.character(rep(n_s, each=(length(p_s)))))
-p_1 <- ggplot(t_n, aes(p,y)) + 
-  geom_line(linewidth=1.3, aes(color=n)) +
-  scale_color_manual("N", breaks = unique(t_n$n),
-                     values = RColorBrewer::brewer.pal(length(n_s), "Set3")) +
-  labs(x = expression(paste('Proportion der', n[1])),
-       y = expression(sqrt(frac(1,n[1])~+~frac(1,n[2])))) 
-print(p_1)
-```
-
-In @fig-ed-basics-sample-01 ist zu sehen, das das bei gleichen Varianzen die gleichmäßige Verteilung der Stichprobe in die beiden Gruppen immer diejenige mit dem kleinsten Standardfehler ist. Der Standardfehler nimmt natürlich mit der Größe der Stichprobe ab. Allerdings nimmt auch die Größe der Verschlechterung bei ungleicher Verteilung mit der Größe der Stichprobe ab. Daher, wenn wir eine große Stichprobe haben, dann ist die gleichmäßige Verteilung der Stichproben weniger wichtig als bei kleinen Stichprobengrößen.
-
-Schauen wir uns daher als nächsten Fall an, was passiert wenn die Varianzen in den beiden Gruppen nicht mehr gleich sind. Sei zum Beispiel $\sigma^2 = 1$ und $\sigma^2 = 9$. Also ein recht extremer Unterschied zwischen den beiden Gruppen.
-
-```{r}
-#| tbl-cap: "Abhängigkeit der Varianz und des Standardfehler von $D$ mit der Stichprobenverteilung bei ungleicher Varianz $\\sigma_1^2 = 1, \\sigma_2^2=9$"
-#| label: tbl-ed-basics-sample-02
+#| fig-cap: "Abhängigkeit der Varianz und des Standardfehler von $D$ mit der Stichprobenverteilung bei ungleicher Varianz $\\sigma_1^2 = 1, \\sigma_2^2=9$"
+#| label: fig-ed-basics-sample-02
 
 n <- 12
 sigma_1 <- 1
 sigma_2 <- 9
-tibble(n_1 = 1:11, n_2 = seq(11,1), v_d = var_d12(n_1, sigma_1, sigma_2), se_d = sqrt(v_d), eff = min(v_d)/v_d) |> 
-  kable(
-    booktabs = TRUE,
-    linesep = '',
-    escape = FALSE,
-    col.names = c('$n_1$','$n_2$', '$\\sigma^2(D)$', '$\\sigma_e(D)$', 'Effizienz'),
-    digits = 2
-  )
+ed_d2 <- tibble(n_1 = 1:11, n_2 = seq(11,1), v_d = var_d12(n_1, sigma_1, sigma_2), se_d = sqrt(v_d), eff = min(v_d)/v_d)  
+ggplot(ed_d2, aes(n_1, se_d)) +
+  geom_line() +
+  geom_point() +
+  scale_x_continuous("Anzahl der Personen in Gruppe 1", breaks=1:11) +
+  scale_y_continuous(expression(sqrt(frac(1,n[1])~+~frac(1,n[2]))))
 ```
 
-In @tbl-ed-basics-sample-02 sind wieder die verschiedenen Werte für $\sigma^2(D)$, $\sigma_e(D)$ und die Effizienz berechnet worden. Wir können sehen, dass jetzt nicht mehr das Design mit gleich großen Stichproben optimal ist, sondern das Design mit $n_1 = 3$ und $n_2 = 9$. Die ungleiche Varianz in den beiden Gruppen hat dazu geführt, dass der minimale Standardfehler dann eingenommen wird, wenn wir eine größere Stichprobe aus Gruppe $2$ als aus Gruppe $1$ ziehen.
-
-Wenn wir diese nicht gewusst hätten und in beiden Gruppen wieder mit $n_i = 6$ gearbeitet hätten, hätten wir somit $20\%$ Effizienz eingebüßt. Intuitiv macht diese ungleiche Verteilung auch Sinn. Da die Varianz in Gruppe $2$ größer ist, ist auch unserer Unsicherheit über den Mittelwert in dieser Gruppe größer. Um diese Unsicherheit auszugleichen erhöhen wir die Stichprobenanzahl im Verhältnis zu Gruppe $1$ um mehr Information über diese Gruppe zu erhalten.
-
-Schauen wir uns ein Beispiel an, bei dem der Unterschied der Varianzen in den beiden Gruppen nicht ganz so extrem ist (siehe @tbl-ed-basics-sample-03).
-
-```{r}
-#| tbl-cap: "Abhängigkeit der Varianz und des Standardfehler von $D$ mit der Stichprobenverteilung bei ungleicher Varianz $\\sigma_1^2 = 1, \\sigma_2^2=2$"
-#| label: tbl-ed-basics-sample-03
-
-n <- 12
-sigma_1 <- 1
-sigma_2 <- 2
-tibble(n_1 = 1:11, n_2 = seq(11,1), v_d = var_d12(n_1, sigma_1, sigma_2), se_d = sqrt(v_d), eff = min(v_d)/v_d) |> 
-  kable(
-    booktabs = TRUE,
-    linesep = '',
-    escape = FALSE,
-    col.names = c('$n_1$','$n_2$', '$\\sigma^2(D)$', '$\\sigma_e(D)$', 'Effizienz'),
-    digits = 2
-  )
-```
-
-In @tbl-ed-basics-sample-03 sehen wir wieder, das das effizienteste Design nicht gleich große Stichproben in den beiden Gruppen hat, sondern hier würde das Design mit $n_1 = 5$ und $n_2 = 7$ den niedrigsten Standardfehler zeigen. Der Verlust an Effizienz bei gleich großen Gruppen wäre hier praktisch zu vernachlässigen. D.h. wenn wir keine genauen Information haben wie sich die Varianzen in den beiden Gruppen verhalten, aber wir keine großen Unterschiede erwarten, dann sind wir mit gleichgroßen Gruppen wahrscheinlich oft gut bedient.
+Wir können sehen, dass jetzt nicht mehr das Design mit gleich großen Stichproben optimal ist, sondern das Design mit $n_1 = 3$ und $n_2 = 9$. Die ungleiche Varianz in den beiden Gruppen hat dazu geführt, dass der minimale Standardfehler dann eingenommen wird, wenn wir eine größere Stichprobe aus Gruppe $2$ als aus Gruppe $1$ ziehen. Wenn wir diese nicht gewusst hätten und in beiden Gruppen wieder mit $n_i = 6$ gearbeitet hätten, hätten wir somit Effizienz eingebüßt. Intuitiv macht diese ungleiche Verteilung auch Sinn. Da die Varianz in Gruppe $2$ größer ist, ist auch unserer Unsicherheit über den Mittelwert in dieser Gruppe größer. Um diese Unsicherheit auszugleichen erhöhen wir die Stichprobenanzahl im Verhältnis zu Gruppe $1$ um mehr Information über diese Gruppe zu erhalten.
 
 Untersuchen wir die Effizienz noch einmal aus einer anderen Perspektive, nämlich des Budget das uns zur Verfügung steht. Nehmen wir an wir müssen die Untersuchung in einem Speziallabor durchführen und wir haben nur eine begrenzte Zeit zur Verfügung. Wir untersuchen wieder zwei Gruppen bei denen aber die Vorbereitung des Experiment doppelt solange für Gruppe $2$ dauert im Vergleich zu Gruppe $1$. Zum Beispiel in Gruppe $1$ benötigen wir das Labor für eine Stunde während wir für Teilnehmerinnen und Teilnehmer aus Gruppe $2$ zwei Stunden benötigen. In Gruppe $2$ ist vielleicht eine spezielle Patientenpopulation bei der wir mehr Zeit einplanen müssen. Wir haben aber nur insgesamt $24$ Stunden das Labor zu Verfügung. Wir setzen wieder $\sigma^2 = 1$ an. Wie sollten wir die Gruppengrößen zuteilen?
 
-Wir können jetzt nicht einfach die gleiche Tabelle wie in den obigen Fällen benutzen, da wir unser Zeitbudget beachten müssen. Mit etwas ausprobieren kommen wir zu folgendem Ergebnis.
+Wir können jetzt nicht einfach den gleichen Graphen wie in den obigen Fällen benutzen, da wir unser Zeitbudget beachten müssen. Mit etwas ausprobieren kommen wir zu folgendem Ergebnis.
 
 ```{r}
 #| tbl-cap: "Abhängigkeit der Varianz und des Standardfehler von $D$ bei $\\sigma_i^2 = 1$ und Budgetbeschränkungen von $24$ Stunden"
@@ -146,7 +85,7 @@ tibble(n_1 = seq(22,2,-2), n_2 = 1:11, zeit = n_1  + 2*n_2, v_d = 1/n_1 + 1/n_2,
 
 Wir sehen wieder in @tbl-ed-basics-sample-04, dass eine ungleiche Verteilung in die Gruppen die höchste Effizienz hat. Der Effekt hier, ist dass wir hier eine Balance finden müssen zwischen der größten Anzahl an Teilnehmerinnen und Teilnehmer und der Ungleichheit der Stichprobengrößen.
 
-Zusammenfassend lässt sich sagen, dass bei Vergleichen zwischen zwei Gruppen das Design mit gleich großen Stichproben in beiden Gruppen oft die Beste Wahl ist. In Abhängigkeit davon wie sich die Varianzen zwischen den Gruppen verhalten und oder auch welche Randbedingungen für die Durchführung des Experiment bestehen, kann ein optimales Design jedoch auch sehr unterschiedlich ausfallen. Daher macht es Sinn für den jeweiligen speziellen Fall sich Gedanken zu machen welches Design den bestmöglichen Output liefert und vielleicht nicht einfach nur ein Standarddesign aus der Schublade zu nehmen. Die Problematik eine informierte Entscheidung diesbezüglich zu treffen wird in den folgenden Kapitel immer wieder aufgegriffen.
+Zusammenfassend lässt sich sagen, dass bei Vergleichen zwischen zwei Gruppen das Design mit gleich großen Stichproben in beiden Gruppen oft die Beste Wahl ist. In Abhängigkeit davon wie sich die Varianzen zwischen den Gruppen verhalten und oder auch welche Randbedingungen für die Durchführung des Experiment bestehen, kann ein optimales Design jedoch auch sehr unterschiedlich ausfallen. Daher macht es Sinn für den jeweiligen speziellen Fall sich Gedanken zu machen welches Design den bestmöglichen Output liefert und vielleicht nicht einfach nur ein Standarddesign aus der Schublade zu nehmen.
 
 ## Terminologie
 
@@ -302,29 +241,29 @@ Dies ist grundsätzlich ein anderer Prozess, als derjenige, der durch die Anzahl
 
 Versuchen wir diese beiden Beiträge etwas zu formalisieren. Seien drei verschiedene Varianzkomponenten gegeben. 1) die Varianz zwischen den Athletinnen $\sigma_{\text{Person}}^2$, 2), die Varianz innerhalb der jeweiligen Athleting $\sigma_{\text{innerhalb}}^2$ und dann noch eine Residualstreuung die auf zufällige Einflüsse zurück zu führen ist $\sigma_{\epsilon}^2$. Die Gesamtvarianz $\sigma_{\text{total}}^2$ die nun bei den Messungen der Sprunghöhen beobachten werden, können nun als die Summe dieser drei Komponenten interpretiert werden (Eine Annahme dabei ist, dass sich die Komponenten untereinander nicht beeinflussen also unabhängig voneinander sind).
 
-\begin{equation}
+$$
 \sigma_{\text{total}}^2 = \sigma_{\text{Person}}^2 + \sigma_{\text{innerhalb}}^2 + \sigma_{\epsilon}^2
-\end{equation}
+$$
 
 Diese Gleichung beschreibt die Varianzkomponenten innerhalb einer Treatmentstufe. Wenn nun EUs aus unterschiedlichen Treatmentstufen $\tau_i$ zusammengesteckt werden, dann wird die Gleichung entsprechend um diese zusätzliche Varianzkomponente $\sigma_{\tau}^2$ erweitert. 
 
-\begin{equation}
+$$
 \sigma_{\text{total}}^2 = \sigma_{\tau}^2 + \sigma_{\text{Person}}^2 + \sigma_{\text{innerhalb}}^2 + \sigma_{\epsilon}^2
-\end{equation}
+$$
 
 Die Idee beim experimentellen Designs ist es nun, ein Design zu finden, dass es ermöglicht diese Komponenten durch eine intelligente Verteilung der Faktorstufen, Replikationen und Wiederholungen möglichst präzise zu bestimmen.
 
 Soll zum Beispiel der Einfluss des Treatment $\tau_i$ bestimmt werden, dann kann die durch das Treatment entstehende Varianz $\sigma_{\tau}^2$ mit dem experimentellen Fehler $\sigma_{\epsilon}^2$ verglichen werden, um zu entscheiden ob die Unterschiede zwischen den Faktorstufen auch wirklich bedeutsam sind. In Pseudoschreibweise:
 
-\begin{equation*}
+$$
 \frac{\sigma_{\tau}^2}{\sigma_{\epsilon}^2}
-\end{equation*}
+$$
 
 Wird nun aber ein Design gewählt, bei die Varianz innerhalb der Athletinnen $\sigma_{\text{innerhalb}}^2$ nicht isoliert bestimmen werden kann, dann geht $\sigma_{\text{innerhalb}}^2$ in $\sigma_{\epsilon}^2$ auf. D.h. die resultierende Residualvarianz $\sigma_{\epsilon}^2$ vergrößert sich um die Komponente $\sigma_{\text{innerhalb}}^2$. Im englischen wird dies als **confounded** bezeichnet. Die beiden Varianzkomponenten können nicht voneinander getrennt werden. Wird nun wieder $\sigma_{\tau}^2$ mit $\sigma_{\epsilon}^2$ verglichen, dann fällt dass Verhältnis entsprechend kleiner aus.
 
-\begin{equation*}
+$$
 \frac{\sigma_{\tau}^2}{\sigma_{\epsilon^*}^2} = \frac{\sigma_{\tau}^2}{\sigma_{\epsilon}^2 + \sigma_{\text{innerhalb}}^2}
-\end{equation*}
+$$
 
 Um diese Betrachtung etwas greifbarer zu machen sei ein einfaches Beispiel mit Zahlen gegeben. Es soll der Unterschied zwischen zwei Konditionen beim CMJ betrachtet, beispielsweise mit (Kondition $A$) und ohne (Kondition $B$) Vorermüdung. Aus der Literatur oder aus Voruntersuchungen seine die folgenden Werte abzuleiten (siehe @tbl-ed-basics-components}.
 
@@ -342,110 +281,11 @@ Wenn das experimentelle Design so gewählt wurde, dass die Unterscheidung der ve
 
 Es folgt das die Varianz zwischen den Konditionen deutlich (fünfmal) größer ist als die Residualvarianz. Dies kann als ein deutliches *Signal* dafür betrachtet werden, dass bedeutsame Unterschiede zwischen den Kondition bestehen. Wird nun ein experimentelles Design gewählt, bei dem unabhängige Gruppen miteinander verglichen werden, d.h. die Unterschiede zwischen den Personen $\sigma_{\text{Person}}^2$ können nicht isoliert werden und es wurde nur eine einzelne Messung durchgeführt womit $\sigma_{\text{Innerhalb}}^2$ nicht identifizierbar ist, dann führt dies dazu, dass diese Komponenten in der Residualvarianz aufgehen. Es folgt somit wieder für den Vergleich.
 
-\begin{equation*}
+$$
 \frac{\sigma_{\tau}^2}{\sigma_{\epsilon}^2} = \frac{\sigma_{\tau}^2}{\sigma_{\text{Person}}^2 + \sigma_{\text{Innerhalb}}^2 + \sigma_{\epsilon}^2} = \frac{10}{5+3+2} = 1
-\end{equation*}
+$$
 
 Somit ist die beobachtete Varianz zwischen den Konditionen gleich der Varianz innerhalb der Konditionen, was eher nicht dazu führen würde, dass die Unterschiede zwischen den Konditionen als bedeutsam interpretiert werden würden
 
-Zusammenfassend sollten diese Betrachtung gezeigt haben, dass bei der Erstellung eines Untersuchungsdesign unterschiedliche Faktoren berücksichtigt werden müssen, um ein *optimales* experimentelles Design auszuwählen. Die Betrachtungen haben weiterhin gezeigt, dass der übliche Begriff der Stichprobe eigentlich etwas irreführend ist. Im Allgemeinen werden mit der Stichprobe $N_s$ die Anzahl der Personen die untersucht werden identifiziert. Wie aber durch die Unterscheidung in EU, OU, Replikation und Wiederholung gezeigt wurde, kann die *tatsächlich* Stichprobe $N$ je nach Durchführung des Experiment sich deutlich von $N_s$ unterscheiden. Am dramatischsten war dieser bei dem Beispiel mit den Vereinen zu sehen (siehe @tbl-ed-basics-ex-03), wo eine Erhöhung der Anzahl der Teilnehmerinnen pro Verein zu keine Vergrößerung der Stichprobe geführt hätte.
+Zusammenfassend sollten diese Betrachtung gezeigt haben, dass bei der Erstellung eines Untersuchungsdesign unterschiedliche Faktoren berücksichtigt werden müssen, um ein *optimales* experimentelles Design auszuwählen. Die Betrachtungen haben weiterhin gezeigt, dass der übliche Begriff der Stichprobe eigentlich etwas irreführend ist. Im Allgemeinen werden mit der Stichprobe $N_s$ die Anzahl der Personen die untersucht werden identifiziert. Wie aber durch die Unterscheidung in EU, OU, Replikation und Wiederholung gezeigt wurde, kann die *tatsächlich* Stichprobe $N$ je nach Durchführung des Experiment sich deutlich von $N_s$ unterscheiden. Am dramatischsten war dieser bei dem Beispiel mit den Vereinen zu sehen (siehe @tbl-ed-basics-ex-03), wo eine Erhöhung der Anzahl der Teilnehmerinnen pro Verein zu keiner Vergrößerung der Stichprobe geführt hätte.
 
-Im Folgenden wird eine kurze Übersicht über verschiedene Standarddesigns gegeben.
-
-## Übersicht über verschiedene Designs
-
-Das einfachste Design ist ein *completely randomized design* oder kurz *CRD*. Wir haben eine unabhängige, nominale Variable $A$ die verschiedene Faktorstufen (auch Levels) hat. Die EUs werden randomisiert auf die Faktorstufen verteilt und es wird nur eine Messung und somit eine Beobachtungseinheit bestimmt. In diesem Fall können wir auch nur eine Varianzkomponente $\sigma_{\tau}^2$ bestimmen. In @tbl-ed-basic-crd ist  ein Beispiel mit drei Faktorstufen für $A$ und zwei Replikationen abgebildet.
-
-+-----+-----+-----+-----+
-| EU  |$A_1$|$A_2$|$A_3$|
-+=====+:===:+:===:+:===:+
-| 1   |  X  |     |     |
-+-----+-----+-----+-----+
-| 2   |     | X   |     |
-+-----+-----+-----+-----+
-| 3   |     |     | X   |
-+-----+-----+-----+-----+
-| 4   |  X  |     |     |
-+-----+-----+-----+-----+
-| 5   |     | X   |     |
-+-----+-----+-----+-----+
-| 6   |     |     | X   |
-+-----+-----+-----+-----+
-
-: Beispiel für ein Completely Randomized Design (X: OU). {#tbl-ed-basic-crd}
-
-Wenn wir nicht mehr nur eine unabhängige Variablen mit verschiedenen Faktorstufen haben, sondern mehrere dann sprechen wir von einen *completely randomized factorial design (CRFD)*. In diesem Fall kommen noch weitere Varianzkomponenten für die jeweiligen unabhängigen Variablen hinzu, sowie mögliche Interaktioneffekte wie wir sie schon abhand der Interaktionen in der multiplen Regression kennengelernt haben. In @tbl-ed-basic-crfd ist eine einfacher Fall mit zwei unabhängigen Variablen $A$ und $B$ mit jeweils zwei Stufen dargestellt. Damit die Tabelle nicht zu groß wird, ist nur eine Replikation dargestellt.
-
-+-----+-----------+-----------+
-|     | $A_1$     | $A_2$     |
-+-----+-----+-----+-----+-----+
-| EU  |$B_1$|$B_2$|$B_1$|$B_2$|
-+=====+:===:+:===:+:===:+:===:+
-| 1   |   X |     |     |     |
-+-----+-----+-----+-----+-----+
-| 2   |     |   X |     |     |
-+-----+-----+-----+-----+-----+
-| 3   |     |     |   X |     |
-+-----+-----+-----+-----+-----+
-| 4   |     |     |     |   X |
-+-----+-----+-----+-----+-----+
-
-: Beispiel für ein Completely Randomized Factorial Design mit zwei Faktoren {#tbl-ed-basic-crfd} 
-
-Eine weitere Variante ist das sogenannte Completely Randomized Block Design (CRBD). Hier lassen sich die EU in Blöcke gruppieren die ähnlich zueinander sind. In @tbl-ed-basic-crbd ist eine einfache Struktur mit vier Blöcken I, II, III und IV abgebildet. Dies könnten zum Beispiel Athleten die in Blöcken von drei aus dem gleichen Verein (Block) kommen. Die Annahme dahinter ist, dass die Vereine dazu führen, dass sich die Athleten aus dem gleichen Verein stärker ähneln als Athleten aus verschiedenen Vereinen. Ein Faktor A hat dabei drei Ausprägungen (A1, A2 und A3) und alle Stufen sind in allen Blöcken enthalten. Die EUs innerhalb eines Blocks werden dabei randomisiert auf die drei Stufen von A verteilt. Daher kommt das *randomized*.
-
-+-----+-----+-----+-----+
-|Block|$A_1$|$A_2$|$A_3$|
-+=====+:===:+:===:+:===:+
-| I   | X   | X   | X   |
-+-----+-----+-----+-----+
-| II  | X   | X   | X   |
-+-----+-----+-----+-----+
-| III | X   | X   | X   |
-+-----+-----+-----+-----+
-| IV  | X   | X   | X   |
-+-----+-----+-----+-----+
-
-: Beispiel für ein Completely Randomized Block Design {#tbl-ed-basic-crbd}
-
-Eine Variante des CRBD ist das Incomplete Block Design (siehe @tbl-ed-basic-ibd). Hier sind nicht alle Faktorstufen von A in jedem Block vorhanden sondern nur bestimmte Kombinationen die jedoch über die Gesamtzahl balanciert werden.
-
-+------+-----+-----+-----+
-|Block |$A_1$|$A_2$|$A_3$|
-+======+:===:+:===:+:===:+
-| I    | X   | X   |     |
-+------+-----+-----+-----+
-| II   | X   |     | X   |
-+------+-----+-----+-----+
-| III  |     | X   | X   |
-+------+-----+-----+-----+
-| IV   | X   | X   |     |
-+------+-----+-----+-----+
-| V    | X   |     | X   |
-+------+-----+-----+-----+
-| VI   |     | X   | X   |
-+------+-----+-----+-----+
-
-: Beispiel für ein Incomplete Block Design {#tbl-ed-basic-ibd}
-
-Als letztes Design dann noch das Split-Plot Design (SPD). Bei SPD werden ebenfalls zwei Faktoren betrachtet. Die Besonderheit ist hier allerdings, dass die Zuteilung der Faktorstufen bzw. deren Kombination unterschiedlich schwer sind. Im Beispiel lässt sich der Faktor B einfacher zuteilen, während Faktor A schwerer zuzuteilen ist.
-
-+----+-----------------+-----------------+
-|    |  $A_1$          |  $A_2$          |
-+----+-----+-----+-----+-----+-----+-----+
-| EU |$B_1$|$B_2$|$B_3$|$B_1$|$B_2$|$B_3$|
-+====+:===:+:===:+:===:+:===:+:===:+:===:+
-| 1  | X   | X   | X   |     |     |     |
-+----+-----+-----+-----+-----+-----+-----+
-| 2  | X   | X   | X   |     |     |     |
-+----+-----+-----+-----+-----+-----+-----+
-| 3  |     |     |     | X   | X   | X   |
-+----+-----+-----+-----+-----+-----+-----+
-| 4  |     |     |     | X   | X   | X   |
-+----+-----+-----+-----+-----+-----+-----+
-
-: Beispiel für ein Split-plot Design {#tbl-ed-basic-spd}
-
-Ein Beispiel für ein SPD ist eine Treatment-Control Studie. Hier wäre beispielsweise $A_1$ = Control, $A_2$ = Treatment und $B_1$ = pre, $B_2$ = post und $B_3$ = retention.
-
-Die verschiedenen Design haben jeweils Stärken und Schwächen wenn es darum geht unterschiedliche Varianzkomponenten zu isolieren die es dann möglich machen für ein gegebenes Problem ein effizientes Design auszuwählen bzw. anzupassen.

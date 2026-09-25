@@ -1,0 +1,3112 @@
+# Experimentelle Designs
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+source('_common.R')
+library(scatterplot3d)
+require(patchwork)
+#source('../resources/nice_format_helper_fcn.R')
+n <- 20
+k <- 3
+set.seed(11)
+kaffee <- tibble(
+  Zeit = rnorm(k*n, rep(c(1917,1927,1927), each=n), 8),
+  Gruppe = gl(k,n,labels=c('Koffein','Placebo','Control'))
+)
+theme_1 <- theme(text = element_text(size = 24))
+```
+
+In diesem Kapitel werden wir verschiedene experimentelle Designs kennenlernen. Die Behandlung ist dabei leider nur oberflächlich möglich, da ansonsten ein vollständiger Kurs notwendig wäre um die Grundlagen zu erarbeiten. Ziel ist es daher die verschiedenen Designs kennen zu lernen und die Vor- bzw. Nachteile zu betrachten. In einer konkreten Situation können so verschiedene Designs vorausgewählt werden und dann selbstständig nach einer weiteren Betrachtung die Entscheidung für ein bestimmtes Design durchgeführt werden.
+
+## Completely Randomized Design
+
+Das erste experimentelle Design, das wir uns anschauen, ist das **Completeley Randomized Design**. Wir haben unterschiedliche experimentelle Konditionen von denen wir ausgehen, dass diese sich unterschiedlich auf die experimentellen units (EU) auswirken. Beispielsweise wollen wir die Balancierfähigkeit unter drei verschiedenen Konditionen, z.B. fester Untergrund, weicher Untergrund und wackeliger Untergrund. Die Balancierfähigkeit ist aber auch durch zahlreiche andere Einflussfaktoren beeinflusst, z.B. Vorerfahrung, Kraftfähigkeit etc. Viele von diesen Einflussfaktoren kennen wir vielleicht gar nicht bzw. für diese zu kontrollieren wäre zu aufwendig. Um jedoch dennoch für diese Störgrößen zu *kontrollieren* setzen wir Randomisierung ein. Jeder einzelne Versuchsteilnehmer bzw. Versuchsteilnehmerin muss dazu randomisiert auf **eine** der drei Kondition verteilt werden. Damit werden die Teilnehmer(innen) zu den EUs. Nach Durchsicht der Literatur könnte die Balancierfähigkeit z.B. mittels einer Kraftmessplatte operationalisiert werden. Hieran schließt sich noch die Festsetzung der observational units, d.h. in diesem Falle, der Anzahl der Messwiederholungen an um die Reliabität auf ein gewünschtes Niveau zu heben. Diesen Teil vernachlässigen wir zunächst einmal.
+
+
+Das statistische Modell kann dann wie folgt formuliert werden: 
+
+$$
+Y_{ij} = \mu + \tau_i + \epsilon_{ij}, \qquad \epsilon_{ij}\sim \mathcal{N}(0,\sigma^2)
+$$ {#eq-ed-crd-model}
+
+| i = Gruppenindikator
+| j = experimental unit-indikator
+| $\mu$ = Gesamtmittelwert
+| $\tau_i$ = Einfluss der $i$-ten Stufe
+| K = Anzahl der Faktorstufen
+
+D.h. die einzelnen $\tau_i$s beschreiben eine Abweichung um den Gesamtmittelwert $\mu$. Um den Einfluss der verschiedenen Konditionen $\tau_i$ zu bestimmen, benötigen wir Replikationen der EUs. In unserem Fall erreichen wird die Replikation dadurch, dass mehrere Versuchspersonen, die EUs, unter jeder Kondition $i$ beobachtete werden. Die einzelnen EUs erhalten dabei den Index $j$. In der Analyse ist diese Formulierung nur eine Alternativformulierung des linearen Modells mittels der Indikatorvariablen. Die statistische Überprüfung wir entsprechend nun über den bekannten Modellvergleichen durchgeführt. Das Modell @eq-ed-crd-model wird als das Full Model angesehen und wir definieren das reduzierte Modell mittels:
+
+$$
+Y_{ij} = \mu + \epsilon_{ij}
+$$
+
+D.h. im reduzierten Modell fallen die Faktorvariablen $\tau_i$ raus und als Modellparameter wird nur ein $y$-Achsenabschnitt, der dann gleich dem Mittelwert $\bar{y}$ ist, verwendet. Die Teststatistik folgt unter der $H_0$ eine $F$-Statistik mit $\textrm{df}_R - \textrm{df}_F$ und $\textrm{df}_F$ Freiheitsgraden.
+
+$$
+\begin{aligned}
+H_0:& \tau_1 = \tau_2 = \ldots = \tau_k = 0 \\
+H_1:& \exists\tau_i \neq \tau_j\ \textrm{mit}\ i \neq j, i,j \in \{1,2,\ldots,k\}
+\end{aligned}
+$$
+
+
+Schauen wir uns als nächstes einen Beispieldatensatz an und gehen durch die verschiedenen Schritte der Analyse eines CRD. In @fig-ed-crd-coffeine-01 ist das Ergebnis einer Untersuchung zum Einfluss von Koffein auf die Laufleistung bei einem 8Km Ausdauerlauf zu abgebildet. Insgesamt sind $N=60$ Probanden randomisiert in drei Gruppen eingeteilt worden: Koffein, Placebo und Control. Die Gruppe Koffein hat vor dem Lauf ein Koffeinpräparat eingenommen, während die Placebogruppe ein Präparat ohne Wirkstoff eingenommen hat. Die Kontrollgruppe hat vor dem Lauf kein Zusatzpräparat eingekommen. Jeder Proband lief einmal die Strecke von $8$ Km so schnell wie möglich. Die abhängige Variable war die Laufzeit.
+
+```{r}
+#| fig-cap: "Einfluss von Koffeine auf die Laufleistung über 8km"
+#| label: fig-ed-crd-coffeine-01
+
+ggplot(kaffee, aes(Gruppe, Zeit)) +
+  geom_boxplot() + 
+  geom_jitter(width = 0.2, color = 'red', size = 2, alpha=.5) +
+  labs(y = 'Zeit [s]',
+       x = 'Gruppe') 
+```
+
+@fig-ed-crd-coffeine-01 deute an, das die Einnahme von Koffein zu einer Leistungsverbesserung führt, während der Einfluss des Placebos scheinbar möglicherweise nur zu einer leichten Verbesserung gegenüber der Kontrollkondition geführt hat.
+
+Schauen wir uns die deskriptive Statistik der Daten an. In @tbl-ed-crd-ex-01 sind die deskriptiven Werte der Daten abgebildet.
+
+```{r}
+#| results: asis
+#| label: tbl-ed-crd-ex-01
+#| tbl-cap: "Deskriptive Statistik der Laufdaten."
+
+kaffee |> group_by(Gruppe) |>  
+  summarytools::descr(stats = c('mean','med','sd','q1','q3'), plain.ascii = F, style='rmarkdown', heading=F) 
+```
+
+Die Standardabweichungen in den drei Gruppen sind in @tbl-ed-crd-ex-01 relativ ähnlich, so dass hier schon einmal keine größeren Probleme zu erwarten sind. Die Mittelwerte und Mediane liegen ebenfalls ziemlich nahe beieinander. Was unseren Eindruck aus @fig-ed-crd-coffeine-01 bestätigt. Der Modellvergleich ergibt die folgende F-Tabelle mit den Quadratsummenzerlegungen (siehe @tbl-ed-crd-ex-tbl-01).
+
+```{r}
+#| tbl-cap: ANOVA-Tabelle der Koffein-Laufdaten
+#| label: tbl-ed-crd-ex-tbl-01
+
+mod_aov <- aov(Zeit ~ Gruppe, kaffee)
+broom::tidy(mod_aov) |> 
+  knitr::kable(booktabs=T, digits=2,
+               col.names = c('', 'DF', 'SSQ', 'MSQ', 'F', 'p'))
+```
+
+Die Ergebnisse in @tbl-ed-crd-ex-tbl-01 deuten auf einen statistisch signifikanter Effekt für die Gruppenvariable. Der $F$-Wert ist deutlich größer als $1$ und hat unter der Annahme der $H_0$ einen p-Wert von deutlich unter $\alpha = 0.05$. D.h. die Kenntnis über die Gruppenzugehörigkeit gibt uns relevante Information über die abhängige Variable $y$ der Laufgeschwindikeit. 
+
+Um sicherzustellen, dass unser Modell die Daten auch korrekt abbildet, müssen wir natürlich genauso wie auch bei den vorhergehenden Modellen eine Analyse des Modellfits durchführen. Also zum Beispiel eine Residuenanalyse mittels der einfachen Residuen $e_i$ und der standardisierten Residuen $e_{Si}$.
+
+```{r}
+#| layout-ncol: 3
+#| fig-cap: "Residuendiagnostik für einfache $\\hat{\\epsilon}_i$ und standardisierte $\\hat{\\epsilon}_{Si}$ Residuen."
+#| fig-subcap:
+#|   - "Residuenplot für die einfachen Residuen $\\hat{\\epsilon}_i$."
+#|   - "Residuenplot für die standardisierten Residuen $\\hat{\\epsilon}_{Si}$."
+#|   - "qq-Plot der einfachen Residuen."
+#| fig-height: 4
+#| label: fig-ed-crd-ex-01-resid
+
+
+mod_lm <- lm(Zeit ~ Gruppe, data = kaffee)
+kaffee <- broom::augment(mod_lm, kaffee)
+p1 <- ggplot(kaffee, aes(.fitted, .resid)) +
+  geom_hline(yintercept = 0, color = 'red', linetype = 'dashed') +
+  geom_point() +
+  labs(x = expression(hat(y)[i]), y = expression(hat(epsilon)[i])) 
+p2 <- ggplot(kaffee, aes(.fitted, .std.resid)) +
+  geom_hline(yintercept = 0, color = 'red', linetype = 'dashed') +
+  geom_point() +
+  labs(x = expression(hat(y)[i]), y = expression(hat(epsilon)[Si])) 
+p3 <- ggplot(kaffee, aes(sample=.resid)) +
+  geom_qq() +
+  geom_qq_line() +
+  labs(x = 'Theoretisch', y = 'Beobachtet') 
+p1 + theme_1
+p2 + theme_1
+p3 + theme_1
+```
+
+In @fig-ed-crd-ex-01-resid sind die verschiedenen Residuenplots abgetragen und deuten insgesamt auf keine groben Verletzungen der Annahmen hin (Warum?). Ein weiterführende Analyse würde sich die weiteren Metriken wie Cooks-Distance, DFFits usw. anschauen. Was wir hier aber überspringen.
+
+::: {.callout-tip}
+Im Zusammenhang mit einer ANOVA-Analyse wird oft auch ein formaler Test auf Varianzhomogenität erwähnt. Der Levene-Test wird oft dazu verwendet. Der Levene-Test hat als $H_0$-Hypothese, das die Varianzen in den Gruppen gleich sind.
+
+\begin{align*}
+H_0: &\text{all } \sigma_i^2 \text{ equal}\\
+H_1: &\text{not all } \sigma_i^2 \text{ equal}
+\end{align*}
+
+Da es sich dabei um einen Vorraussetzungtest handelt, wird die Irrtumswahrscheinlichkeit auf $\alpha = 0.1$ angesetzt um die Überprüfung konservativer zu machen (Warum?). Auf die Herleitung des Tests gehen wir nicht näher ein.
+
+```{r}
+mod_lev <- car::leveneTest(mod_aov)
+df_1 <- mod_lev$Df[1]
+df_2 <- mod_lev$Df[2]
+lev_F <- mod_lev[['F value']][1]
+```
+
+Für unsere Beispieldaten ergibt sich ein Testergebnis mit $F(`r df_1`, `r df_2`) = `r lev_F`$ welcher bei einer Irrtumswahrscheinlichkeit von $\alpha = 0.1$ statistisch nicht signifikant ist. D.h. die $H_0$ das die Varianzen in den Gruppen gleich sind, wird nicht verworfen.
+:::
+
+:::{#exm-crd-lit-example-01}
+```{r}
+m_s <- c(169.3,171,167,165.2)
+s_s <- c(7.41,5.8,4.32,4.4)
+n_s <- c(7,14,4,18)
+N <- sum(n_s)
+K <- 4
+m_bar <- sum(n_s * m_s)/sum(n_s)
+ssb <- round(sum(n_s*(m_s - m_bar)**2), 2)
+msb <- round(ssb/(K-1), 2)
+sse <- round(sum((n_s - 1)*s_s**2), 2)
+mse <- round(sse/(N-K), 2)
+f <- round(msb/mse, 3)
+p_f <- round(1-pf(f, K-1, N-K), 3)
+```
+In einer Untersuchung von @milanese2011 wurde die Anthropometrie und Körperzusammensetzung bei $43$ weiblichen Handballspielerinnen aus der italienischen Handballliga untersucht. Die Spielerinnen wurden nach ihrer Spielpositionen gruppiert in Torwärtin, Rückraum-, Flügelspielerin oder Kreisläuferin. Für die Körperhöhe konnten die Autoren die folgenden Ergebnisse für vier Gruppen ermitteln.
+
+| Position  | Körperhöhe[cm] | $n_i$ |
+| --- | --- | -- |
+| Torwärtin | $169.3 \pm 7.41$ | $7$ |
+| Rückraumspielerin | $171.0 \pm 5.80$ | $14$ |
+| Kreisspielerin | $167.0 \pm 4.32$ | $4$ |
+| Flügelspielerin | $165.2 \pm 4.4$ | $18$
+
+: Mittelwertsdaten aus Milanese et al. (2011, S.1304)
+
+Ein Analyse der Daten ergab das folgende Ergebnis:
+
+|  | $df$ | $SSQ$ | $MSQ$ | $F$ | $p$ |
+| --- | --- | --- | --- | --- | --- |
+| Zwischen | $`r K-1`$ | $`r ssb`$ | $`r msb`$ | $`r f`$ |  $p = `r p_f`$ |
+| Innerhalb | $`r N-K`$ | $`r sse`$ | $`r mse`$ | |   |
+
+D.h. es wurde ein statistisch signifikanter Unterschied zwischen den vier Gruppen beobachtet. Wenn wir uns die Annahme des Modells noch einmal anschauen, dann bemerken wir ein kleines Problem. Die Voraussetzungen wurden insofern nicht eingehalten, da die Gruppen nicht randomisiert in die vier Positionen eingeteilt wurden was bei dieser Art der Untersuchung auch gar nicht möglich ist. Problematisch ist in diesem Fall zusätzlich, dass die Stichprobe nicht zufällig gezogen wurde, sondern im Rahmen einer Leistungsdiagnostik mit insgesamt vier verschiedenen Teams zustande kam. Daher ist die Verallgemeinerung der Ergebnisse ebenfalls kritisch zu betrachten. 
+:::
+
+
+```{r}
+
+mod_lm <- lm(Zeit ~ Gruppe, data = kaffee)
+mod_r <- lm(Zeit ~ 1, kaffee)
+mod_f <- lm(Zeit ~ Gruppe, kaffee)
+mod_aov <- aov(Zeit ~ Gruppe, data = kaffee)
+```
+
+Da alle drei Methoden zum gleichen Ergebnis kommen, ist jeder selbst überlassen wenn Methode sie bevorzugt.
+
+### Effektstärke im CRD
+
+Ein Konzept mit dem wir uns bisher noch nicht eingehender auseinander gesetzt haben, sind die sogenannten Effektstärken.
+
+### Effektstärken allgemein
+
+::: {#def-effect-size}
+### Effektstärke 
+Eine Effektstärke bezeichent einen Wert, der die Stärke der Beziehung zwischen zwei Variablen in einer Population misst, oder eine empirische Schätzung dieser Größe.
+:::
+
+Das einfachste Beispiel für eine Effektstärke ist der Parameter Cohen's D der Effektstärke für den Unterschied zwischen zwei Gruppenmittelwerten bestimmt. In der Population gilt.
+\begin{equation}
+D = \frac{\mu_1 - \mu_2}{\sigma}
+\end{equation}
+bzw. geschätzt anhand der Stichprobe:
+\begin{equation}
+d = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{s_1^2 + s_2^2}/2}
+\end{equation}
+Die Effektstärke ist dabei in praktisch allen relevanten Fällen eine Dimensionslose größe, da im Prinzip immer ein Unterschied $\Delta$ durch die $Streuung$ geteilt bzw. normiert wird. Da beide Größen die gleichen Einheiten haben, entsteht dadurch eine dimensionslose Größe. Dies ermöglicht die Effektstärke in verschiedene (willkürliche) Bereiche einzuteilen die eine Abschätzung von kleinen, mittleren und großen Effektstärken ermöglicht.
+
+Da wir beim CRD üblicherweise mehr als zwei Faktorstufen haben, ist die Berechnung einer möglichen Effektstärke etwas komplizierter und ein übliche Formel für die Effektstärke $f$ folgt: 
+
+$$
+f = \frac{\sigma_{\text{between}}}{\sigma_{\epsilon}} = \frac{\sqrt{\frac{\sum\tau_i^2}{k}}}{\sigma_{\epsilon}} 
+$$ {#eq-ed-crd-f}
+
+D.h. die mittleren quadrierte Effekte der Faktorstufen $\tau_i$ werden durch die Residualstandardabweichung geteilt. Also letztendlich wieder eine Abweichung, dieses Mal eine gemittelte, geteilt durch eine Streuung. Ein Problem bei der Effektstärke $f$ im CRD-Design ist, dass wir keine Eins-zu-Eins Abbildung von $f$ auf eine Verteilung verschiedener Mittelwertswerte haben. In @fig-ed-crd-f-01 sind drei verschiedene Anordnungen der Mittelwerte bei identischer Effektstärke $f$ abgetragen.
+
+```{r}
+#| fig-cap: Drei verschiedene Beispiele für die gleiche Effektstärke $f = 0.7$.
+#| label: fig-ed-crd-f-01
+
+sigma <- .5
+s2 <- sqrt(2)
+of <- sqrt(2/5)
+df_f <- tibble(
+  mu_s = c(1,2,2,3,1,1,1+s2,1+s2,1,1+of,1+2*of,1+3*of),
+  fct = rep(paste0('A',1:4),3),
+  type = rep(c('I','II','III'), each=4) 
+)
+ggplot(df_f, aes(fct, mu_s)) +
+  geom_col() +
+  geom_errorbar(aes(ymin=mu_s-sigma, ymax=mu_s+sigma), width=.3) +
+  facet_grid(~type) +
+  labs(x = 'Faktorstufe', y = 'Mittelwerte')
+```
+
+Dies macht daher die Interpretation von $f$ deutlich schwieriger als das im einfachen Fall von Cohen's D für den Vergleich zwischen zwei Mittelwerten der Fall ist.
+
+Leider hören hier nicht die Problem auf, sondern es gibt eine ganze Reihe von weiteren Effektstärken die in der Literatur anzutreffen sind. Dazu gehören vor allem das weit verbreitete $\eta^2$ und das weniger bekannte $\omega^2$.
+
+$$
+\begin{aligned}
+\eta^2 &= \frac{SS_{B}}{SS_{Total}} \\
+\omega^2 &= \frac{f^2}{1 + f^2} = \frac{(K-1)(F-1)}{(K-1)(F-1)+N}\\
+f^2 &=\frac{\omega^2}{1-\omega^2}
+\end{aligned}
+$$
+
+Das Problem besteht darin, das oft $\eta^2$ in der Literatur verwendet wird, trotzdem bekannt ist, dass die Effektstärke oft stark überschätzt wird und daher neuere Literatur die Verwendung von $\omega^2$ empfielt (@levine2002, @olejnik2003, @kroes2023).
+
+In der Literatur werden Einteilungen der Effektstärken anhand von Überlegungen zur Varianzaufklärung verwendet um den Effektstärken eine qualitative Bewertung zu geben (siehe z.B. @cohen1988).
+
+|       | $f$ | $\omega^2$ | $\eta^2$ | 
+| --- | --- | --- | --- |
+| klein | 0.1 | 0.01 | 0.01  |
+| mittel | 0.25 | 0.06 | 0.06 | 
+| groß | 0.40 | 0.14 | 0.14 | 
+
+: Einordnung der Effektstärken
+
+Diese Einteilung wird oft miesverständlich als Maß für praktische Relevanz interpretiert. Das zum Beispiel ein größer Effekt automatisch praktische Relevanz nach sich zieht und ein kleiner Effekt auch keine praktische Relevanz hat. Diese Interpretation ist jedoch in den meisten Fällen zu simpel und eine gegebene Effektstärke sollte immer im Rahmen der konkreten Untersuchung interpretiert werden. Die Hauptnützlichkeit von Effektstärken beruht jedoch wahrscheinlich darin die Berechnung von Stichprobengrößen mittels einer Poweranalyse zu vereinfachen.
+
+### Replikationsfaktor a-prior ermitteln
+
+Um bei unserem Experiment sicher zu stellen, dass wir auch eine realistische Chance haben einen gewünschten Effekt zu finden, müssen wir vor dem Experiment eine Power-Analyse durchführen um den notwendig Replikationsfaktor für die experimentellen Einheiten EU zu bestimmen. In dem Fall, dass die EUs äquivalent zu den Untersuchungsteilnehmerinnen und Untersuchungsteilnehmer sind führt dies dementsprechend zur Bestimmung der Stichprobengröße. Dazu wird Anhand der Literatur wird $f$ bestimmt und dann z.B. die Software GPower verwendet.
+
+## Lineare Kontraste
+
+
+```{r}
+library(emmeans)
+#source('../resources/nice_format_helper_fcn.R')
+n <- 20
+k <- 3
+set.seed(11)
+kaffee <- tibble(
+  Zeit = rnorm(k*n, rep(c(1917,1927,1927), each=n), 8),
+  Gruppe = gl(k,n,labels=c('Koffein','Placebo','Control'))
+)
+mod_aov <- aov(Zeit ~ Gruppe, data = kaffee)
+```
+
+Bei der Analyse eines CRDs ist bisher nur untersucht worden, ob es *irgendwo* zwischen den verschiedenen Faktorstufen einen relevanten Unterschied gibt. Im nächsten Schritt soll daher nun bestimmt werden zwischen welchen der verschiedenen Faktorstufen ein Unterschied besteht. Im einfachsten Fall bedeutet dies, dass immer paarweise Vergleiche zwischen den Faktorstufen durchgeführt werden sollen, um zu überprüfen zwischen welchen ein Unterschied besteht. Im vorliegenden Fall aus dem Laufbeispiel mit drei Faktorstufen (Koffein, Placebo und Control, siehe @fig-ed-lc-01) können daher drei verschiedene paarweise Vergleiche durchgeführt werden.
+
+```{r}
+#| fig-cap: "Einfluss von Koffeine auf die Laufleistung über 8km"
+#| label: fig-ed-lc-01
+
+ggplot(kaffee, aes(Gruppe, Zeit)) +
+  geom_boxplot() + 
+  geom_jitter(width = 0.2, color = 'red', size = 2, alpha=.5) +
+  labs(y = 'Zeit [s]',
+       x = 'Gruppe') 
+```
+
+D.h. in dem Beispiel können Koffein mit Placebo, Koffein mit Control und Placebo mit Control miteinander verglichen werden. In allen drei Fällen werden die Mittelwerte $\mu_i$ der jeweiligen Faktorstufen miteinander verglichen.
+
+Ein Problem bei diesen Vergleich ist allerdings, dass jede Faktorstufe in mehreren (im Beispiel zwei) Vergleichen beteiligt ist. Wenn nun noch mehr Faktorstufen vorhanden sind, dann ist entsprechend jeder Gruppenmittel noch öfter in den paarweisen vergleichen beteiligt. Allgemein gilt bei $K$-Faktorstufen: 
+
+$$
+\text{Anzahl der Paarvergleiche} = K(K-1)
+$$
+
+
+Dadurch, das jeder Mittelwert $\mu_i$ in mehreren Vergleichen beteiligt ist, führt dies zu dem Problem der **Mehrfachvergleiche** \index{Mehrfachvergleiche}.
+
+## Das multiple-comparison Problem
+
+Allgemein gilt, wenn mehrere statistische Tests durchgeführt werden und der $\alpha$-Fehler betrachtet wird, dann folgt über die Gesamtheit der Tests, dass der $\alpha$-Fehler für einen individuellen Test nicht mehr gleich dem nominalen Level, also $\alpha = 0.05$ ist. Tatsächlich ist der $\alpha$-Fehler in diesem Fall deutlich höher als $\alpha = 0.05$. Werden beispielsweise $100$ verschiedene Tests auf dem gleichen Datensatz durchgeführt, dann würden unter der Annahme, dass die $H_0$ zutrifft, im Mittel $5$ Tests *statistisch signifikant* werden, ohne das ein Effekt besteht. Daher könnte eine Strategie sein, möglichst viele unterschiedliche Tests auf einem Datensatz durchzuführen, irgendeiner davon wird schon signifikant werden. 
+
+Die Überlegung dazu ist die Folgende. Es werden $m$ Hypothesen getestet. Jede dieser Hypothese soll für sich genommen eine Irrtumswahrscheinlichkeit von $\alpha$ haben und in allen Fällen sei die $H_0$ zutreffend. Dann haben ist für jeden einzelnen Test die Wahrscheinlichkeit eine korrekte Entscheidung zu treffen $P(\text{korrekt Entschieden}) = 1 - \alpha$. Wenn nun $m$ unabhängige Hypothesentestungen durchführt werden, wird die Wahrscheinlichkeit sich korrekt zu entscheiden insgesamt $m$-Mal miteinander multipliziert.
+
+$$
+P(\text{korrekte Entscheidung}) = (1-\alpha)\cdots(1-\alpha) = (1-\alpha)^m
+$$
+
+Das Komplementär dieser Wahrscheinlichkeit ist dann die Wahrscheinlichkeit mindestens eine *falsche* Entscheidung zu treffen. Daraus folgt, dass diese Wahrscheinlichkeit, mindestens einen $\alpha$-Fehler zu begehen, folgt $1 - P(\text{korrekte Entscheidung})$ ist.
+
+$$
+P(\text{min. }1\text{ Type-I Fehler}) = 1 - (1-\alpha)^m 
+$$
+
+Wird diese Wahrscheinlichkeit gegen die Anzahl der Test abgetragen, ergibt sich der folgende Zusammenhang (siehe @fig-ed-lc-02).
+
+```{r}
+#| fig-cap: "Inflation des $\\alpha$-Fehlers mit $\\alpha=0.05$"
+#| label: fig-ed-lc-02
+
+ggplot(tibble(m = 1:20, p = 1 - (1-0.05)**m),
+       aes(m, p)) +
+  geom_line() +
+  scale_x_continuous('Anzahl der Tests', breaks=seq(0,20,2)) +
+  scale_y_continuous('P min 1\nTyp-I Fehler')
+```
+
+In @fig-ed-lc-02 ist zu erkennen, dass die Wahrscheinlichkeit für mindestens einen $\alpha$ sehr schnell mit der Anzahl der Tests ansteigt. D.h. ab etwa 15 Tests liegt die Wahrscheinlichkeit für ein statistisch signifikantes Ergebnis bei etwas über $50\%$. Daher, umso mehr Tests in einer Untersuchung durchgeführt werden, umso höher ist die Wahrscheinlichkeit, dass ein Test *anspringt*. Um diesem Problem zu begegnen, sollte daher für die Anzahl der durchgeführten Tests kontrolliert werden (siehe allerdings @rothman1990 für eine Gegenposition).
+
+Ein Umstand macht die Kontrolle der $\alpha$-Fehlerrate allerdings etwas undurchsichtig, da nicht eindeutig ist auf welchem Level die Fehlerkontrolle stattfinden soll. In @fig-ed-lc-errors ist die typische Struktur eines Experiments dargestellt.
+
+```{dot}
+//| fig-cap: "Beispiel für die entstehende Hierarchie von Fehlern bei Mehrfachvergleichen bei einem Experiment."
+//| label: fig-ed-lc-errors
+
+graph G {
+Ex [label="Experiment"]
+E1 [label="Primary Endpoint", fillcolor="magenta", style=filled]
+E2 [label="Secondary Endpoint", fillcolor="magenta", style=filled]
+F1 [label="Faktor 1", fillcolor="orange", style=filled]
+F2 [label="Faktor 2", fillcolor="orange", style=filled]
+Y1 [label="MW1", fillcolor="yellow", style=filled]
+Y2 [label="MW2", fillcolor="yellow", style=filled]
+Y3 [label="MW3", fillcolor="yellow", style=filled]
+subgraph cluster_0 {
+    label="Experiment wise error rate"
+    bgcolor="lightgray"
+    E1; E2;
+}
+subgraph cluster_1 {
+    label="Family wise error rate"
+    bgcolor="lightgray"
+    F1; F2;
+}
+subgraph cluster_2 {
+    label="Error rate per test"
+    bgcolor="lightgray"
+    Y1; Y2; Y3
+}
+Ex -- E1;
+Ex -- E2;
+E1 -- F1;
+E1 -- F2;
+F1 -- Y1;
+F1 -- Y2;
+F1 -- Y3;
+}
+```
+
+In dem Beispiel sind zwei Endpunkte in dem Experiment geplant gewesen (Primary und Secondary Endpoint). Diese könnte zum Beispiel die Squad und die Hip thrust Leistung in der Stichprobe sein. Beide Endpunkte wurden unter jeweils zwei verschiedenen Faktoren untersucht (z.B. Ernährungsergänzung und Kontrolle). Faktor 1 besitzt drei Faktorstufen. D.h. es können drei paarweise Vergleiche zwischen den Mittelwerten (MW) der drei Stufen durchgeführt werden. Ähnliches trifft aber auch auf Faktor 2 zu. Bei zwei Endpunkten verdoppelt sich noch einmal die Anzahl der Test bzw. wenn bei noch weitere Endpunkte haben entsprechend mehr.
+
+Dies führt dazu, dass mehrere Ebenen vorliegen, auf denen ein Fehlerkontrollmechanismus ansetzen kann. Die Kontrolle kann entweder auf der Ebene der Endpunkte, der Ebene der Faktoren innerhalb eines Endpunktes oder auf der Ebene der einzelnen Faktorstufen innerhalb eines Faktors innerhalb eines Endpunktes kontrolliert werden. Von oben nach unten werden diese Ebenen als *Experiment* \index{experiment wise error rate}, *family* \index{family wise erro rate} und *test* \index{test wise error rate} wise error rates bezeichnet. Die Kontrolle ist dabei von unten nach oben immer strikter da die Anzahl der zu berücksichtigenden Test immer größer wird. Dazu kommt, dass es leider in der Literatur dazu keinen klaren Konsens gibt auf welcher Ebene die Mehrfachtestung berücksichtigt werden sollte. In den meisten Fällen wird daher auf der *test*-Ebene kontrolliert.
+
+## Kontraste $\psi$
+
+Im folgenden wird ein etwas allgemeineres Rahmenwerk aufgebaut um Vergleiche zwischen Faktorstufen durchzuführen. Dazu wird zunächst das Konzept eines Kontrasts für Mittelwertsvergleiche benötigt. Ein Kontrast $\psi$ ist dabei ein Spezialfall einer sogenannten Linearkombination \index{Linearkombination}. Allgemein hat eine Linearkombination die folgende Form (siehe @eq-ed-lin-combination):
+
+$$
+\sum_{i=1}^K c_i \cdot a_i
+$$ {#eq-ed-lin-combination}
+
+Eine Linearkombination besteht aus der Summe von Produkten bei denen jeweils ein Element $a_i$ mit einem Faktor $c_i$ multipliziert wird. Die $c_i$s werden als Gewichte bezeichnet, daher wird auch oft in der Literatur die Schreibweise $w_i \cdot a_i$ verwendet vom Englischen $w$eights. Seien zum Beispiel ein Vektor $\boldsymbol{a}$ mit den Elementen $\boldsymbol{a} = (1,2,3)$ und ein Gewichtsvektor mit den Elementen $\boldsymbol{c} = (1/2,1/2,1/3)$ gegeben. Dann hat die entsprechende Linearkombination die folgende Form:
+
+$$
+\sum_{i=1}^K c_i \cdot a_i = \frac{1}{2}\cdot 1 + \frac{1}{2}\cdot 2 + \frac{1}{3}\cdot 3 = 2\frac{1}{2}
+$$ {#eq-ed-lc-ex-01}
+
+Ein Kontrast $\psi$ ist nun ein Spezialfall einer Linearkombination. Beim einem Kontrast $\psi$ sind die Gewichte $a_i$ so gewählt, dass die Summe der Gewichte $a_i$ Null ergibt. D.h. es gilt: 
+
+$$
+\psi = \sum_{i=1}^K c_i \cdot a_i \quad \text{mit } \sum_{i=1}^K c_i = 0
+$$
+
+Das vorhergehende Beispiel der Linearkombination in @eq-ed-lc-ex-01 stellt somit keinen Kontrast dar, da $1/2 + 1/2 + 1/3 = 1\frac{1}{3} \neq 0$ gilt. Dagegen wäre die folgende Linearkombination mit $\boldsymbol{c} = (1/2,1/2,-1)$ ein Kontrast, da $\frac{1}{2} + \frac{1}{2} - 1 = 0$.
+
+$$
+\sum_{i=1}^K c_i \cdot a_i = \frac{1}{2}\cdot 1 + \frac{1}{2}\cdot 2 - \frac{1}{3}\cdot 3
+$$
+
+::: {.callout-tip}
+Linearkombination können in `R` einfach über das Skalarprodukt berechnet werden. 
+
+```{r}
+#| echo: true
+
+c_i <- c(1/2,1/2,1/3)
+a_i <- 1:3
+t(a_i) %*% c_i
+```
+
+Was einen Spezialfall des Matrizenprodukts darstellt.
+
+```{r}
+#| echo: true
+
+mat <- matrix(1:6, nr=2, byrow=T)
+mat
+mat %*% c_i
+```
+:::
+
+### Struktur von Kontrasten
+
+Seien nun die Elemente von $\boldsymbol{a}$ die Modellparameter eines statistischen Models, die Modellparameter könnten z.B. die Mittelwerte dreier Faktorstufen bilden. Dann ergibt sich die folgende Definition für einen Kontrast:
+
+::: {#def-contrast}
+### Kontrast
+Ein Kontrast\index{Kontrast} $\psi$ ist eine Linearkombination von Modellparametern deren Koeffizienten sich zu Null addieren.
+:::
+
+Zum Beispiel der Fall des CRD Modells mit einem Faktor und $K$ Faktorstufen. 
+
+$$
+Y_{ij} = \mu + \tau_i + \epsilon_{ij}
+$$
+
+Die jeweiligen Effekte der Faktorstufen werden durch die Parameter $\tau_i,i=1,\ldots,K$ (die Abweichungen der Gruppenmittelwerte $\mu_i$ vom Gesamtmittelwert $\mu$, repräsentiert. Die allgemeine Form eines Kontrasts $\psi$ für ein CRD Modell hat dann die Form (siehe @eq-ed-lc-crd-con):
+
+$$
+\psi = \sum_{i=1}^k c_i \tau_i, \quad \text{mit } \sum_{i=1}^k c_i=0
+$$ {#eq-ed-lc-crd-con}
+
+In den meisten Fällen werden mittels eines Kontrasts die Mittelwerte $\mu_i$ der Faktorstufen miteinander verglichen. Der Effekt der $i$-ten Stufe, der Mittelwert der $i$-ten Stufe, setzt sich nach dem Modell zusammen aus der Summe aus dem Gesamtmittelwert $\mu$ und dem Effekt der Faktorstufe $\tau_i$. D.h. $\mu_i = \mu + \tau_i$ und dieser ist bei einem CRD gleich dem Gruppenmittelwert $\bar{y}_i$. D.h. ein Schätzer für einen Kontrast $\hat{\psi}$ hat die Form.
+
+$$
+\hat{\psi} = \sum_{i=1}^K c_i (\hat{\mu} + \hat{\tau_i}) = \sum_{i=1}^K c_i \bar{y}_{i}
+$$
+
+Unter Verwendung der Eigenschaft, dass die Summe der Gewichte $c_i$ eines Kontrasts $\psi$ zu $0$ addieren, gilt: 
+
+$$
+\psi=\sum_{i=1}^Kc_i(\mu + \tau_i) = \sum_{i=1}^Kc_i \mu + \sum_{i=1}^K c_i\tau_i=\mu\underbrace{\sum_{i=1}^K c_i}_{=0} + \sum_{i=1}^K c_i\tau_i = \sum_{i=1}^K c_i\tau_i
+$$
+
+Beim vorliegen von Daten, kommen überall über die Variablen die üblichen Hütchen für Schätzer und aus $(\hat{\mu}+\hat{\tau}_i$ wird $\bar{y}_{i}$. D.h. über den Vergleich der Mittelwerte $\bar{y}_i$ mittels eines Kontrast können die Modellparameter $\tau_i$ miteinander verglichen werden.
+
+Durch eine geschickte Kombination von $c_i$ können nun gewünschte Gruppenvergleiche durchgeführt werden. Im Beispiel der Laufdaten, können mittels des folgenden Schemas von $c_i$s die paarweisen Gruppenvergleich als Kontraste definiert werden (siehe @tbl-ed-lc-contrast-01).
+
+
+| Kontrast  | Koffein $(c_1)$ | Placebo $(c_2)$ | Control $(c_3)$ | $\sum_{i=1}^K c_i$ | 
+|  --- | --- | --- |  --- | --- |
+|$\Delta_{\text{Koffein-Placebo}}$ | $1$ | $(-1)$ | 0  | 0 | 
+|$\Delta_{\text{Koffein-Control}}$ | $1$ | $0$ | $(-1)$ | 0 | 
+|$\Delta_{\text{Placebo-Control}}$ | $0$ | $1$ | $(-1)$ | 0 | 
+
+: Paarvergleiche der Gruppen aus dem Beispiel {#tbl-ed-lc-contrast-01}
+
+An einem Beispiel wird mit konkreten Zahlen kann das Schema besser nachvollzogen werden. In @tbl-ed-lc-coffein-psi sind die Gruppenmittelwerte aus dem Koffeinbeispiel mit den Laufdaten abgebildet.
+
+```{r}
+#| tbl-cap: "Gruppenmittelwerte aus der Koffeinstudie"
+#| label: tbl-ed-lc-coffein-psi
+
+k_bar <- kaffee |> dplyr::group_by(Gruppe) |> 
+  dplyr::summarize(m = round(mean(Zeit),1))  
+k_bar |> 
+  knitr::kable(booktabs=T,
+               col.names = c('Gruppe', '$\\bar{y}_{i.}$'),
+               escape=F)
+delta_k_bar_1 = round(k_bar$m[1] - k_bar$m[2], 1)
+```
+
+Es soll nun ein Vergleich zwischen den Gruppen Koffein und Placebo bestimmt werden. Dazu werden aus @tbl-ed-lc-contrast-01 die Gewichte aus der ersten Zeile $\Delta_{\text{K-C}} = (1,-1,0)$ ausgewählt. Mit Hilfe dieser Gewichte wird nun die Linearkombination mit den Mittelwerten aus @tbl-ed-lc-coffein-psi gebildet. Damit ergibt sich der folgende Term.
+
+$$
+\hat{\psi}_{\text{K-C}} = \sum_{i=1}^k c_i \bar{y}_{i.} = 1 \cdot `r k_bar$m[1]` + (-1) \cdot `r k_bar$m[2]` + 0 \cdot `r k_bar$m[3]` = `r delta_k_bar_1`
+$$
+
+Somit wird für den paarweisen Vergleich zwischen den Faktorstufen Koffein und Placebo ein Unterschied von $`r delta_k_bar_1`$ geschätzt. Die beiden verbleibenden paarweisen Vergleichen können parallel durchgeführt werden.
+
+Allgemein wird zwischen zwei Arten von Kontrasten unterschieden: **Einfache Kontraste** und **komplexe Kontraste**. Einfache Kontraste \index{Kontraste!Einfache Kontraste} sind paarweisen Vergleiche während alle anderen Arten von Kontrasten als komplexe Kontraste \index{Kontraste!Komplexe Kontraste} bezeichnet werden. Im Beispiel ist zu erkennen, dass bei paarweisen Kontrasten immer ein Kontrastgewicht auf $c_i = 1$ und ein weiteres Gewicht auf $c_j = -1$ gesetzt wird. Die verbleibenden Gewichte werden alle auf $c_l = 0, \forall l \neq i,j$ gesetzt.
+
+Als nächstes wird nun ein komplexer Kontrast erstellt. Zum Beispiel soll untersucht werden, ob es einen Unterschied zwischen der Kontrollgruppe und den beiden Gruppen die eine Pille bekommen haben gibt. D.h. es soll untersucht werden ob die Gabe einer Pille unabhängig davon ob in der Pille ein Wirkstoff (Koffein) oder nicht (Placebo) gewesen ist eine Wirkung auf die Laufleistung hat. Dazu kann die folgende Überlegung durchgefüht werden. Der Effekt der Gabe eine Pille kann als der mittlere Effekt der beiden Faktorstufen Placebo und Koffein angesehen werden. Dieser *mittlere* Effekt soll mit dem *Effekt* der Kontrollkondition verglichen werden. 
+
+Der mittlere Effekt von Placebo und Koffein ist einfach der Mittelwert der beiden Faktorstufen also $(\tau_{\text{Placebo}} + \tau_{\text{Koffein}})/2$. Mittels eines Kontrasts kann dieser Vergleich nun wie folgt operationalisiert werden.
+
+$$
+c_1 = \frac{1}{2}, c_2 = \frac{1}{2}, c_3 = -1
+$$
+
+Die ersten beiden Gewichte $c_1$ und $c_2$ bilden den Mittelwerte der beiden Effekte Koffein und Placebo. Dieser Mittelwert der Mittelwerte wird soll nun mit dem Mittelwert der Kontrollgruppe verglichen werden. Dazu bekommt der Mittelwert der Kontrollgruppe das Gewicht $c_3 = -1$. Wenn nun die Summe der Gewichte gebildet, dann ergibt sich $\frac{1}{2} + \frac{1}{2} - 1 = 0$. D.h. dieser Vergleich der Gruppenmittelwerte bildet einen Kontrast. Konkrete angewendet auf das Beispiel folgt somit:
+
+```{r}
+k_bar_pille <- round(sum(k_bar$m[1:2])/2 - k_bar$m[3],2)
+```
+
+
+$$
+\hat{\psi} = \sum_{i=1}^k c_i \bar{y}_{i.} = \frac{1}{2} \cdot `r k_bar$m[1]` + \frac{1}{2} \cdot `r k_bar$m[2]` + (-1) \cdot `r k_bar$m[3]` = `r k_bar_pille`
+$$
+
+D.h. der Effekt der Pillengabe unabhängig davon ob die Pille einen Wirkstoff enthält ist $`r k_bar_pille`s$.
+
+Zusammengefasst ermöglichen Kontraste beliebige Vergleiche zwischen mehreren Faktorstufen durchzuführen um Modellparameter miteinander zu vergleichen. Die üblichen paarweisen Vergleich bilden hierbei einen Spezialfall (einfache Kontraste) der allgemeineren komplexen Kontrasten. Um nun zu bewerten ob ein beobachteter Kontrast $\psi_i$ auch wirklich bedeutsam ist, ist die Kenntnis der Unsicherheit über den Kontrast notwendig. Daher wird nun als nächstes die Varianz $Var(\psi_i)$ eines Kontrasts $\psi_i$ bzw. der Standardfehler, die Wurzel der Varianz, betrachtet.
+
+### Varianz von Kontrasten
+
+Um die Varianz von Kontrasten herzuleiten zu können, folgen zunächst noch einmal kurz ein Regeln die schon in Kapitel 12 behandelt wurden. Zunächst zur Wiederholung der Standardfehler des Mittelwerts, da dieser immer wieder auftauchen wird.
+
+$$
+\sigma_{\bar{x}} = \frac{\sigma}{\sqrt{n}}
+$$
+
+Die Varianz des Mittelwerts ist dementsprechend das Quadrat des Standardfehlers $\sigma_{\bar{x}}^2$. Sei beispielsweise der Mittelwert in der Stichprobe unter der $i$-ten Faktorstufe $\bar{Y}_i$ mit der Stichprobengröße $n_i$, dann gilt:
+
+$$
+Var(\bar{Y}_i) = \frac{\sigma^2}{n_i}
+$$
+
+Im Beispiel war der Schätzer für der `Residual standard error` $=`r r_1(sigma(mod_aov))`$. Daraus folgt für den Standardfehler des Mittelwerts für die Gruppe Koffein mit $n_i = 20$ pro Gruppe.
+
+$$
+s_{\text{Koffein}} = \frac{`r r_1(sigma(mod_aov))`}{\sqrt{20}} = `r r_1(sigma(mod_aov)/sqrt(20))`
+$$
+
+Die zweite wichtige Regel im Zusammenhang mit Kontrasten und deren Varianzen ist die Rechenregel für die Linearkombination von unabhängigen Zufallsvariablen die ebenfalls in Kapitel 12 behandelt wurde. Wichtig für die weiteren Herleitungen ist insbesondere das Beispiel @exm-ed-hypo-var-diff. Die allgemeine Regel lautet:
+
+$$
+Var\left(\sum_{i=1}^n a_i X_i\right) = \sum_{i=1}^n a_i^2 Var(X_i)
+$$ {#eq-ed-lc-var-lincomb}
+
+D.h. bei unabhängigen Zufallsvariablen, diese können beispielsweise die Mittelwerte der Gruppen sein da die Gruppen unabhängig voneinander sind, berechnet sich die Varianz der Linearkombination dadurch, dass die Gewichte $a_i$ quadriert werden und mit den Werten der Zufallsvariablen multipliziert werden. Anschließen erfolgt die Summation über alle Produkte.
+
+Angewendet auf einen Kontrast $\psi$ folgt für die Varianz des Kontrast unter der Annahme das die Mittelwerte $\bar{Y}_{i}$ alle die gleiche Varianz $\sigma^2$ haben (die übliche Annahme der Homoskedastizität im linearen Modell), also $Var(\bar{Y}_{i}) = \sigma^2$.
+
+$$
+\begin{aligned}
+Var(\psi) &= Var\left(\sum c_i \bar{Y}_{i}\right) \\
+&= \sum c_i^2 Var(\bar{Y}_{i}) \quad\text{Anwendung der Regel} \\
+  &= \sum c_i^2(\sigma^2/n_i) \quad\text{Homoskedastizität}\\
+  &= \sigma^2\sum(c_i^2/n_i)
+\end{aligned}
+$$ {#eq-ed-lc-var-con-pop}
+
+D.h. die Kontrastgewichte $c_i$ werden quadriert und durch die jeweilige Stichprobengröße $n_i$ der $i$-ten Faktorstufe geteilt. Anschließend wird die Summe über alle Quotienten gebildet und mit dem Standardfehler der Residuen multipliziert. Wie bisher immer geschehen, wird die Varianz $\sigma^2$ anhand der Stichprobe mittels des $MSE$ bzw. in der Terminologie des CRD $MS_{\text{within}}$ abgeschätzt. Kurz zur Erinnerung, der $MSE$ ist die Quadratsumme der Residuen $e_i$ geteilt durch die Differenz der Stichprobengröße $N$ und der Anzahl der Parameter $p$. Daraus folgt für die den Schätzer der Varianz des Kontrasts $\widehat{Var}(\psi)$ (siehe @eq-ed-lc-var-con).
+
+$$
+\widehat{Var}(\psi) = \widehat{Var}\left(\sum c_i \bar{y}_{i.}\right) = MS_w\sum (c_i^2/n_i)
+$$ {#eq-ed-lc-var-con}
+
+Diese Formel ist die gleiche Formel die in Kapitel 23 bei der Einführung zum Experimentellen Design verwendet wurde, um die Verteilungen der Stichprobengrößen in die beiden Gruppen zu verteilen. Um nun von der Varianz auf den Standardfehler des Kontrasts $s_{\psi}$ zu kommen, wird wie immer die Wurzel der Varianz gezogen. In der Benutzung der Symbole wird wieder der übliche Übergang $\sqrt{\hat{\sigma}^2} = s$ wie bei der Verwendung der Standardabweichung verwendet. 
+
+$$
+s_{\psi} = \sqrt{MS_w\sum (c_i^2/n_i)}
+$$ {#eq-ed-lc-se-contrast}
+
+| $n_i$ = Stichprobengröße in Faktorstufe $i$
+| $\hat{\sigma}^2 = MS_w = MSE$
+
+Angewendet auf den Kontrast bei Paarvergleichen folgen für den Vergleich der Faktorstufen $i$ und $j$ dargestellt mittels der Kontrastgewichte $c_i$ die folgenden Terme $c_i^2 = (1)^2, c_j^2 = (-1)^2$ während alle anderen $c_l = 0$ sind.
+
+$$
+Var(\psi) = Var\left(\tau_i - \tau_j\right) = \sigma^2\left(\frac{1}{n_i} + \frac{1}{n_j}\right) 
+$$
+
+Hier wird der Äquivalenz zu der in Kapitel 23 verwendet Formel noch mal deutlicher. Wenn nun ein experimentelles Design verwendet wurde bei dem die Stichprobengrößen unter allen Faktorstufen gleich groß sind, also $n_i = n_j = n$, gilt, dann kann diese Formel noch weiter vereinfacht werden. Mit der Festsetzung $2n = N$ folgt für den Standardfehler des Kontrasts $\sigma_{\psi}$ in der Population:
+
+$$
+\sigma_{\psi} = s_{\Delta} = \sqrt{\sigma^2\left(\frac{1}{N/2}
++\frac{1}{N/2}\right)}=\sqrt{\sigma^2\frac{2}{N/2}} = \sigma\sqrt\frac{4}{N}=\sigma \frac{2}{\sqrt{N}}
+$$
+
+Beziehungsweise in der Stichprobe dann entsprechend.
+
+$$
+s_{\psi} = s_{\Delta} = \sqrt{MSE}\frac{2}{\sqrt{N}}
+$$
+
+D.h. der Kontrast für den Vergleich zwischen zwei Mittelwerten hat im Vergleich zu Standardfehler des Mittelwerts die doppelte Größe. Insgesamt wird aber wieder der gleiche Wurzelzusammenhang enthalten, der dazu führt, dass der Standardfehler für den Kontrast mit zunehmender Stichprobengröße stetig abnimmt, aber die Abnahme mit größer werdenden Stichproben immer kleiner wird. Anders herum bei kleinen Stichprobengrößen führt jeder Hinzunahme von Stichproben zu einer *relativ* stärkeren Verkleinerung des Standardfehlers und damit zu einer Erhöhung der Power (siehe Kapitel 9).
+
+### Hypothesentests für Kontraste
+
+Ein Hypothesentest für einen Kontrast wird nach dem üblichen Muster konstruiert, indem die Größe des Kontrasts $\hat{\psi}$ anhand des Standardfehlers kalibriert wurde, also der Quotient aus dem Kontrast und dem Standardfehler $s_{\psi}$ gebildet wird. Die entsprechenden Hypothesen ergeben sich dann aus der Annahme das unter der $H_0$ der Kontrast den Wert Null annimmt und entsprechend unter der Alternativhypothese ungleich Null ist.
+
+$$
+\begin{split}
+H_{0,\psi}:  \sum_{i=1}^k c_i \tau_i = 0 \\
+H_{1,\psi}:  \sum_{i=1}^k c_i \tau_i \neq 0
+\end{split}
+$$
+
+Die resultierende Teststatistik $t$ ist dementsprechend der Quotient aus der Effektstärke, der Kontrast, normiert durch deren Standardfehler. Wenn dieses Verhältnis größer als ein kritischer Wert $w$ ist, kann die entsprechende $H_0$ abgelehnt werden. Es folgt somit:
+
+$$
+\text{Lehne }H_0\text{ ab, wenn} \left|\frac{\sum_{i=1}^K c_k \tau_i}{\sqrt{MSE\sum_{i=1}^K c_i^2/n_i}}\right| > w
+$$ {#eq-ed-lc-w}
+
+Der kritische Wert $w$ ist wieder die Quantile $q_{\alpha}$ einer entsprechenden theoretischen Verteilung. Welche theoretische Verteilung gewählt werden muss, hängt nun davon ab welche Art der $\alpha$-Kontrolle angewendet werden soll. 
+
+### Konfidenzintervalle von Kontrasten
+
+Nach dem bereits mehrfach verwendeten Muster werden auch Konfidenzintervalle für einen Kontrast $\psi$ erstellt. Das Berechnungsmuster folgt dabei immer dem gleichen Schema (siehe auch Kapitel 10):
+
+$$
+\begin{gather*}
+\text{CI}(\hat{\psi}) = \sum_i c_i \hat{\tau}_i \pm w \sqrt{\widehat{Var}\left(\sum c_i \hat{\tau}_i\right)} = \hat{\psi} + w \times s_{\psi}\\
+\text{estimate } \pm (\text{kritischer Wert}) \times (\text{Standardfehler})
+\end{gather*}
+$$
+
+Der Kontrastschätzer $\hat{\psi}$ bleibt dabei gleich und es ändert sich je nach gewählter Methode für Mehrfachvergleiche um das Gesamt-$\alpha$ zu kontrollieren der kritische Wert $w$.
+
+## Einteilung der Mehrfachvergleiche
+
+Mehrfachvergleiche können zunächst in zwei Arten unterschieden werden. Vergleiche die **vor** dem Experiment geplant wurden und Vergleiche die **nach einsehen der Daten** auf Basis der Ergebnisse durchgeführt werden. Vergleiche die vor der Durchführung des Experiments festgelegt werden, werden als *pre-planned* \index{Kontraste!pre-planned} bezeichnet. Vergleiche die dagegen nach der Durchführung des Experiments nach der Einsicht der Daten durchgeführt werden, werden als *post-hoc* \index{Kontraste!post-hoc} Vergleiche bezeichnet. Zwischen diesen beiden Vergleichen wird unterschieden, da bei den *post-hoc*-Tests dadurch, das die Daten schon bekannt sind, die Vergleiche durch die Daten beeinflusst werden. Daher muss in diesem Fall die Kontrolle strikter sein, als wenn die Vergleiche im Voraus geplant wurden.
+
+In der Literatur sind mittlerweile zahllose unterschiedliche Arten vorhanden die $\alpha$-Kontrolle bei Mehrfachvergleiche durchzuführen. Die Unterschiede zielen dabei immer darauf ab, die $\alpha$-Kontrolle zu gewährleisten und dabei aber die Power nicht zu stark zu verkleinern. Im Folgenden wird nur eine kleine Auswahl der üblichsten Methoden besprochen. In @tbl-ed-lc-contype sind die Bonferroni, Tukey, Scheffé, Dunnet und die FisherLSD Korrekturmethoden inklusive der Art der Kontraste tabellarisch dargestellt.
+
+| Name | Zeitpunkt | Kontraste | Kontrolliert |
+| --- | --- | --- | --- | 
+| Bonferroni | pre-planned | einfache und komplexe | Ja |
+| Tukey | pre-planned | alle paarweisen | Ja |
+| Scheffé | post-hoc | einfache und komplexe | Ja |
+| Dunnet | pre-planned | paarweise TRT gegen CON | Ja |
+| FisherLSD| post-hoc | einfache und komplexe | Nein^[Außer wenn $K=3$] |
+
+: Systematik Mehrfachvergleiche {#tbl-ed-lc-contype}
+
+Die **Bonferroni-Korrektur** \index{Mehrfachvergleiche!Bonferroni-Korrektur} ist in der Literatur weit verbreitet, da sie relativ einfach durchzuführen ist. Die $\alpha$-Korrektur wird erreicht, indem ein *korrigiertes* Signifikanzlevel $\alpha^*$ berechnet wird. Sind in einer Analyse $m$ Kontraste zu berechnen, dann errechnet sich das korrigierte $\alpha$-Level mittels.
+
+\begin{equation*}
+\alpha^* = \alpha / m
+\end{equation*}
+
+Die Bonferroni-Korrektur kontrolliert dadurch das Gesamt-$\alpha$ und ist anwendbar bei einfachen und/oder komplexen Kontraste. Allerdings, müssen diese Kontraste **pre-planned** sein, d.h. die Vergleiche müssen vor Einsicht in die Daten festgelegt worden sein. Die Bonferroni-Methode ist üblicherweise eher konservativ d.h. die Power ist eher gering. Dies gilt insbesondere wenn die Anzahl der Test $m$ groß ist und dadurch $\alpha^*$ relativ schnell sehr klein wird. Der kritische Wert in Formel \eqref{eq-ed-lc-w} wird unter der Bonferroni-Korrektur mittels der $t$-Verteilung mit $N-K$ Freiheitsgraden und $1-\alpha/(2m)$-Quantile bestimmt.
+
+\begin{equation}
+w_{\text{Bonferroni}} = t_{N-K,1-\alpha/(2m)}
+\end{equation}
+
+Eine Variante der Bonferroni-Korrektur die ein höhere Power hat, ist die Bonferroni-Holm-Korrektur \index{Mehrfachvergleiche!Bonferroni-Holm-Korrektur} [@holm1979]. Die Bonferroni-Holm-Korrektur ist ein sequentielles Verfahren zur Kontrolle des $\alpha$-Fehlers. Zunächst werden die p-Werte aller durchgeführten Tests der Größe nach aufsteigend sortiert. Jeder p-Wert wird dann mit einem progressiv angepassten Signifikanzniveau verglichen, wobei der kleinste p-Wert mit $\alpha/m$ verglichen wird, der zweitkleinste mit $\alpha/(m-1)$ usw. D.h. zunächst werden die p-Werte der Größe angeordnet.
+
+\begin{equation*}
+p_{(1)} < p_{(2)} < \cdots < p_{(m)}
+\end{equation*}
+
+Der p-Wert $p_{(i)}$ ist somit der $i$-kleinste p-Wert. Die p-Werte werden dann der Reihe nach verglichen mit:
+
+\begin{equation*}
+\alpha/m, \alpha/(m-1), \ldots , \alpha/1
+\end{equation*}
+
+Nun wird der Index $j$ des ersten p-Werts der die jeweilige Schwelle übertrifft bestimmt.
+
+\begin{equation*}
+p_{(j)} > \frac{\alpha}{m + 1 - j}
+\end{equation*}
+
+Dieser Index $j$ bestimmt die signifikanten Tests indem alle Tests mit $p_{(i)} < p_{(j)}$ als statistisch signifikant gewertet werden. Die Bonferroni-Holm-Korrektur ist ebenfalls wie die Bonferroni-Korrektor für pre-planned Vergleiche zu verwenden. 
+
+Eine weitere weit verbreitete Methode ist die **Tukey-Pairwise difference** Methode \index{Mehrfachvergleiche!Tukey-Korrektur}. Diese Methode ist optimiert darauf alle paarweisen Vergleiche durchzuführen und daher nur für einfache Kontraste anwendbar. Durch die Optimierung sind die Konfidenzintervalle unter der Tukey-Methode üblicherweise schmaler als die der Bonferroni-Methode. Die Tukey-Methode ist ebenfalls **pre-planned** und im Falle von ungleichen Stichproben in den Faktorstufen ist die Methode nur asymptotisch exact. Unter der Tukey-Methode berechnet sich der kritische Wert $w$ anhand eine speziellen Verteilung, der Studentized range statistics.
+
+\begin{equation}
+w_{\text{Tukey}} = q_{K,N-K,\alpha/\sqrt{2}}
+\label{eq-ed-lc-tukey-w}
+\end{equation}
+
+In `R` kann die Quantile der Studentized range distribution aus Formel \eqref{eq-ed-lc-tukey-w} mittels der Funktion `qtukey()` bestimmen werden.
+
+::: {.callout-warning}
+Die Tukeykorrektur ist nur für balancierte Vergleiche, d.h. gleiche Stichprobengrößen in allen Gruppen, hergeleitet und für ungleiche Stichprobengrößen nur annährend exakt \cite{lawson2014}.
+:::
+
+Die **Scheffé-Methode** \index{Mehrfachvergleiche!Scheffé-Korrektur} ist ebenfalls sehr oft in der Literatur anzutreffen, da sie *post-hoc*, also nach Einsicht der Daten, angewendet werden kann. Mit der Scheffé-Methode können auch alle Arten von Vergleichen, einfache wie auch komplexe, durchgeführt werden. Der kritische Wert $w$ wird bei Scheffé-Methode mittels der $F$-Verteilung mit $K-1$ und $N-k$ Freiheitsgraden bei $1-\alpha$ ermittelt. Wobei noch ein Korrekturfaktor $K-1$ multipliziert werden muss. Dabei ist die Anzahl der Vergleiche irrelevant, da der resultierende kritische Wert alle möglichen Vergleiche einbezieht.
+
+\begin{equation}
+w_{\text{Scheffé}} = \sqrt{(K-1)F_{K-1,N-K,1-\alpha}}
+\end{equation}
+
+Dementsprechend kann die Scheffé-Korrektur eigentlich immer angewendet werden, egal ob pre-planned oder post-hoc und unabhängig von der Art der Vergleichen ohne das das Risiko einer fehlerhaften Korrektur eingegangen wird.
+
+Um noch einmal die Unterschiede der verschiedenen Methoden stärker zu betonen, sind in @tbl-ed-lc-contrasts-w die verschiedene kritische Werte $w$ der drei Methoden für verschiedenen Anzahl $K$ von Faktorstufen bzw. der resultierenden paarweisen Vergleichen aufgelistet.
+
+```{r}
+#| tbl-cap: "Vergleich der kritischen Wert $w$ der verschiedenen $\\alpha$-Kontrollmethoden und einen einzelnen Test $\\alpha_{PC}$."
+#| label: tbl-ed-lc-contrasts-w
+
+tibble(
+  'no_groups' = 2:7,
+  'per_com' = qf(0.95, 1, 12),
+  'tukey' = qtukey(0.95, no_groups, 12)**2/2,
+  'bonferroni' = qf(1-0.05/(no_groups*(no_groups-1)/2), 1, 12),
+  'scheffe' = (no_groups-1)*qf(0.95, no_groups-1, 12)
+) |> 
+  knitr::kable(
+    booktabs=T,
+    col.names=c('Stufen', '$\\alpha_{PC}$', 'Tukey', 'Bonferroni','Scheffé'),
+    caption="Kritische Werte $w$ für alle $k(k-1)/2$ paarweisen Vergleiche bei $df_{\\text{error}}=12$.",
+    digits=2,
+    linesep = '',
+    escape=F
+  )
+```
+
+@tbl-ed-lc-contrasts-w zeigt, dass der Tukey durchgehend bei den drei Methoden die kleinsten kritischen Werte $w$ verwendet. Dadurch wird entsprechend das Konfidenzintervall auch schmaler. Für diesen Fall liegt die Bonferroni-Methode immer zwischen Tukey und Scheffé die immer den größten kritischen Wert $w$ hat. Die kritischen Werte unter Scheffé werden relativ schnell größer. Da die Größe des kritischen Werts $w$ die Power beeinflusst, können wir anhand der Werte ableiten, dass die Scheffé-Methode entsprechend die geringste Power hat.
+
+Zwei weitere Methoden sind noch die Methode nach Dunnet und Fisher least significant difference (FisherLSD) \index{Mehrfachvergleiche!Fisher least-significant difference}. Die Dunnet Methode ist ebenfalls pre-planned und ist darauf optimiert ein Kontrollkondition mit den anderen Konditionen zu vergleichen. Die FisherLSD-Methode führt keine Anpassung durch sondern ist ein Spezialfall wenn der Faktor $K = 3$ Stufen hat und im ersten Schritt ein statistisch Signifikanter $F$-Wert gefunden wurde. Die drei individuellen Tests werden dann als normale t-Tests durchgeführt mit dem jeweils unkorrigierten $\alpha$. In diesem Fall, wenn der paarweise Vergleich nach einen signifikanten $F$-Test bei $K=3$ durchgeführt wird, ist eine gesonderte $\alpha$-Kontrolle nicht mehr notwendig.
+
+Zusammenfassend lässt sich sagen, dass schon vor der Durchführung des Experiments ein definierter Analyseplan vorliegen sollte. So könnte zum Beispiel festgelegt werden, welche Vergleiche von primären Interesse sind und entsprechend in einer Prä-Registrierung dokumentiert werden, die Power zu maximieren.
+
+### False Discovery Rate FDR \index{false discovery rate}
+
+Eine weitere Methode die in den letzten Jahren immer prominenter geworden ist, ist die **false discovery rate** (FDR) Methode nach @benjamini1995. Unter der fdr Methode ist der Ansatz etwas anders und es wird nicht der $\alpha$-Fehler sondern der mittlere Quotient der falsch positiven Befunde (V) und der Gesamtanzahl der positiven Befunde (R) kontrolliert. Die Gesamtanzahl setzt sich dabei zusammen aus den falsch positiven Befunden V, d.h. korrekte $H_0$ Hypothesen die abgelehnt wurden, und den korrekt positiven Befunden (S), d.h. falsche $H_0$ Hypothesen die abgelehnt wurden.
+
+\begin{equation}
+\text{FDR} = E(\text{FDR}) = E\left(\frac{V}{R}\right)= E\left(\frac{V}{V + S}\right)
+\label{eq-ed-linear-fdr}
+\end{equation}
+
+Das $E$ steht dabei wieder für den Erwartungswerts, das als der *Mittelwert* interpretiert werden kann. Die Methode ist dabei vor allem vor dem Hintergrund von Analysen entwickelt worden, bei denen die Anzahl der Tests $m$ sehr groß ist. In diesen Fällen ist beispielsweise die Bonferroni-Korrektur sehr konservativ und es werden nur sehr falsche $H_0$-Hypothesen abgelehnt, da das Fehlerniveau $\alpha^*$ sehr klein wird.
+
+Der FDR-Ansatz kann anhand eines einfachen Gedankenexperiments erläutert werden. Angenommen, es werden $m = 10$ Nullhypothesen getestet. Es wird nun eine Größe $P$ folgendermaßen definiert.
+
+\begin{equation*}
+P = \begin{cases}
+0 \text{ wenn keine korrekte } H_0 \text{ abgelehnt wird} \\
+1 \text{ wenn mindestens eine korrekte } H_0 \text{ abgelehnt wird}
+\end{cases}
+\end{equation*}
+
+Es soll der family wise error beispielsweise mittels Bonferroni kontrolliert werden. Dann ergibt sich ein $\alpha^* = \alpha / m = 0.005$. Mit diesem $\alpha^*$ werden die $m = 10$ Nullhypothesen getested. Wird eine $H_0$ fälschlicherweise abgelehnt ergibt sich $P = 1$, wird keine korrekte $H_0$ abgelehnt folgt $P = 0$. In Wirklichkeit kann $P$ nicht bestimmt werden, da nicht bekannt ist welche $H_0$ korrekt bzw. nicht korrekt sind. Wird das (Gedanken-)Experiment *wiederholt* durchgeführt, dann ergebt sich für jede Wiederholung entweder ein Wert von $P = 0$ oder $P = 1$. Insgesamt resultiert daraus eine Folge von Nullen und Einsen.
+
+\begin{equation*}
+1 0 0 0 1 0 0 0 1 0 1 0 1 0 0 0 1 1 0 0\ldots
+\end{equation*}
+
+Wenn der Mittelwert über diese Folge von Nullen und Einsen gebildet wird (der Erwartungswert), dann sollte der Wert nicht größer als $\alpha$ werden. D.h. die Methoden die bisher verwendet wurden, wie die Bonferroni-Korrektur, kontrollieren für die Größe dieses Mittelwerts, dem Erwartungswert $E(P)$, von $P$.
+
+Die FDR-Korrektur geht nun einen anderen Weg. Hier wird zunächst eine Größe $Q$ nach dem folgenden Schema definiert.
+
+\begin{equation*}
+Q = \begin{cases}
+0 \text{ wenn keine korrekte } H_0 \text{ abgelehnt wird} \\
+V/(V + S) \text{ wenn } V \text{ korrekte und } S \text{ falsche } H_0 \text{ abgelehnt werden}
+\end{cases}
+\end{equation*}
+
+Der Wert $Q$ kann dadurch als der Quotient der falsch positiven $H_0$ Hypothesen interpretiert werden. Seien alle $m H_0$-Hypothesen korrekt. Dann wird $Q$ immer Null sein, außer in den Fällen, in denen fälschlicherweise eine $H_0$ abgelehnt wird. In diesem Fall gilt dann aber $V/V = 1$, da per Annahme $S = 0$ alle $H_0$ korrekt sind. D.h. $Q$ wird nur die Werte Eins oder Null annehmen. In diesem Fall ist $Q$ gleich zu $P$. D.h. wenn alle $H_0$ Hypothesen korrekt sind, wird auch mit $Q$ der family wise error rate kontrolliert. 
+
+Nun seien aber von den $m = 10$ Experiment $7 H_0$-Hypothesen korrekt und $3 H_0$ Hypothesen falsch (d.h. die Alternativhypothesen sind korrekt). Es wird mit Bonferroni korrigiert und das Signifikanzniveau dementsprechend auf $\alpha^* = \alpha/m = 0.005$ herunter korrigiert. Die Größe $P$ verhält sich immer noch gleich und wird in weniger als $\alpha\%$ der Fälle gleich Eins sein. $Q$ ist in denen Fällen in denen $P=0$ ist ebenfalls $Q=0$ sein, da keine korrekte $H_0$ fälschlicherweise abgelehnt werden.
+
+Sei nun als weitere Annahme auch noch die Power ausreichend, so dass die falschen $H_0$ mit hoher Wahrscheinlichkeit abgelehnt werden. Wenn nun eine $H_0$ fälschlicherweise abgelehnt wird, folgt $V > 0$. Dann ist dazu in den meisten Fällen $S = 3$, da die falschen $H_0$ mit hoher Wahrscheinlichkeit (Power) abgelehnt werden. In Abhängigkeit von der Anzahl der abgelehnten $H_0$s wird $V \in [1,2,\ldots,7]$ sein. Mit einem $\alpha^* = 0.005$ werden aber selten mehr als eine korrekte $H_0$ abgelehnt. D.h. in den meisten Fällen resultiert $Q = 1/(1+3) = 1/4 = 0.25$ sein (Wenn V = 2 ist, dann wird $Q = 2/5 = 0.4$. Somit resultiert bei Wiederholung des Experiments eine Folge die in etwa so aussehen könnte.
+
+\begin{equation*}
+0 0 \frac{1}{4} \frac{1}{4} 0 0 0 0 \frac{2}{5} \frac{1}{4} 0 \frac{1}{4} 0 \ldots
+\end{equation*}
+
+Jedes Mal, wenn in der Folge der $P$s eine Eins steht, ist in der Folge der $Q$s ein Quotient der kleiner als Eins sein wird. Daher wird der Mittelwert der Folge der $Q$s deutlich kleiner ausfallen als derjenige der $P$s. Um insgesamt wieder eine mittelere Rate von $0.05$ zu kommen, kann somit das $\alpha^*$-Niveau für jeden individuellen Test liberaler angesetzt werdes führt dazu, dass die FDR-Methode eine höhere Power bei gleichzeitiger Kontrolle der Fehlerrate erreicht. Operational wird ein ähnliches Schema wie der bei der Bonferroni-Holm-Korrektur verwendet.
+
+## Mehrfachvergleiche in `R`
+
+### Das package `emmeans`
+
+Wie immer, gibt es in `R` verschiedene Pakete um Mehrfachvergleiche durchzuführen. Wir beschränken uns hier hauptsächlich auf das Paket `emmeans`, da es sehr flexibel ist und mit einer Vielzahl von verschiedenen Modellen über das allgemeine lineare Modell hinaus zusammenarbeitet. Alternativen zu `emmeans` sind  `multcomp` und `gmodels`.
+
+Bei der Verwendung von `emmeans` ist immer ein zweistufiger Prozess durchzuführen. Zunächst müssen die Zellmittelwerte mit der Funktion `emmeans(<MODEL>, ~<FAKTOR>)` berechnet werden. Anschließen erfolgt die Berechnung der Vergleiche entweder mittels der Funktion `pairs()` bei paarweisen Vergleichen oder mit `contrast()` für beliebige Vergleiche. 
+
+Soll zum Beispiel mittels Bonferroni-Korrektur ein einfacher Vergleich zwischen Koffein und Placebo sowie ein komplexer Vergleich der Mittelwerte von Koffein und Placebo gegen Kontrolle durchgeführt werden. Dann können die folgenden Befehle verwendet werden:
+
+```{r}
+#| echo: true
+
+mod_em <- emmeans(mod_aov, specs=~Gruppe)
+contrast(mod_em,
+         adjust='bonferroni',
+         method = list(
+           "Koffein vs. Placebo" = c(1, -1, 0),
+           "Tablette vs. CON" = c(1/2, 1/2, -1)
+         ),
+         infer=TRUE)
+```
+
+Im ersten Schritt werden die Mittelwerte mittels `emmeans()` berechnet. Dazu wird das gefitte Modell `mod_aov` an `emmeans()` übergeben und als zweiten Parameter `specs` wird eine Formel spezifiziert für welchen Faktor die Mittelwerte berechnet werden sollen. Später bei mehrfaktoriellen Modellen gibt es hier verschiedene Möglichkeiten die Formel zu definieren. Bei diesem Beispiel sind aber nur die Mittelwerte für die Faktorstufen von `Gruppe` möglich. `emmeans()´ produziert den folgenden Output.
+
+```{r}
+#| echo: true
+
+mod_em
+```
+
+Letztendlich sind hier die Mittelwerte der drei verschiedenen Gruppen die anhand des Modells berechnet werden sichtbar.
+
+::: {.callout-warning}
+In diesem Fall sind die Mittelwerte $\bar{y}_i$ der Rohdaten gleich denjenigen des Modell des Modells, da es sich um ein balancierten Datensatz handelt, d.h. in allen Gruppen sind die Stichproben gleich. Wenn dies nicht der Fall ist, dann müssen die geschätzten Mittelwerte $\hat{y}_i$ anhand des Modells nicht unbedingt gleich zu den Mittelwerte $\bar{y}_i$ der Rohdaten sein. Dies trifft vor allem zu, wenn die Modell komplexer werden. Die Werte von `emmeans()` werden anhand des Modells geschätzt und werden daher auch als *expected marginal means* bezeichnet (daher auch der Name des packages `e`(expected)`m`(arginal)`means`)[siehe auch @searle1980].
+:::
+
+Nachdemir die Mittelwerte mit `emmeans()` berechnet wurden, können nun die Kontraste mit der Funktion `contrast()` definiert werden. Dazu wird das `emmeans`-Objekt als erster Parameter übergeben. Über den Parameter `adjust` wird die Korrekturmethode angegeben. In diesem Fall `bonferroni`. Anschließend wird eine Liste der zu berechnenden Kontraste übergeben. Hierzu muss die Abfolge der Mittelwerte laut der Reihenfolge in der Ausgabe in `emmeans()` verwendet werden. Die Reihenfolge ist üblicherweise die Gleiche wie auch bei `lm()`. Die Kontraste werden als Liste mit `<NAME> = <KONTRAST>` übergeben. Der Name ist beliebig und sollte so gewählt werden, dass der Wert möglichst einfach interpretiert werden kann. Der Parameter `infer` kontrolliert ob direkt ein Konfidenzintervall berechnet werden soll. Alternativ könnte auch wie folgt vorgegangen werden:
+
+```{r}
+#| echo: true
+
+contrast_list <-list(
+           "Koffein vs. Placebo" = c(1, -1, 0),
+           "Tablette vs. CON" = c(1/2, 1/2, -1)
+         )
+mod_contrast <- contrast(mod_em,
+                         adjust = 'bonferroni',
+                         method = contrast_list)
+mod_contrast
+```
+
+Mit nachfolgender Berechnung der Konfidenzintervalle.
+
+```{r}
+#| echo: true
+
+confint(mod_contrast)
+```
+
+Die Ergebnisse sind natürlich in beiden Ansätzen gleich und zeigen einen statistisch signifikanten Unterschied zwischen den Koffein und der Placebo Kondition, sowie einen statistisch signifikanten Unterschied zwischen der Tablettengabe unabhängig vom Wirkstoff und der Kontrollkondition. 
+
+Die Bonferroni-Holm-Korrektur kann mittels des `adjust`-Arguments `'holm'` angewendet werden.
+
+```{r}
+#| echo: true
+
+contrast(mod_em,
+         adjust = 'holm',
+         method = contrast_list)
+```
+
+Die Bejamini-Hochberg-Korrektur FDR kann mit Hilfe des Parameters `adjust='fdr'` verwendet werden.
+
+```{r}
+#| echo: true
+
+contrast(mod_em,
+         adjust='fdr',
+         method = contrast_list)
+```
+
+Sollen dagegen alle paarweisen Vergleiche beispielsweise mittels der Tukey-Methode berechnen kann die `pairs()` Methode auf die mittels `emmeans()` gefitteten Faktormittelwerte anwenden werden. 
+
+```{r}
+#| echo: true
+
+pairs(mod_em, adjust="tukey")
+```
+
+Die Tukey Methode wird standardmäßig von `pairs()` verwendet, wenn keine Argument für `adjust` angegeben wird. Alternativ geht es auch über die `contrast()` Funktion wenn für `method` die Zeichenkette `pairwise` übergeben wird.
+
+```{r}
+#| echo: true
+
+contrast(mod_em, method='pairwise')
+```
+
+Soll die Korrektur mittels der Scheffé-Methode durchgeführt werden, kann dies über `adjust=scheffe` erreicht werden.
+
+```{r}
+#| echo: true
+
+contrast(mod_em,
+         adjust='scheffe',
+         method = contrast_list) 
+```
+
+Um die Dunnettkorrektur zu verwenden, entsprechend `contrast()` mit dem Parameter `method='trt.vs.ctrl'`. Hier kann zusätzlich über den Parameter `ref` explizit angeben werden, welche Faktorstufe die Kontrollbedingung darstellt.
+
+```{r}
+#| echo: true
+
+contrast(mod_em, method='trt.vs.ctrl', ref='Control')
+```
+
+Wenn die FisherLSD-Methode verwendet soll, dann kann beispielsweise wieder `pairs()` mit dem Parameter `adjust='none'` verwendet werden. 
+
+```{r}
+#| echo: true
+
+pairs(mod_em, adjust='none', infer=T)
+```
+
+Wie schon erwähnt ist das package `emmeans` extrem flexibel und bietet unzählige Möglichkeiten verschiedene Mehrfachvergleiche zu spezifizieren und entsprechend zu berechnen. Daher lohnt sich die intensive Auseinandersetzung mit der Dokumentation in jedem Fall. Wahrscheinlich geht ein Teil des Erfolges von `R` in den letzten Jahren auf die Funktionalität dieses packages zurück.
+
+### Cohen's d für Mehrfachvergleiche 
+
+Über das Paket `emmeans` können auch eine Cohen's D Typ Effektstärken mittels der Funktion `eff_size()` berechnen werden. Allerdings müssen als Parameter die zu verwendende Standardabweichung sowie die Freiheitsgrade selbst angeben werden. Diese können aber über die Funktionen `sigma()` und `df.residual()` dem gefitteten `lm`-Objekt entnommen werden.
+
+```{r}
+#| echo: true
+
+eff_size(mod_em,
+         sigma=sigma(mod_aov),
+         edf=df.residual(mod_aov))
+```
+
+Standardmäßig werden paarweise Vergleiche berechnet, aber über den Parameter `method` können die Effektstärken auch für beliebige Kontraste berechnet werden.
+
+```{r}
+#| echo: true
+
+eff_size(mod_em,
+         sigma=sigma(mod_aov),
+         edf=df.residual(mod_aov),
+         method = contrast_list)
+```
+
+## Bestimmung des Replikationsfaktors anhand des Konfidenzintervalls 
+
+In Kapitel 25 zum completely randomized design wurde der Replikationsfaktor für die experimentellen Einheiten anhand der Effektstärke $f$ bestimmt. Ein weitere Möglichkeit den Replikationsfaktor zu bestimmen, die zunehmend an Bedeutung gewinnt [@abt2025], besteht darin mittels der Kontraste bzw. deren Konfidenzintervallen die Stichprobengröße zu bestimmen. Die angesteuerte Größe ist hierbei die Breite des Konfidenzintervalls. Der direkteste Weg ist hierbei den minimal signifikanten Unterschied (**minimal significant difference**: msd) \index{minimal significant difference}. Der Ansatz basiert im Grunde genommen auf der bereits behandelten Dualität von Hypothesentests und Konfidenzintervallen (Kapitel 10).
+
+```{r}
+#| fig-cap: "Der erwartete Kontrast und dessen Konfidenzintervall."
+#| fig-height: 1.5
+#| label: fig-ed-lc-msd-01
+
+d <- 2.2
+df_1 <- tibble::tibble(
+  x = d, 
+  y = 1,
+  xmin = x-2,
+  xmax = x+2
+)
+
+ggplot(df_1,ggplot2::aes(x, y, xmin=xmin, xmax=xmax)) +
+  geom_point(size=6) +
+  geom_linerange(linewidth=2) +
+  geom_vline(xintercept = 0, linetype='dashed', color='red', linewidth=1.3) +
+  scale_x_continuous('Kontrast', breaks = c(0,d),
+                              labels = c(expression(H[0]), expression(psi))) +
+  scale_y_continuous('', breaks = NULL, limits = c(0,2)) +
+  theme(text = element_text(size=18))
+```
+
+In @fig-ed-lc-msd-01 ist noch einmal der Zusammenhang zwischen dem Hypothesentest unter der $H_0$ und der Breite des Konfidenzintervalls dargestellt. Wenn das Konfidenzintervall die $H_0$ nicht enthält, dann kann von einem statistisch signifikantem Ergebnis ausgegangen werden. Für einen gegebenem Effekt, im vorliegenden Fall ein Kontrast $\psi$, und bekannter bzw. abgeschätzter Residualvarianz $\sigma$, kann über den Standardfehler $s_{\psi}$ die notwendige Stichprobengröße bestimmen. Der minimale signifikante Unterschied kann über die folgende Formel berechnet werden.
+
+\begin{equation}
+msd = w \sqrt{\widehat{Var}\left(\sum c_i \hat{\tau}_i\right)}=w \times s_{\psi}
+\end{equation}
+
+Es soll zum Beispiel der Effekt eines Nahrungsergänzungsmittels auf die Laufleistung bei einem Mitteldistanzwettkampf ähnlich wie bei dem Koffeinexperiment untersucht weden. Es soll das gleiche Design mit Interventions-, Placebo- und Kontrollgruppe ($K = 3$) verwendet werden. Es wird davon ausgegangen, dass ein Unterschied zwischen der Placebogruppe und der Interventionsgruppe von $5$s mindestens gefunden werden sollte um als praktisch relevant zu gelten. Damit gilt
+
+\begin{equation*}
+msd = 5 
+\end{equation*}
+
+Im Koffeinbeispiel wurde für $\sigma^2$ ein Wert von $\hat{\sigma^2} = MSE \approx 30$s bestimmt. Daraus folgt für einen paarweisen Vergleich mit gleicher Stichprobengröße $n$ in beiden Gruppen:
+
+\begin{equation*}
+msd = w \sqrt{30\left(\frac{1}{n} + \frac{1}{n}\right)} = w\sqrt{30\frac{2}{n}} \leq 5 
+\end{equation*}
+
+A-priori wird festgelegt, das nur paarweise Vergleiche durchgeführt werden soll. D.h. die Quartile muss mittels der Tukey-Methode bestimmen werden. D.h. der kritische Wert $w$ berechnet sich nach Formel \eqref{eq-ed-lc-tukey-w}.
+
+\begin{equation*}
+w = q_{K,N-K,\alpha}/\sqrt{2}
+\end{equation*}
+
+Eingesetzt folgt daraus:
+
+\begin{align*}
+\frac{q_{K,N-K,\alpha}}{\sqrt{2}} \sqrt{30\frac{2}{n}} &= q_{K,N-K,\alpha} \sqrt{\frac{30}{n}} \leq 5 = msd \\
+\Leftrightarrow  q_{K,N-K,\alpha}^2 \frac{30}{n} &\leq 25 \\
+\Leftrightarrow  q_{K,N-K,\alpha}^2 \leq \frac{25}{30}n &= \frac{5}{6}n \\
+\end{align*}
+
+D.h. das Quadrat der studentized range quantile muss kleiner als $\frac{5}{6}n$ sein, damit das Konfidenzintervall schmal genug ist. Da sich der Wert von $q_{K,N-K,\alpha}$ mit der Stichprobengröße ändert, wird eine try-and-error Methode durchgeführt und die Breite des Konfindenzintervalls für verschiedene Wert von $n$ mittels `qtukey()`-Funktion berechnet.
+
+```{r}
+#| echo: true
+
+K <- 3
+n <- 10:20
+q_t <- qtukey(0.975,K,K*n-K)**2
+n_w <- 5/6*n
+```
+
+Wenn die Werte in einer Tabelle abtragen folgt die folgende Liste (siehe @tbl-ed-lc-tukey-rep).
+
+```{r}
+#| tbl-cap: "Stichprobengrößen und Vergleich mit msd"
+#| label: tbl-ed-lc-tukey-rep
+
+tibble(n, q_t, n_w) |>
+  kable(
+    booktabs = TRUE,
+    digits = 2,
+    linesep = '',
+    col.names = c('n', '$q_{n,Kn-K,\\alpha}^2$', '$5/6n$'),
+    escape = FALSE
+  )
+```
+
+In @tbl-ed-lc-tukey-rep ist zu sehen, dass eine Stichprobengröße von $n = 18$ also insgesamt $N = 54$ Athleten benötigt wird um die gewünschte Präzision für das Konfidenzintervall zu erreichen.
+
+Die Methode die Stichprobengröße anhand der Breite des Konfidenzintervalls zu bestimmen wird als *accuracy in parameter estimation (AIPE) [@kelley2003] bezeichnet. Eine gute Strategie könnte daher darin bestehen, die Stichprobengröße anhand der Power und anhand der AIPE zu bestimmen. Dabei muss nicht unbedingt die minimal significant difference als die Breite des Konfidenzintervalls angesetzt werden, sondern welche Präzision bei der Bestimmung eines Modellparameters erreicht werden sollte. Der minimale Unterschied kann beispielsweise zu einem so breitem Konfidenzintervall führen, dass zwar ein statistisch signifikantes Ergebnis erreicht wird, aber die verbleibende Unsicherheit immer noch zu hoch ist. Die letztendlich gewählte Stichprobengrößen wäre dann die größere der beiden bestimmten für AIPE und Power.
+
+## Vollständige Dokumentation eines CRDs
+
+Hier einmal beispielhaft Dokumentation eines CRD inklusive verwendeter Mehrfachvergleiche. 
+
+Eine einfaktorielle ANOVA mit dem Faktor Gruppe ergabe einen statistisch signifikanten Haupteffekt für Gruppe $F(2, 57) = 22,6, p < 0,001$.  Überprüfung auf Varianzgleichheit zwischen den Gruppen mittels eines Levene-Tests deutete auf keine Verletzung der Voraussetzungen hin, $F(2, 57) = 0,38, p = 0,69$. Daher wird die $H_0$, das kein Unterschied zwischen den Gruppen besteht, abgelehnt. Die beobachtete Effektstärke $\omega^2 = 0,42$,  CI$95\%[0,22, 0,56]$ ist als großer Effekt zu interpretieren. Pre-planned Paarweisetestung mittels Tukey-Korrektur deutete auf statistisch signifikate Unterschiede zwischen den Gruppen Koffein und Placebo $z = -10.4$, CI95\%$[-15,5, -5,5], p < 0,001$, und Koffein und Kontrolle, $z = -13,3$, CI95$\%[-18,4, -8,3], p < 0,001$, hin. Insgesamt deuten die Ergebnisse daher darauf hin, dass die Gabe von Koffein zu einer bedeutsamen Leistungssteigerung $(>5-10s)$ in der beobachteten Untersuchungsgruppe geführt hat.
+
+## Zum Weiterlesen 
+
+Weiter Informationen zu Mehrfachvergleiche und den möglichen Problemen findet ihr in beispielsweise in @feise2002 und @rothman1990.
+
+
+## Completely Randomized Factorial Design
+
+
+```{r defs_aov_2f}
+source('res/nice_format_helper_fcn.R')
+label_parse <- function(breaks) {
+  parse(text = breaks)
+}
+N <- 25
+sigma <- 0.5
+set.seed(10)
+sway <- tibble(
+  Gruppe = gl(3, 2*N, labels = c('U19','U21','PRO')),
+  Auge = gl(2, N, length = 3 * 2 * N,
+            labels = c('Offen','Geschlossen')),
+  sway = c(
+    rnorm(N, 1.3, sigma), rnorm(N, 2.33, sigma),
+    rnorm(N, 1.2, sigma), rnorm(N, 2.49, sigma),
+    rnorm(N, 1.05, sigma), rnorm(N, 1.87, sigma)
+  )
+)
+```
+
+Nachdem wir uns im vorhergehenden Abschnitt mit dem Completely Randomized Design Untersuchungsdesigns angeschaut haben, bei dem nur eine unabhängige nominale Variable variiert wurde, schauen wir uns jetzt den Fall an, wenn wir den Einfluss zweier nominale unabhängige Variablen auf eine abhängige Variable untersuchen wollen. Wie wir sehen werden führt dies zu einem zusätzlichen Effekt dem Interaktionseffekt. Inhaltlich bedeutet dies nicht allerdings erst mal gar nichts Neues, da wir Interaktionseffekt schon im Zusammenhang mit der multiplen Regression kennengelernt haben und die Interpretation daher auch nichts neues bedeutet. Daher wir ein Hauptaugenmerk in diesem Kapitel darin liegen, wir wir Interaktionseffekte interpretieren können bzw. welchen Einfluss diese auf die Interpretation von Haupteffekten bedeutet und welchen Einfluss Interaktionseffekte auf die Anzahl der notwendigen Replikationen haben um eine gewünschte Power zu gewährleisten. Generell wenn mehr als ein nominaler Faktor an dem Untersuchungsdesign beteiligt ist, dann wir von einem Completely Randomized **Factorial** Design (CRFD) gesprochen.
+
+Die Annahmen beim CRDF sind die gleichen wie auch beim CRD. Seien ein CRFD mit zwei Faktoren $A$ und $B$ gegeben die jeweils $p$ bzw. $q$ Faktorstufen haben. Dann gelten die folgenden Annahmen.
+
+- Unabhängige EUs 
+- Die EUs sind \emph{zufällig} in die $p\times q$ Gruppen eingeteilt worden
+- Die Werte in jeder Gruppe sind Normalverteilt $Y_{ijk} \sim \mathcal{N}(\mu_{ij}, \sigma^2)$ mit der gleichen Varianz $\sigma^2$
+
+In der Literatur im Zusammenhang mit einem CRFD oft der Term *Zellen* verwendet. Dieser bezeichnet die jeweiligen Kombinationen der Faktorstufen. Sei zum Beispiel $p = 3$ und $q = 2$ dann erhalten wir die folgende Anordnung von Zellen (siehe @tbl-ed-crfd-cells)
+
++-------+:---------:+:---------:+:---------:+
+|       | $A_1$     | $A_2$     | $A_3$     |
++-------+-----------+-----------+-----------+
+| $B_1$ | $A_1B_1$  | $A_2B_1$  | $A_3B_1$  |
++-------+-----------+-----------+-----------+
+| $B_2$ | $A_1B_2$  | $A_2B_2$  | $A_3B_2$  |
++-------+-----------+-----------+-----------+
+
+: Zellanordnung in einem CRFD mit Faktor $A$, $p = 3$ und Faktor $B$, $q = 2$. {#tbl-ed-crfd-cells}
+
+Faktoren werden als **gekreuzt** bezeichnet, wenn alle Kombinationen der Faktoren beobachtet wurden.
+
+## Das statistische Modell im CRFD
+
+Das statistische Modell im CRFD besteht in einer natürlichen Erweiterung des Modells für ein CRD. Die Modellstruktur ist die folgende:
+
+\begin{equation}
+Y_{ijk} = \mu + \alpha_i + \beta_j + (\alpha\beta)_{ij} + \epsilon_{ijk}, \qquad \epsilon_{ijk}\sim \mathcal{N}(0,\sigma^2)
+\label{eq-ed-crfd-model}
+\end{equation}
+
+$i$ und $j$ sind die Indikatoren der jeweiligen Fakorstufen für die Faktoren $A$ und $B$, während $k$ der Indikator der jeweiligen EUs (Replikation) ist. $\mu$ bezeichnet den Gesamtmittelwert und $\alpha_i$ ist der Einfluss der $i$-ten Stufe von Faktor $A$, $\beta_j$ ist der Einfluss der $j$-ten Stufe von Faktor $B$, und $(\alpha\beta)_{ij}$ bezeichent den Einfluss der Kombination der Faktoren $A$ und $B$ also den Interaktionsfaktor. Wenn wir das Modell im Sinne der vorher eingeführten Herleitung aus der multiplen Regression betrachten, dann werden die Effekte im Modell über Indikatorvariablen abgebildet. 
+
+Die folgenden Herleitung sind für ein balanciertes Modell, bei dem die Zellbesetzungen alle gleich sind, z.B. $r$. In diesem Fall gilt für den Indikator $k, k = 1, \ldots, r$ oder anders ausgedrückt, $r_{ij} = r$ für alle $i,j$.
+
+Um wieder den uns bekannten Ansatz von Modellvergleichen durchzuführen, stellen wir wiederum eine Modellhierarchie auf. Das full model ist das eben beschriebene Modell (siehe Formel \eqref{eq-ed-crfd-model} während die reduzierten Modelle die folgende Reihenfolge ermöglichen:
+
+\begin{align}
+Y_{ijk} &= \mu + \alpha_i + \beta_j + \epsilon_{ijk}  \label{eq-ed-crfd-additiv} \\
+Y_{ijk} &= \mu + \alpha_i + \epsilon_{ijk} \qquad (\textrm{alternativ}: Y_{ijk} = \mu + \beta_j + \epsilon_{ijk})\\ 
+Y_{ijk} &= \mu + \epsilon_{ijk}
+\end{align}
+
+Dadurch, dass zwei unabhängige Variablen vorhanden sind, können auch zwei verschiedene Abfolgen durchlaufen werden. Nach dem Wegfall des Interaktionseffekts $(\alpha\beta)_{ij}$ kann entweder erst $\alpha_i$ oder $\beta_j$ weggelassen werden. Tatsächlich macht die Reihenfolge keinen Unterschied, **wenn** die Stichprobengröße $r_i$ in allen Zellen gleich ist. Entsprechend gilt dies nicht mehr, wenn die Stichprobengrößen sich unterscheiden. 
+
+::: {.callout-note}
+Eine Besonderheit die in der Literatur auftauchen kann ist die Modellformulierung in Formel \eqref{eq-ed-crfd-additiv}. D.h. das Modell ohne den Interaktionsfaktor. Dieses Modell kann in manchen Fälle auch das full model sein, wenn davon ausgegangen werden kann, dass keine Interaktionseffekte zwischen den beiden Variablen vorhanden sein können bzw. vorhanden sind. In der Literatur wird dieses Modell als additives Modell bzw. two-way main effects model bezeichnet. 
+:::
+
+Die statistischen Hypothesen sind wenig überraschend die üblichen mit der Annahme von keinen Effekten unter der $H_0$ und entsprechend Effekten unter der $H_1$. Entsprechend ist die Formulierung der $H_0$-Hypothesen für die Hauptfaktoren $A$ und $B$ bzw. den Interaktionseffekt $A\times B$:
+
+\begin{align*}
+\alpha_1 &= \alpha_2 = \ldots = \alpha_p = 0\\
+\beta_1 &= \beta_2 = \ldots = \beta_q = 0  \\
+(\alpha\beta)_{11} &= (\alpha\beta)_{12} = \ldots = (\alpha\beta)_{pq} = 0 \\
+\end{align*}
+
+bzw. die entsprechenden Alternativhypothesen $H_1$, dass sich mindestens zwei Faktorstufen $\alpha_i$ bzw. $\beta_j$ oder Interaktionskombinationen $(\alpha\beta)_{ij}$ voneinander unterscheiden. Unter dem Ansatz des Modellvergleichs sind die Hypothesen wieder dahingehend zu interpretieren, dass die Hinzunahme bzw. das Weglassen einer Modellkomponente eine statistisch signifikante Verbesserung des Modells nach sich zieht bzw. eben nicht.
+
+Die alternative aber äquivalente Herleitung der Hypothesen im Sinne einer Variananalyse führt zu einer Unterteilung der Gesamtvarianz in einzelne Komponenten auf der Grundlage der verschiedenen Modellkomponenten.
+
+\begin{equation}
+SS_{\text{total}} = SS_{\text{Faktor }A} + SS_{\text{Faktor }B} + SS_{A\times B} + SS_{\text{error}}
+\label{eq-ed-crfd-sstotal}
+\end{equation}
+
+Es ergibt sich die folgende $F$-Tabelle bei einer Zellbesetzung mit $r$ Replikationen.
+
+| Term | $df$ | $SSQ$ | $MSQ$ | $F$  |
+| --- | --- | --- | --- | --- |
+| Faktor $A$ | $p-1$ | $ssA$ | $\frac{ssA}{p-1}$ | $\frac{msA}{msE}$ |
+| Faktor $B$ | $q-1$ | $ssB$ | $\frac{ssB}{q-1}$ | $\frac{msB}{msE}$ |
+| $AB$ | $(p-1)(q-1)$ | $ssAB$ | $\frac{ssAB}{(p-1)(q-1)}$ | $\frac{msAB}{msE}$ |
+| Error | $n - pq$ | $ssE$ | $\frac{ssE}{n-pq}$ |  |
+
+: Varianztabelle beim CRFD {#tbl-ed-crf-anova}
+
+| $ssE = \sum_i \sum_j \sum_k (y_{ijk} - \bar{y}_{ij.})^2$
+| $sstot = \sum_{i}\sum_{j}\sum_k y_{ijk}^2 - n\bar{y}_{...}^2$
+| $ssA = qr\sum_i \bar{y}_{i..}^2-n\bar{y}_{...}^2$
+| $ssB = pr\sum_j \bar{y}_{.j.}^2-n\bar{y}_{...}^2$
+| $ssAB = r\sum_i\sum_j \bar{y}_{ij.}^2 - qr\sum_i\bar{y}_{i..}^2 - pr\sum_j\bar{y}_{.j.}^2+n\bar{y}_{...}^2$
+
+
+Der Schätzer für $\sigma^2$ ist wie gewohnt die mittlere Summe $MSE$ der quadrierten Abweichungen von den jeweiligen Gruppenmittelwerten $\bar{y}_{ij.}$, also die Residuen $\hat{\epsilon}_{ijk} = e_{ijk}$.
+
+\begin{equation}
+\hat{\sigma}^2 = MSE = \frac{\sum_i \sum_j \sum_k (y_{ijk} - \bar{y}_{ij.})^2}{N-(pq)}
+\end{equation}
+
+Eine obere Konfidenzintervallgrenze kann abgeschätzt werden mit:
+
+\begin{equation}
+\sigma^2 \leq \frac{ssE}{\chi^2_{n-pq,\alpha}}
+\end{equation}
+
+
+In @fig-ed-crfd-soccer-ex ist ein Beispiel adaptiert nach @jadczak2019 mit hypothetischen Daten dargestellt.
+
+```{r}
+#| fig-cap: "Gleichgewicht bei Fußballern"
+#| label: fig-ed-crfd-soccer-ex
+
+ggplot(sway, aes(Gruppe, sway, fill = Auge)) + geom_boxplot() +
+  labs(y = 'Schwankung des\nKSP[DEG]') 
+```
+
+Es wurde die Gleichgewichtsfähigkeit bei drei verschiedenen Gruppen (Faktor $A, p = 3$) unter zwei Konditionen (Faktor $B, q = 2$) untersucht. Größere Werte deuten auf eine schlechtere Gleichgewichtsfähigkeit hin. Wie zu erwarten nimmt in allen drei Gruppen die Gleichgewichtsfähigkeit bei geschlossen Augen ab. Allerdings scheint der Unterschied über die drei Gruppen unterschiedlich stark ausgeprägt zu sein. D.h. die Daten deuten auf einen Interaktionseffekt. Um Interaktionseffekte noch einmal besser zu verstehen schauen wir uns im Folgenden verschiedene Arten von Interaktionseffekten und deren Beziehung zu Haupteffekten an. 
+
+## Systematik und Problem bei Interaktionseffekten
+
+In @fig-ed-crfd-ordinal sind beispielhaft die Ergebnisse für ein $2\times 2$ CRFD abgetragen.
+
+```{r}
+#| fig-cap: "Beispiel für ordinale Interaktionseffekte"
+#| label: fig-ed-crfd-ordinal
+
+ordinal <- tibble(
+  A = paste0('A[', c(1,1,2,2),']'),
+  B = paste0('B[', c(1,2,1,2), ']'),
+  y = c(4,3,7,4)
+)
+p1 <- ggplot(ordinal, aes(A,y,color = B, group=B)) +
+  geom_line(size=2) +
+  geom_point(size = 4) +
+  scale_x_discrete('Factor A', labels = label_parse) +
+  scale_y_continuous(name = '', breaks = NULL,
+                    limits = c(0, 10)) +
+  scale_color_discrete(name = 'Factor B', labels = label_parse) 
+p2 <- ggplot(ordinal, aes(B,y,color = A, group=A)) +
+  geom_line(size=2) +
+  geom_point(size = 4) +
+  scale_x_discrete('Factor B', labels = label_parse) +
+  scale_y_continuous(name = '', breaks = NULL,
+                    limits = c(0, 10)) +
+  scale_color_discrete(name = 'Factor A', labels = label_parse) 
+gridExtra::grid.arrange(p1, p2, ncol=2)
+```
+
+Wir haben zwei Faktoren $A$ und $B$ die jeweils zwei Stufen haben $A_1, A_2$ und $B_1, B_2$. Um die Beziehung zwischen den Haupteffekten als den Unterschieden zwischen $A_1$ und $A_2$ bzw. $B_1$ und $B_2$ unabhängige von Wert der jeweils anderern Variable zu interpretieren ist es am einfachsten die Frage zu stellen: "Wenn ich innerhalb eines Faktors von einer Stufe zur nächsten Stufe gehe. Kann ich dann eine einheitliche Aussage treffen?". Also im Fall @fig-ed-crfd-ordinal wenn ich von $A_1$ nach $A_2$ gehe, dann beobachten wir eine Zunahme der abhängigen Variable unabhängig ob ich mich in Stufe $B_1$ oder $B_2$ befinde. Das Gleiche gilt für Hauptfaktor $B$. Wenn ich von $B_1$ nach $B_2$ gehe, dann nimmt in beiden Fällen ($A_1$ und $A_2$) der Wert der abhängigen Variablen ab. D.h. in diesem Fall kann sinnvoll über den Haupteffekt gesprochen werden, trotzdem ein Interaktionseffekt vorliegt, die die Zunahme unter $A$ bzw. die Abnahme unter $B$ unterschiedlich ist, je nach dem Wert der jeweils anderen Variable. Wenn die Haupt- und Interkationseffekte dies Form annehmen, dann wird von einem ordinalen Interaktionseffekt \index{ordinaler Interaktionseffekt} gesprochen. D.h. bei einem ordinalen Interaktionseffekt kann auch sinnvoll über die Haupteffekte gesprochen werden.
+
+In @fig-ed-crfd-hybrid ist nun ein andere Konfiguration der Interaktionseffekte abgebildet.
+
+```{r}
+#| fig-cap: "Beispiel für hybride/semidisordinale Interaktionseffekte"
+#| label: fig-ed-crfd-hybrid
+
+hybrid <- tibble(
+  A = paste0('A[', c(1,1,2,2),']'),
+  B = paste0('B[', c(1,2,1,2), ']'),
+  y = c(4,3,7,2)
+)
+p1 <- ggplot(hybrid, aes(A,y,color = B, group=B)) +
+  geom_line(size=2) +
+  geom_point(size = 4) +
+  scale_x_discrete('Factor A', labels = label_parse) +
+  scale_y_continuous(name = '', breaks = NULL,
+                    limits = c(0, 10)) +
+  scale_color_discrete(name = 'Factor B', labels = label_parse) 
+
+p2 <- ggplot(hybrid, aes(B,y,color = A, group=A)) +
+  geom_line(size=2) +
+  geom_point(size = 4) +
+  scale_x_discrete('Factor B', labels = label_parse) +
+  scale_y_continuous(name = '', breaks = NULL,
+                    limits = c(0, 10)) +
+  scale_color_discrete(name = 'Factor A', labels = label_parse) 
+gridExtra::grid.arrange(p1, p2, ncol=2)
+```
+
+Hier macht die Interpretation der Haupteffekt nur noch im Fall von Faktor $B$ Sinn, da in beiden Fällen es zu einer Abnahme der Werte der abhängigen Variable kommt. Für Faktor $A$ dagegen, hängt die Veränderung in der abhängigen Variablen wenn von $A_1$ nach $A_2$ gegangen wird, davon ab, ob es Faktor $B$ den Wert $B_1$ hat, bei dem e szu einer Zunahme der abhängigen Variable kommt, während es unter $B_2$ zu einer Abnahme kommt. Diese Art des Interaktionseffekt wird daher als hybrid oder semidisordinaler Interaktionseffekt \index{semidisorindaler Interaktioseffekt} bezeichnet. D.h. hier können wir nur für Faktor $B$ sinnvoll über den Haupteffekt sprechen. Allerdings, hängt die Höhe der Abnahme von $B_1$ nach $B_2$ von Faktor $A$ ab.
+
+Wenig überraschend gibt es noch eine weitere Konfiguration von Interaktionseffekten die in @fig-ed-crfd-disordinal abgebildet sind.
+
+```{r}
+#| fig-cap: "Beispiel für disordinale Interaktionseffekte"
+#| label: fig-ed-crfd-disordinal
+
+discordial <- tibble(
+  A = paste0('A[', c(1,1,2,2),']'),
+  B = paste0('B[', c(1,2,1,2), ']'),
+  y = c(3,6,7,2)
+)
+p2 <- ggplot(discordial, aes(A,y,color = B, group=B)) +
+  geom_line(size=2) +
+  geom_point(size = 4) +
+  scale_x_discrete('Factor A', labels = label_parse) +
+  scale_y_continuous(name = '', breaks = NULL,
+                    limits = c(0, 10)) +
+  scale_color_discrete(name = 'Factor B', labels = label_parse) 
+p2 <- ggplot(discordial, aes(B,y,color = A, group=A)) +
+  geom_line(size=2) +
+  geom_point(size = 4) +
+  scale_x_discrete('Factor B', labels = label_parse) +
+  scale_y_continuous(name = '', breaks = NULL,
+                    limits = c(0, 10)) +
+  scale_color_discrete(name = 'Factor A', labels = label_parse) 
+gridExtra::grid.arrange(p1, p2, ncol=2)
+```
+
+Im disordinalen Fall \index{disordinaler Interaktioseffekt} kann für beide Faktoren nicht sinnvoll über die Hauptfaktoren gesprochen werden, da die Veränderung der abhängigen Variablen jeweils immer von der Kombination der Faktoren abhängig ist.
+
+Tatsächlich ist leider die Einteilung von ordinal, semidisoridnal und disoridnalen Interaktionseffekten selten in realen Experimenten zu beobachten, da oftmals mehr als nur $2\times 2$ CRFD durchgeführt werden. In @fig-ed-crfd-interactions-01 sind mögliche Interaktionseffekte wenn $p,q > 2$ gilt abgetragen.
+
+```{r}
+#| fig-cap: "Mögliche Interaktionen bei $A=2\\times B=3$ Faktorstufen. (+) Effekt, (-) kein Effekt, (?) unklar"
+#| label: fig-ed-crfd-interactions-01
+
+df <- tibble::tibble(
+  y = c(rep(c(1,1.1),each=3),rep(1:2, each=3),c(2,1,1,2.1,1.1,1.1),c(2.1,1.1,1.1,1.6,0.6,0.6),
+        c(2,1.8,1.7,1,1.2,1.3),c(2,1.5,1,1.5,1,2),c(1.7,1,1.7,1.3,2,1.3),
+        c(1,2,1.7,1.3,1,1.5)),
+  x = c(rep(1:3,16)),
+  fac = rep(rep(c('A[1]','A[2]'), each=3),8),
+  type = rep(c('a','b','c','d','e','f','g','h'),each=6)
+)
+to_inter <- as_labeller(c(a='A-B-A:B-', b='A+B-A:B-', c='A-B+A:B-', d='A+B+A:B-',
+                          e='A+B?A:B+', f='A?B+A:B+', g='A?B?A:B+', h='A?B?A:B+'))
+ggplot(df, aes(x,y, color=fac, group=fac)) +
+  geom_line(size=1.3) +
+  geom_point(size=3) +
+  facet_wrap(~type,ncol=4, labeller = to_inter) +
+  scale_x_continuous('Faktor B', breaks=1:3,
+        labels=c(expression(B[1]), expression(B[2]), expression(B[3])),
+        limits=c(0.3,3.7), minor_breaks = NULL) +
+  scale_y_continuous("Mittelwerte", breaks=NULL, limits=c(.5,2.2)) +
+  scale_color_discrete('Faktor A', label = label_parse) +
+  theme(panel.spacing.x = grid::unit(0.5, "lines")) 
+```
+
+In @fig-ed-crfd-interactions-01 ist die Interpretation der Haupteffekte bzw. die Anwesenheit von Interaktionseffekten mit ($+$), ($-$) und ($?$). Hier zeigt sich, dass die mögliche Anordnung von Haupt- und Interaktionseffekten sehr schnell sehr unübersichtlich wird. Daher kann als Faustregel genommen werden. In der ersten Zeile sind keine Interpretationseffekte beteiligt und in diesen Fällen ist die Interpretation der Haupteffekte unproblematisch. In der zweiten Zeile dagegen sind teilweise Interpretation möglich aber müssen immer durch mehrere Qualikationsklauseln begleigtet werden um die Daten korrekt zu interpretieren. Zum Beispiel im zweiten Beispiel von links in der zweiten Reihe, sehen wir eine Abnahme der abhängigen Variablen unter Variable $B$, allerdings nur wir von $B_1$ nach $B_2$ gehen. Daher kann oft die folgende Faustregel angewendet werden.
+
+::: {.callout-note}
+Wenn Interaktionseffekte vorhanden sind, dann ist die Interpretation von Haupteffekten selten sinnvoll.
+:::
+
+Letztendlich ist die Definition eines Interaktionseffekts, dass der Effekt der einen Variablen von der Ausprägung der anderen Variablen abhängt. Dies sollte daher immer Berücksichtigung finden. Denn Beispieln in @fig-ed-crfd-interactions-01 folgend ist bei einem CRFD die erstellen eines sogenannten Interaktionsdiagramm sinnvall. Bei dem einfach nur die Mittelwerte gegen die Konditionen der einen Variable und verbundenüber die andere Variable dargestellt werden. In @fig-ed-crfd-intergraph ist ein Interaktionsdiagramm für die Fußballbalancierdaten abgebildet.
+
+```{r}
+#| fig-cap: "Interaktionsdiagramm der Gleichgewichtsdaten"
+#| label: fig-ed-crfd-intergraph
+
+sway_m <- sway |> group_by(Gruppe, Auge) |>
+  summarize(m = mean(sway), s = sd(sway))
+ggplot(sway_m, aes(Gruppe, m, color = Auge, linetype = Auge, group = Auge)) + 
+  geom_path(size = 1.3) +
+  geom_point(size = 4) +
+  labs(y = 'Mittlere Schwankung\ndes KSP[°]') +
+  lims(y = c(0.7,3)) 
+```
+
+Da das CRFD nicht beschränkt ist auf nur zwei Variablen sondern beliebig weiter ausgeweitet werden kann, sollte allerdings unter dem Gesichtspunkt von interpretierbaren Interaktionseffekten genau überprüft werden wie sinnvoll die Einbeziehung vieler Faktoren ist. Beispielsweise sind bei drei Variablen eben schon Dreifachinteraktionen zu interpretieren zu denen es oft schwierig ist interpretierbare wissenschaftliche Hypothesen bzw. interpretationen zu erstellen.
+
+Allgemein ist dabei zu sagen, dass ein Experiment mit mehreren Faktoren üblicherweise effizienter ist, als mehrere Experimenten bei denen die Faktoren einzeln untersucht werden. Zusätzlich ist eine Analyse von Interaktionseffekten bei mehreren kleinen Experimenten nicht oft nicht möglich.
+
+## Analse eines CRFD in `R`
+
+Die Analyse von CRFDs in `R` bringt eigentlich wenig Neues mit sich und kann mit den üblichen Modellbeschreibungen des linearen Modells durchgeführt werden. 
+
+Ein Paket das die Erstellung von deskriptive Statistiken sehr stark vereinfacht ist `summarytools`, bzw. die Funktion `descr()` aus diesem Paket.
+
+```{r}
+#| echo: true
+#| eval: false 
+
+sway |> group_by(Gruppe, Auge) |>  
+  descr(stats = c('mean','med','sd','q1','q3'))
+```
+
+```{r}
+#| results: asis
+#| tbl-cap: "Deskriptive Statistik der KSP-Schwankungen pro Gruppe und Kondition (alle in DEG)"
+
+sway |> group_by(Gruppe, Auge) |>
+  summarytools::descr(stats = c('mean','med','sd','q1','q3'), plain.ascii = F, style='rmarkdown', transpose = T) |> summarytools::tb() |>
+  knitr::kable(digits=2, booktabs=T, linesep=c('','\\addlinespace'))
+```
+
+Mittels der `lm()`-Funktion können wir wie immer über den Modellvergleich gehen.
+
+```{r}
+#| echo: true
+
+mod_f <- lm(sway ~ Gruppe * Auge, sway)
+mod_r1 <- lm(sway ~ Gruppe + Auge, sway)
+mod_r2 <- lm(sway ~ Gruppe, sway)
+mod_r3 <- lm(sway ~ 1, sway)
+anova(mod_r3, mod_r2, mod_r1, mod_f)
+```
+
+Oder wir verwenden direkt `aov()` um die $F$-Tabelle zu erhalten:
+
+```{r}
+#| echo: true
+#| lst-label: lst-ed-crfd-ftable-01
+#| lst-cap: "F-Tabelle mit `aov()` erstellen."
+
+mod_aov <- aov(sway ~ Gruppe * Auge, data = sway)
+summary(mod_aov)
+```
+
+Wie immer wieder betont, bei der Verwendung mit `aov()` geschieht nichts anderes und es wird lediglich `lm()` im Hintergrund aufgerufen. So können wir von `aov()` auch die `coef()`-Funktion anwenden und erhalten genau die gleichen *Steigungskoeffizienten* $\beta_i$ wie bei `lm()`.
+
+```{r}
+#| echo: true
+
+cbind(coef(mod_f), coef(mod_aov))
+```
+
+Da es sich bei der Analyse eines CRFD um nichts anderes als um ein lineares Modell handelt, kann der Modellfit wie immer über die uns schon bekannten Methoden mittels der Residuen untersucht werden.
+
+::: {.callout-tip}
+Den Levene-Test können wir ebenfalls wie beim CRD anwenden.
+
+```{r}
+#| echo: true
+
+car::leveneTest(mod_aov)
+```
+
+Die $H_0$-Hypothese des Levene-Tests ist die Varianzgleichheit, d.h. alle Faktorkombinationen haben die gleiche Varianz. Da der Test als Voraussetzungstest eingesetzt wird, setzen wir die Irrtumswahrscheinlichkeit wieder mit $\alpha = 0.1$ an. Dementsprechend wird im vorliegenen Fall die $H_0$ nicht abgelehnt und die Annahme der Varianzgleichheit beibehalten.
+:::
+
+## Effektstärken im CRFD
+
+Natürlich kann für ein CRFD ebenfalls eine Effektstärke wie für ein CRD berechnet werden. Hier gilt hier genauso, dass keine eins-zu-eins Abbildung der Effektstärke auf eine spezifische Anordnung der Stufenmittelwerte gegeneinander $\bar{y}_{ij.}$ besteht. Verschiedene Abweichungen der Mittelwerte gegeneinander können zu der gleichen Effektstärke führen. Ein weiterer Punkt, der die Bestimmung von Effektstärken beim CRFD verkompliziert beruht darauf, dass unterschiedliche Arten möglich sind die Residualvarianz zu bestimmen. Ausgangspunkt ist noch einmal die Effektstärke $f$ im CRD. Im CRD ist die Effektstärke $f$ auf der Basis des Modellansatzes, dass die Effektvarianz durch die Fehlervarianz geteilt wird, bzw. die kalibiert wird. Eine gegebene Effektvarianz $\sigma_{\text{Effekt}}^2$ führt zu einer größeren Effektstärke wenn die Fehlervarianz $\sigma_{\epsilon}^2$ kleiner ist und umgekehrt wenn die Fehlervarianz größer ist.
+
+\begin{equation*}
+f = \frac{\sigma_{\text{Effekt}}^2}{\sigma_{\epsilon}^2} 
+\end{equation*}
+
+Im CRFD besteht allerdings die Möglichkeit die Fehlervarianz $\sigma_{\epsilon}^2$ auf unterschiedliche Arten zu bestimmen. Vergleichen wir dazu einmal zwei Modelle. Ein volles Modell mit zwei Faktoren $A$ und $B$ und ein reduziertes Modell mit nur dem Faktor $A$.
+
+\begin{align}
+y_{ijk} &= \mu + \alpha_j + \beta_k + (\alpha\beta)_{jk} + \epsilon_{ijk} \\
+y_{ij} &= \mu + \alpha_j + \epsilon_{ij} \\
+\end{align}
+
+Es soll die Effektstärke für den Faktor $A$ bestimmt werden. Wenn wir die beiden Modell in Bezug auf die Varianzkomponenten aufschreiben, erhalten wie bereits oben beschrieben für das volle Modell:
+
+\begin{equation}
+\sigma_y^2 = \sigma_{\alpha}^2 + \sigma_{\beta}^2 + \sigma_{(\alpha\beta)}^2 + \sigma_{\epsilon(full)}^2
+\end{equation}
+
+Entsprechend für das reduzierte Modell: 
+
+\begin{equation}
+\sigma_y^2 = \sigma_{\alpha}^2 + \sigma_{\epsilon(reduced)}^2
+\end{equation}
+
+Dementsprechend ist der Zähler $\sigma_{\alpha}^2$ in beiden Fällen gleich, aber der Nenner $\sigma_{\epsilon}$ wird sich unterscheiden, da $\sigma_{\epsilon(full)}^2 \neq \sigma_{\epsilon(reduced)}^2$ gilt. Warum ist das so? Im reduzierten Modell, wird die Varianz die auf Grund des Faktors $B$ also $\sigma_{\beta}^2$ und der Interaktion $A:B$ also $\sigma_{(\alpha\beta)}^2$ entsteht nicht modelliert. Die Varianz ist aber immer noch vorhanden und wandert dadurch in den Fehlerterm $\sigma_{\epsilon(reduced)}^2$. Daher gilt:
+
+\begin{equation*}
+\sigma_{\epsilon(full)}^2 \leq \sigma_{\epsilon(reduced)}^2
+\end{equation*}
+
+In Bezug auf die Residualvarianz für den Faktor $A$ gilt:
+
+\begin{equation*}
+\sigma_{\epsilon(full)}^2 + \sigma_{\beta}^2 + \sigma_{(\alpha\beta)}^2 = \sigma_{\epsilon(reduced)}^2
+\end{equation*}
+
+Dies wiederum führt dazu je nachdem durch welche Residualvarianz die Effektvarianz $\sigma_{\text{Effekt}}^2$ geteilt wird, die Effektstärke entweder größer oder kleiner wird. Wird die Residualvarianz $\sigma_{\epsilon(full)}^2$ verwendet, wird entsprechend ein größeren Effekt bestimmen als wenn $\sigma_{\epsilon(reduced)}^2$ verwendet wird. Im ersten Fall, wenn die kleiner Residualvarianz verwendet wird, wird die Effektstärke als **partial** bezeichnet. D.h. anhand des vollen Modells können zwei verschiedene Arten von Effektstärken bestimmen werden.
+
+\begin{align*}
+f &= \frac{\sigma_{\alpha}^2}{\sigma_{\beta}^2 + \sigma_{(\alpha\beta)}^2 + \sigma_{\epsilon}^2} \\
+f_{\text{partial}} &= \frac{\sigma_{\alpha}^2}{\sigma_{\epsilon}^2} \\
+\end{align*}
+
+Diese Formeln sind dabei nur konzeptionell zu verstehen und wir bestimmen die beiden Formeln wieder mittels einer $\omega^2$-Effektstärke.
+
+\begin{align*}
+\hat{\omega}^2 &= \frac{ss\text{Eff}-df_{\text{Eff}}\cdot MSE}{ssT+MSE} \\
+ &= \frac{df\text{Eff} \cdot (F_{\text{Effekt}})-1)}{\sum_{\text{alle Effekte}}(df_{\text{Eff}_i} F_{\text{Eff}_i}) + dfE + 1}
+\end{align*}
+
+\begin{align*}
+\hat{\omega}_{\text{partial}}^2 &= \frac{SS_{\text{effect}}-df_{\text{effect}}MS_W}{SS_{\text{effect}}+(N-df_{\text{effect}})MS_W} \\ 
+&=  \frac{df_{\text{effect}}(F_{\text{effect}})-1)}{df_{\text{effect}}(F_{\text{effect}}-1)+N}
+\end{align*}
+
+D.h. es werden für alle drei Modellterm $A$, $B$ und $A:B$ jeweils Effektstärken bestimmet. Entsprechend können weitere Effektstärken bestimmt werden, wenn mehr als zwei Faktoren im Modell verwendet werden.
+
+::: {.callout-info}
+Die Einordnung der Effektstärken ist wieder die gleiche wie bereits im Rahmen des CRD eingeführt.
+
+|    | $\omega^2$ | 
+|--- | --- |
+| klein | 0.01 | 
+| mittel |  0.06 | 
+| groß |  0.14 | 
+
+: Einordnung der $\omega^2$ Effektstärken {#tbl-ed-crfd-effsize}
+
+Die Interpretation der Effektstärke nach @tbl-ed-crfd-effsize ist genauso willkürlich wie die Irrtumswahrscheinlichkeit von $\alpha = 0.05$!
+:::
+
+:::{#exm-crfd-effect-01}
+
+In @lst-ed-crfd-ftable-01 haben wir die $F$-Tabelle für die Fußballdaten berechnet und nun möchten wir die Effektstärke $\omega^2$ für den Effekt der Gruppe bestimmen. Dazu extrahieren wir die benötigten Komponenten aus der Tabelle um $\omega^2$ zu bestimmen.
+
+```{r}
+#| echo: true
+
+ssEff <- 4.18
+dfEff <- 2
+ssT <- 4.18 + 40.07 + 2.98 + 32.15 
+MSE <- 0.22
+omega_sqr_gruppe <- (ssEff - dfEff * MSE)/(ssT + MSE)
+omega_sqr_gruppe
+```
+D.h bei dem Einfluss der Gruppe handelt es sich um eine mittlere Effektstärke.
+:::
+
+In der Literatur werden in den meisten Fällen die partiellen Effektstärken angegeben. Allerdings erscheint dies wenig sinnvoll, da die Effekstärke dann eine Funktion des Untersuchungsdesings ist. Schauen wir uns ein hypothetisches Beispiel dazu an. Sei zum Beispiel eine Untersuchung durchgeführt worden um den Einfluss von zwei Instruktionsmethoden (Faktor $A$) zu vergleichen. Die Verarbeitung der Instruktion ist aber gleichzeitig eine Funktion von bestimmten kognitiven Prädispositionen (Faktor $B$) die mittels eines umfangreichen Fragebogen ermittelt werden müssen. Bei der Studie wird ein Effekt für bei beide Faktoren und deren Interaktion gefunden. Die partiellen Effektstärken werden dokumentiert. In einer Nachfolgestudie soll der Effekt der Instruktionen noch einmal reproduziert werden. Allerdings sind nicht ausreichend Resourcen vorhanden um den Fragebogen durchzuführen. Basierend auf den Effektstärken für den Faktor $A$ aus der vorhergehenden Studie wird die Stichprobengröße bestimmt. Dies führt jetzt allerdings dazu, dass die nominale Power der Studie geringer ist, da die Effekstärke überschätzt wird, da die Varianz auf Grund der kognitiven Prädisposition in die Fehlervarianz wandert. Daher ist insgesamt die Dokumentation der normalen Effektstärke in den meisten Fällen sinnvoller wenn nicht einfach beide angegeben werden.
+
+### Effektstärken $\omega^2$ und $\omega_{\text{partial}}^2$ in R
+
+In `R` kann, nachdem das Modell mit `lm()` gefittet wurde, mittels der Funktion `omega_squared()` aus dem Paket `effectsize` die Effektstärken bestimmen werden. `omega_squared()` hat einen Parameter `partial` der festlelgt ob die *normale* Effektstärke oder die partielle Effektstärke berechnet wird. Wird der Parameter auf `FALSE` gesetzt, werden die normalen Effektstärken bestimmt.
+
+```{r}
+#| echo: true
+
+effectsize::omega_squared(mod_aov, partial=FALSE, ci=0.95)
+```
+
+Entsprechend berechnet `omega_squared()` mit `partial=TRUE` die partiellen Effektstärke die leider auch standardmäßig eingestellt ist.
+
+```{r}
+#| echo: true
+
+effectsize::omega_squared(mod_aov, partial=TRUE, ci=0.95)
+```
+
+
+Bei der Dokumentation der Effektstärke sollte wie immer auch das Konfidenzintervall angegeben werden, was in der Literatur leider auch oft nicht gemacht wird.
+
+## Mehrfachvergleiche im CRFD 
+
+Im CRFD können wir genauso wie auch im CRD Mehrfachvergleiche verwenden um gezielt Unterschiede zwischen bestimmten Kombination der Faktorstufen zu untersuchen. Prinzipiell laufen die Mehrfachvergleiche daher genauso wie im CRD ab. Es werden ein Kontrast und die dazugehörende Varianz berechnet und das Verhältnis mit einem kritischen Werten $w$ verglichen. Wiederum in Abhängigkeit davon welche Methode verwendet wird ändert sich entsprechend der kritische Wert $w$.
+
+Durch die Interaktionseffekt ergbit sich jedoch wiederum ein zusätzlicher Punkt beim Interaktionsmodell der beachtet werden sollte. Nämlich, nicht immer sind alle algebraisch möglichen Vergleiche auch tatsächlich inhaltlich sinnvoll. Im Bespiel mit den Fußballdaten sind in @fig-ed-crfd-multcom-01 noch einmal die Mittelwerte der verschiedenen Gruppen abgetragen.
+
+```{r}
+#| fig-cap: "Mögliche Mehrfachvergleiche für das Fußballbeispiel"
+#| label: fig-ed-crfd-multcom-01
+ 
+sway_mw <- sway_m |> select(-s) |> mutate(g_n = as.numeric(Gruppe))
+p_c <- t(combn(1:6, 2))
+sway_pc <- tibble(
+  x = sway_mw$g_n[p_c[,1]],
+  xend = sway_mw$g_n[p_c[,2]],
+  y =sway_mw$ m[p_c[,1]],
+  yend = sway_mw$m[p_c[,2]]
+)
+
+ggplot(sway_mw, aes(x=g_n,y=m)) +
+  geom_segment(data=sway_pc, aes(x=x, xend=xend, y=y, yend=yend),
+               linetype = 'dashed') +
+  geom_point(aes(color = Auge), size = 6) +
+  scale_x_continuous("Gruppe", breaks=1:3, minor_breaks = NULL,
+                     labels = c('U19','U21','PRO')) +
+  labs(y = 'Mittlere Schwankung \ndes KSP[°]') 
+```
+
+Prinzipiell können immer alle Gruppenmittelwerte des Modells miteinander paarweise verglichen werden bzw. alle weiteren komplexen Kontraste berechnet werden. Bei der Beschränkung auf die paarweisen Vergleiche, wird in diesem konkreten Fall beispielsweise der Vergleich zwischen den Werten der U19 bei geschlossenen Augen mit den PROs bei offenen Augen inhaltlichen wenig Sinn machen. Zumindest ist es nicht direkt ersichtlich welche Art von *wissenschaftlicher* Hypothese a-priori formuliert werden könnte, die genau diesen Vergleich zum Ziel hat. Anders ist beispielsweise der Vergleich zwischen den Augenkondition innerhalb der PRO-Spieler. Daher ist in den meisten Fällen nur eine Untermenge der möglichen paarweisen Vergleich inhaltlich auch wirklich sinnvoll. Aus Gründen der Power sollte daher die Analyse auch möglichst nur auf diese Teilmenge beschränkt werden. In @fig-ed-crfd-multcom-02 sind die *wahrscheinlich* sinnvollen Vergleiche für das Beispiel eingezeichnet.
+
+```{r}
+#| layout-ncol: 2
+#| fig-cap: "Mehrfachvergleiche für das Fußballbeispiel"
+#| fig-subcap:
+#|   - "Unterschiede innerhalb der Gruppen"
+#|   - "Unterschiede innerhalb Augenkondition"
+#| label: fig-ed-crfd-multcom-02
+ 
+sway_m_w <- sway_m |> select(-s) |>
+  tidyr::pivot_wider(names_from = Auge, values_from = m)
+ggplot(sway_m, aes(Gruppe, m)) + 
+  geom_segment(data = sway_m_w,
+               aes(x = Gruppe, xend = Gruppe,
+                   y = Offen, yend = Geschlossen), size =1.5) +
+  geom_point(size = 6, aes(color = Auge)) +
+  labs(y = 'Mittlere Schwankung \ndes KSP[°]') 
+
+ggplot(sway_m, aes(Gruppe, m)) + 
+  geom_polygon(aes(group = Auge), fill=NA, color = 'black', size = 1.5) + 
+  geom_point(size = 6, aes(color = Auge)) +
+  labs(y = 'Mittlere Schwankung \ndes KSP[°]') 
+```
+
+Für den vorliegenden Fall, sind daher die Unterschied zwischen den Gruppen getrennt für die beiden Augenkonditionen bzw. der Unterschied zwischen den beiden Augenkonditionen für jede Gruppe getrennt sinnvoll. D.h. es werden insgesamt neuen verschiedene paarweise Vergleichen betrachtet im Gegensatz zu den 15 möglichen. Wir beispielsweise die Bonferonni-Korrektur angewendet bedeutet dies schon einen Unterschied ob $0.05/9 = `r round(0.05/9, 3)`$ oder $0.05/15 = `r round(0.05/15, 3)`$ für $\alpha$ angesetzt muss. Schauen wir uns direkt an, wie dei Mehrfachvergleiche in `R` durchgeführt werden.
+
+## Mehrfachvergleiche in `R`
+
+In `R` läuft der Vergleich wiederum nach dem bekannten Muster ab. Zunächst werden die Modellmittelwerte mittels der `emmeans()`-Funktion berechnet. Anschließend kann dann mittels der `pairs()` bzw. der `contrast()`-Funktion der gewünschte Vergleich durchgeführt werden. Allerdings, da `emmeans()` extrem flexibel ist, gibt es immer mehrere Arten um zum gleichen Ergebnis zu kommen.
+
+Fangen wir erst einmal mit allen möglichen Vergleichen an. Wir fitten zunächst alle Gruppenmittelwertskombination mit `emmeans()`.
+
+```{r}
+#| echo: true
+
+mod_em <- emmeans(mod_aov, ~Gruppe*Auge)
+mod_em
+```
+
+Im nächsten Schritt berechnen wir nun alle paarweisen Vergleiche entweder mit `pairs()` oder mit `contrast(method = "pairwise")`. Nehmen wir `pairs()`.
+
+```{r}
+#| echo: true
+
+pairs(mod_em)
+```
+
+Hier erhalten wir alle Vergleiche, also auch diejenigen die inhaltlich weniger sinnvoll sind. Wollen wir uns nur auf die Vergleiche innerhalb der jeweiligen Haupteffekte kontrolliert für die jeweilige Stufe des anderen Effekts beschränken. Können wir den Parameter `simple = "each"` verwenden.
+
+
+```{r}
+#| echo: true
+
+pairs(mod_em, simple = "each")
+```
+
+Alternativ können wir auch direkt die marginalen Mittelwerte berechnen. Zunächst berechnen wir wieder die Mittelwerte mittels `emmeans()` die Mittelwert für die Stufen über die Gruppen kontrolliert für Kondition der Augen.
+
+```{r} 
+#| echo: true
+
+mod_em_cauge <- emmeans(mod_aov, ~Gruppe|Auge)
+mod_em_cauge
+```
+
+Die Formel `~Gruppe|Auge` als zweiter Parameter zu `emmeans()` bedeutet, dass die Unterschiede zwischen den Stufen für `Gruppe` geblockt nach den `Auge`-Konditionen berechnet werden sollen. Alternativ könnte auch die folgende Syntax mit dem Parameter `by` verwendet werden:
+
+```{r}
+#| echo: true
+
+emmeans(mod_aov, ~Gruppe, by = "Auge")
+```
+
+In beiden Fällen erhalten wir die gleichen Modellmittelwerte. Die berechneten Mittelwerte unterscheiden sich dabei nicht zudenjenigen die wir über den ersten Ansatz berechnet haben. Es wird lediglich die strukturelle Unterteilung mit berücksichtigt. Im nächsten Schritt wird wieder die `pairs()`-Funktion auf die Mittelwerte angewendet, beispielsweise wenn die Bonferroni-Korrektur anwenden möchten.
+
+```{r}
+#| echo: true
+
+pairs(mod_em_cauge, adjust = 'bonferroni')
+```
+
+Mit der `contrast()`-Funktion hätte auch alternativ für unstrukturierten Mittelwerte `contrast(mod_em, method='pairwise' simple='Auge') verwendet werden. Die Berechnung der Unterschiede zwischen den Augenstufen geblockt nach Gruppen erfolgt dann genau gleich. Eine Überlegung die notwendig ist, bezieht sich auf die Ebene auf der die Korrektur angewendet wird. Beispielweise, da wir zwei Mehrfachvergleiche durchführen wollen, sollten wir die $\alpha$-Level für die beiden Gruppen von Mehrfachvergleichen so anpassen, dass wir insgesamt unter den anvisiertem $\alpha$ bleiben. In diesem Fall also $\alpha/2$. Insgesamt, zeigen die Berechnungen im Beispiel, dass zwischen den Gruppen bei offenen Augen keine Unterschiede gefunden wurden, während bei geschlossenen Augen alle Unterschiede statistisch signifikant sind.
+
+### Cohen's d für Mehrfachvergleiche 
+
+Cohen's d-artige Effektstärken können wieder mit der Funktion `eff_size()` berechnet werden. Hier müssen wieder die Standardabweichung $\hat{sigma}$ und die Freiheitsgrade direkt angegeben werden. In diesem Fall können diese Werte wieder mit den Funktionen `sigma()` und `df.residual()` aus dem Modellfit extrahiert werden.
+
+```{r}
+#| echo: true
+
+eff_size(mod_em_cauge,
+         sigma=sigma(mod_aov),
+         edf=df.residual(mod_aov))
+```
+
+oder über:
+
+```{r}
+#| echo: true
+
+eff_size(mod_em,
+         sigma=sigma(mod_aov),
+         edf=df.residual(mod_aov),
+         simple = "Gruppe")
+```
+
+Leider funktioniert der Parameter `simple = "each"` nicht mit `eff_size()`, d.h. wenn die unstrukturierten Gruppenmittelwerte verwendet werden, muss die Funktion zweimal aufgerufen werden, entsprechend mit `simple = "Gruppe"` bzw. `simple = "Auge"`.
+
+## Anzahl der Replikationen a-priori ermitteln
+
+Wir haben wie immer drei verschiedene Ansätze die Anzahl der Replikationen vor dem Experiment zu bestimmen: 
+
+1) Anhand der Literatur wird $f$ bestimmt.
+2) Es wird ein relevantes/plausibels $\Delta$, als der Unterschied zwischen zwei Gruppen angesetzt. 
+3) Konfidenzintervalle
+
+Im ersten Fall gibt es zunächst nichts zu berechnen, sondern die Effektstärke für den gewünschten Effekte (Haupt- oder Interaktionseffekt) wird mittels der Literatur hergeleitet.
+
+Im zweiten Fall wird die Effektstärke $f$ mittels Vorüberlegungen über relevante Unterschiede $\Delta$ zwischen Faktorstufen festgelegt wie das auch für das CRD durchgeführt wurde. Allerdings ist hierfür immer noch Information über die zu erwartende Streuung der Werte $\sigma^2$ anhand der Literatur oder einer sonstigen Abschätzung notwendig. Die Effektstärke $f$ kann dann über die folgende Formel abgeschätzt werden.
+
+\begin{equation}
+f = \sqrt{\frac{\Delta^2}{2(k+1)\sigma^2}}
+\end{equation}
+
+Der Faktor $k$ gibt dabei die Anzahl der Freiheitsgrade für den jeweiligen Effekt an. Ändert sich dementsprechend ob es sich um einen Interaktions- oder einen Haupteffekt handelt.
+
+Der Replikationsfaktor kann dann über den notwendigen $F$-Test ermittelt werden. D.h. wir müssen @tbl-ed-crf-anova , insbesondere die Freiheitsgrade für die verschiedenen Tests, im Blick behalten. Für die beiden Faktoren $A$ und $B$ berechnen sich die Freiheitsgrade entsprechend mittels der Anzahl der Faktorstufen $-1, df_A = p-1, df_B = q-1$, wenn $p$ die Anzahl der Faktorstufen für Faktor $A$ und $q$ die Anzahl der Faktorstufen für Faktor $B$ definieren. Für den Interaktionseffekt gilt für die Freiheitsgrade $df_{A\times B} = (p-1)(q-1)$ und für die Residuen $df_e = N-pq$ mit $N$ der Gesamtstichprobengröße. $F$-Test beruht auf einem Bruch zwischen den Quadratsummen für den Effekt geteilt durch die Quadratsumme der Residuen. Dementsprechend brauchen wir für die Bestimmung des Replikationsfaktors die Anzahl der Faktorstufen und die Gesamtanzahl für einen gegebenen Effekt.
+
+\begin{equation*}
+\text{F-Test: }F = \frac{SS_{\text{Effekt}}}{SS_{\text{Residuen}}}
+\end{equation*}
+
+Die Berechnung efolgt nun über die Effektstärke $f$ die uns erlaubt den Nonzentralitätsparameter $\lambda$ zu bestimmen und die Anzahl der Stufen für die wir uns interessieren. Wollen wir zum Beispiel den Replikationsfaktor für einen Haupteffekt mit drei Stufen und $f = 0.1$ bestimmen. Dann suchen wir diejenigen Freiheitsgrade $df_e$ für eine gegebene Power und ein gegebenes $\alpha$-Niveau. Damit wir nicht zwischen $f$ und $lambda$ hin- und herrechnen müssen und Werte vergleichen verwenden wir direkt die Funktion `pwr.f2.test()` aus dem `pwr`-package. Die Funktion verwendet nicht $f$ sondern $f^2$. Mit der Funktion erhalten wir die Freiheitsgrade für die Residuen und können dann über die Umformung:
+
+\begin{equation*}
+df_{e} = N-qp \Leftrightarrow N = df_{e} + qp
+\end{equation*}
+
+Die Gesamtstichprobengröße.
+
+:::{#exm-ed-crfd-sample-size} 
+Gehen wir beispielsweise von einer Effektstärke in einem $2\times 3$ Design für den Interaktionseffekt von $\omega^2 = 0.3$ aus. Zunächst muss $\omega^2$ in $f = \sqrt{\omega^2/(1-\omega^2)} = \sqrt{0.3/0.7} = 0.42$ umgerechnet werden. Die Freiheitsgrade für den Interaktionseffekt sind nach @tbl-ed-crf-anova $df_{A\times B} = (q-1) \times (p-1) = 1 \times 2  = 2$. Unter Verwendung der `pwr.f2.test()`-Funktion erhalten wir für $\alpha=0.05$ und power $0.8$:
+
+```{r}
+#| echo: true
+
+pwr::pwr.f2.test(f2 = 0.42**2,
+                 sig.level = 0.05,
+                 power = 0.8,
+                 u = 2)
+```
+
+D.h. aufgerundet sind die Freiheitsgrade $df_e$ für die Quadratsumme der Residuen $df_e = 55$. Diese Freiheitsgrade stellen wir nun um, um $N$ berechnen:
+
+\begin{equation*}
+N = df_e + p\cdot q = 55 + 3\cdot 2 = 61
+\end{equation*}
+
+Da wir bei einem $2\times 3$-Design insgesamt sechs Zellen haben aber $61$ nicht durch $6$ teilbar ist runden wir auf insgesamt $N = 66$ auf. D.h. wir benötigen einen Replikationsfaktor von $11$ für jede Kombination der Faktorstufen und insgesamt somit $66$ EUs.
+
+:::
+
+Insgesamt zeigt dies, dass die Anzahl der Replikation sich unterscheiden kann, je nachdem ob für ein Design die Power nach den Haupteffekten oder den Interaktionseffekten berechnet wird.
+
+## Nochmal Interaktionseffekte und Power
+
+Es der eben gezeigten Berechnung des Replikationsfaktors ergibt sich noch ein wichtiger Punkt auf den noch mal gesondert eigegangen wird. Schauen wir uns einmal was passiert wenn wir uns die Stichprobengrößen bei einem $4 \times 3$-Design anschauen. Gehen wir weiter davon aus, dann die Effektstärke für alle drei Effekte gleich große sind und mit $f = 0.25$ von mittlerer Größe. Wenn wir die Berechnungen von eben für alle drei Effekt ausführen ergibt sich die folgende Tabelle für die resultierende Anzahl von EUs (siehe @tbl-ed-crfd-n-01).
+
+| Effekt | Freiheitsgrade | $N$ |
+| :---   | --- | --- |
+| $A$ | $4-1=3$ | $174+12=186$ |
+| $B$ | $3-1=2$ | $154+12=166$ |
+| $A \times B$ | $(4-1)(3-1)=6$ | $217+12=229$ |
+
+: Anzahl $N$ der EUs für Effekte mit $f=0.25$ in einem $4 \times 3$-Design {#tbl-ed-crfd-n-01}
+
+Wie in @tbl-ed-crfd-n-01 ersichtlich, steigt die benötigte Stichprobengröße mit der Anzahl der Stufen und insbesondere für die Interaktionseffekte steigt die Anzahl noch mal stark an, trotzdem für alle Effekte die gleiche Effektstärke $f$ angesetzt wurde. Versuchen wir den Mechanismus einmal heuristisch zu verstehen.
+
+Beim CRD haben wir gesehen, dass der Standardfehler des Haupteffekts für paarweise Vergleiche wie folgt berechnet werden kann. $N$ ist die Gesamtzahl der EUs in den beiden beteiligten Mittelwerten.
+
+\begin{equation*}
+\sigma_{\text{Haupteffekt}} = \sqrt{\frac{\sigma^2}{N/2} + \frac{\sigma^2}{N/2}} = \frac{2\sigma}{\sqrt{N}}
+\end{equation*}
+
+Der Interaktionseffekt berechnet sich über die Vergleiche von vier Faktorstufen gleichzeitig, da die $H_0$-Hypothese die folgende Form hat:
+
+\begin{equation*}
+\begin{aligned}
+H_0&: \mu_{12} - \mu_{22} = \mu_{11} - \mu_{21} \\
+\Leftrightarrow H_0&: \mu_{12}-\mu_{22}-\mu_{11}+\mu_{21}=0
+\end{aligned}
+\end{equation*}
+
+Daraus folgt für den Standardfehler des Interaktionseffekts $\sigma_{\text{Interaktion}}$:
+
+\begin{equation*}
+\sigma_{\text{Interaktion}} = \sqrt{\frac{\sigma^2}{N/4} + \frac{\sigma^2}{N/4} + \frac{\sigma^2}{N/4} + \frac{\sigma^2}{N/4}} = \frac{4 \sigma}{\sqrt{N}}
+ = 2\sigma_{\text{Haupteffekt}}
+\end{equation*}
+
+D.h. der Standardfehler des Interaktionseffekts $\sigma_{\text{Interaktion}}$ ist doppelt so groß wie derjenige des Haupteffekts $\sigma_{\text{Haupteffekt}}. Dazu kommt, das überlicherweise die absolute Größe des Interaktionseffekt kleiner ist als diejenige des Haupteffekts. Da dies jedoch nicht den Standardfehler betrifft führt dies zu dazu, dass ein kleinerer Effekt eine höhere Streuung aufweise. D.h. die effektive Effektstärke wird zusätzlich kleiner.
+
+Schauen wir uns diesen Zusammenhang zwischen der Power, der Effektstärke des Haupteffekts und der Effektstärke des Interaktionseffekts etwas systematischer an. In @fig-ed-crfd-power-inter ist die Power für den Interaktionseffekt in Abhängigkeit vom Verhältnis von Interaktionseffekt zum Haupteffekt abgetragen, wenn die Stichprobengröße für eine Power von $0.8$ für den Haupteffekt bestimmt wurde.
+
+```{r}
+#| fig-cap: "Zusammenhang zwischen Power für den Interaktionseffekt in Relation zur Größe des Interaktionseffekts zum Haupteffekt bei Power = $0.8$ für den Haupteffekt"
+#| label: fig-ed-crfd-power-inter
+ 
+ref <- 2.8
+tibble(
+  mult = seq(0.5, 2, 0.1),
+  p = 1 - pnorm(1.96, ref*mult/2, 1)
+) |> 
+  ggplot(aes(mult, p)) +
+  geom_line() +
+  scale_x_continuous("Verhältnis Interaktions- zu Haupteffekt",
+                     breaks = c(0.5, 1, 1.5, 2.0),
+                     labels = c(
+                       expression(frac(1,2)),
+                       1,
+                       expression(frac(3,2)),
+                       2
+                     )) +
+  scale_y_continuous("Power",
+                     breaks = seq(0.1, 1, 0.1)) 
+```
+
+Wir können erkennen, das wenn der Interaktionseffekt nur noch halb so groß ist wie der Haupteffekt, ein nicht unüblicher Zusammenhangt, ist die Power für den Interaktionseffekt nur noch $0.1$. Erst wenn der Interaktionseffekt die doppelte Größe des Haupteffekts hat, ist dessen Power auch gleich derer für den Haupteffekt. Eine Annahme die praktisch immer unrealistisch ist. Dies führt dazu, dass wenn eine Studie nach der Effektstärke für einen Haupteffekt designed wird aber das eigentliche Interesse einem Interaktionseffekt die Power praktisch immer zu klein ist. Anders herum wird in den Daten ein nicht zu erwartender Interaktionseffekt beobachtet, dann wird dessen Effektstärke oft deutlich überschätzt, da die Power normalerweise zu klein ist und der Effekt extrem sein muss, um tatsächlich statistisch signifikant zu werden. Weitere Probleme in diesem Zusammen sind in der Literatur eingängig beschrieben [@gelman2006;@nieuwenhuis2011] finden aber leider selten ausreichend Beachtung und führen daher zu experimentellen Design die hoffnungslos unterpowert sind [@button2013].
+
+## Zum Nach- und Weiterlesen
+
+@dean1999 behandelt die Eigenheiten von Interaktionsdesigns sehr umfassend.
+
+
+## ANCOVA
+
+```{r defs, echo = FALSE, message = FALSE, warning=FALSE}
+require(emmeans)
+my_tbl <- function(df, header, caption='', ...) {
+  knitr::kable(df,
+               booktabs = TRUE,
+               digits = 2,
+               col.names = header,
+               caption = caption,
+               linesep = '',
+               ...)
+}
+```
+
+In den vorhergehenden Kapiteln zu CRD bzw. CRFD haben wir uns angeschaut, wie wir den Einfluss einer oder mehrerer nominaler, unabhängiger Variablen auf eine abhängige Variable modellieren können. In diesem Zusammenhang haben wir uns auch mit der Varianzzerlegung auseinandergesetzt und immer wieder gesehen, dass diese Zerlegung auch als der Vergleich von verschiedenen Modellen miteinander betrachtet werden kann. Im Rahmen der ANCOVA führen wir jetzt wieder eine kontinuierliche Variable in unser Modell ein, wie wir das schon im Rahmen der multiplen linearen Regression getan haben. Diese zusätzliche, kontinuierliche Variable spielt dabei die Rolle einer Kontrollvariablen. Mit Hilfe dieser Kontrollvariable soll ebenfalls Varianz von $Y$ erklärt werden. Der Effekt der Kontrollvariablen auf $Y$ ist allerdings nicht das Primärinteresse der Untersuchung sondern dient nur die Präzision des Modells zu erhöhen. Letztendlich führt dies dazu, dass auch die Power der Untersuchung erhöht wird.
+
+Ein Beispiel könnte eine Untersuchung zu Trainingseffekten sein. Aus der Literatur wissen wir bereits, das das Alter der Teilnehmerinnen und Teilnehmer eine Rolle auf den Trainingseffekt hat. Daher macht es Sinn für den Effekt des Alters im Rahmen der Modells zu kontrollieren. Das primäre Interessiere der Untersuchung liegt auf dem Effekt des Trainings. Die Variable Alter wird in diesem Fall als Kovariate bezeichnet, wodurch sich auch die Namensgebung ANCOVA als Abkürzung für Analysis of Covariance herleitet. Welche Variablen die Rolle der primären Variablen und der Kovariaten spielen ist dabei von der konkreten Untersuchung abhängig. Es kann genauso vorkommen, dass eine nominale Variable die Rolle der Kovariaten spielt und eine kontinuierliche Variable die Primärvariable der Untersuchung ist.
+
+Konzeptionell wird durch die Integration einer Kovariaten Information über Unterschiede zwischen den beiden Gruppen die vor der Beobachtungsphase bestehen in das Modell mit einbezogen. D.h. trotzdem wir die Beobachtungseinheiten randomisiert in beispielsweise zwei Gruppen unterteilt haben, wissen wir, das das Alter einen Effekt auf die abhängige Variable hat. Bei einer perfekten, randomisierten Zuweisung sollte das Alter eigentlich keinen mehr Einfluss haben, da beide Gruppen die gleiche Altersstruktur haben sollten. Trotzdem sind wir in der Lage die Einbeziehung zusätzliche Varianz aufzuklären und können so den Effekt der Primärvariablen hoffentlich besser isolieren. Oft kann zum Beispiel der Startwert der abhängigen Variable als Kovariate verwendet werden. Die Kovariate ist dann auf der gleichen Skala wie die Zielvariable.
+
+::: {#exm-ancova-01}
+In @fien2019 wurde unter anderem der Einfluss einer Trainingsintervention auf die Gehgeschwindigkeit in einem zweiarmigen Untersuchungsdesign untersucht. Als Zielvariable wurde die Gehgeschwindigkeit nach der Interventionsphase verwendet. Um die bestehenden Unterschiede zwischen den Teilnehmerinnen und Teilnehmer vor der Untersuchung mit einzubeziehen, wurde die Gehgeschwindigkeit vor der Intervention als Kovariate verwendet.
+:::
+
+::: {#def-covariate}
+## Kovariate
+
+Eine Kovariate\index{Kovariate} ist eine Variable, die verwendet wird, um den Einfluss auf die abhängige Variable zu kontrollieren um genauere Schätzungen der Beziehungen zwischen den primären unabhängigen Variablen und der abhängigen Variable zu erhalten. 
+
+Alternativ werden in der Literatur auch die Begriffe Störvariable (engl. nuisance factor) oder concomitant variable (engl.) verwendet. Wenn die Kovariate auf der gleichen Skala wie die Primärvariable ist, wird sie auch als commensurate (engl.) bezeichnet.
+:::
+
+Beginnen wir mit einem einfachen konzeptionellen Modell (siehe @fig-ed-ancova-01).
+
+```{r}
+#| fig-cap: "Zusammenhang einer abhängigen Variable mit einer Kovariate und einer nominalen Variable (treatment)"
+#| label: fig-ed-ancova-01
+
+dat_0 <- tibble(
+  x = c(-1,1),
+  A = 3*x,
+  B = 3*x + 1
+) |> tidyr::pivot_longer(-x, values_to='y')
+ggplot(dat_0, aes(x, y, color=name)) +
+  geom_line(linewidth=2) +
+  scale_x_continuous("Kovariate", labels = NULL) +
+  scale_y_continuous("DV", labels = NULL) +
+  scale_color_discrete("Treatment") 
+```
+
+@fig-ed-ancova-01 zeigt den Zusammenhang zwischen zwei Gruppen $A$ und $B$ und einer abhängigen Variablen DV sowie den Zusammenhang einer Kovariate ($x$-Achse) mit DV. Zwischen der Kovariaten und der DV besteht ein positiver Zusammenhang und der Effekt von Treatment $A$ ist kleiner als derjenige von Treatment $B$. Der Effekt der Kovariaten ist dabei in beiden Gruppen gleich und es besteht keine Interaktion zwischen der Kovariaten und den Gruppen. Dies führt dazu, dass die beiden Geraden parallel zueinander sind. Letztendlich haben wir dieses Modell schon bei der Besprechung der Intergration von nominalen Variablen in das multiple Regressionsmodell behandelt.
+
+Wenn wir die beiden Gruppen miteinander vergleichen sind mehrere unterschiedliche Vergleiche möglich. Nehmen wir zum Beispiel einen Datenpunkt $P1$ aus Gruppe $A$. Dann können wir den $P1$ mit mehreren verschiedenen Datenpunkten aus Gruppe $B$ vergleichen. In @fig-ed-ancova-02 sind drei mögliche Vergleiche eingezeichnet.
+
+```{r}
+#| fig-cap: "Verschiedene Vergleiche der beiden Gruppen miteinander"
+#| label: fig-ed-ancova-02
+
+df_pts <- tibble(x = rep(0,3), xend = c(-.5,0,.5),
+                 y = rep(0,3), yend = c(-.5,1,2.5))
+ggplot(dat_0, aes(x, y, color=name)) +
+  geom_line(linewidth=2) +
+  geom_point(data = df_pts, aes(x=xend, y=yend), color = 'red', size=3) +
+  scale_x_continuous("Kovariate", labels = NULL) +
+  scale_y_continuous("DV", labels = NULL) +
+  scale_color_discrete("Treatment") +
+  annotate("segment", x = rep(0,3),
+            y = rep(0,3), 
+            xend = c(-.5,0,.5),
+            yend = c(-.5,1,2.5),
+            arrow = arrow(length=unit(.08, 'inch'), ends = 'both',
+                          type='closed')) +
+  annotate("label", x = 0, y = 0, label = 'P1')
+
+```
+
+Letztendlich erscheint aber nur einer der Vergleiche sinnvoll, nämlich der Vergleich wenn die beiden Gruppenwerte den gleichen Wert in der Kovariate haben. Wäre zum Beispiel die Kovariate das Alter, dann würde ein Vergleich von zwei Personen die sich im Alter unterscheiden wenig sinnvoll da nicht klar ist ob ein beobachteter Unterschied zwischen den beiden Personen in der abhängigen Variable auf den Unterschied im Alter oder auf den Unterschied im Treatment zurück zu führen ist. Genau dieses Problem wird mit Hilfe der ANCOVA gelöst. Die ANCOVA liefert daher eine Antwort auf die Frage:
+
+*Wie unterschieden sich die Gruppen voneinander, wenn sie die gleichen Werte in der Kovariate hätten?*
+
+Schauen wir uns ein weiteres Beispiel an. In @fig-ed-ancova-03 sind diesmal Datenpunkte eingezeichnet und scheinbar ist bei der Zuweisung der Teilnehmerinnen und Teilnehmer etwas grundsätzlich schief gelaufen.
+
+```{r}
+#| fig-cap: "Probleme durch die Kovariate"
+#| label: fig-ed-ancova-03
+
+set.seed(1)
+slope <- 0.2
+trt <- 8
+dat_1 <- tibble(
+  x = rep(seq(10, 80, 10), each=2),
+  trt = rep(c(trt,0), each=8),
+  trt_f = factor(trt, labels=c('A','B')),
+  y = slope * x + trt + rnorm(16, 0, sd=1),
+)
+p1 <- ggplot(dat_1, aes(x, y, color=trt_f)) +
+  geom_point(size=3) +
+  geom_abline(slope = slope, linetype='dashed') +
+  geom_abline(slope = slope, intercept = trt, linetype='dashed') +
+  scale_x_continuous("Kovariate", labels = NULL) +
+  scale_y_continuous("DV", labels = NULL) +
+  scale_color_discrete("Treatment") 
+p1
+```
+
+Die Personen in Gruppe $B$ haben alle einen kleineren Wert in der Kovariate als die Personen in Gruppe $A$. Gleichzeitig hat die Kovariate aber einen positiven Einfluss auf die DV. Hätte wir keine Information über die Kovariate und würden die beiden Gruppenmittelwerte miteinander vergleichen, dann würden wir wahrscheinlich keinen Unterschied zwischen den beiden Gruppen finden (siehe @fig-ed-ancova-04). 
+
+```{r}
+#| fig-cap: "Mittelwerte der Gruppen (schwarze Punkte) mit unterschiedlichen Kovariaten"
+#| label: fig-ed-ancova-04
+
+dat_1_bar <- dat_1 |> group_by(trt_f) |>
+    summarize(y = mean(y), x = mean(x))
+p1 + 
+  geom_point(data = dat_1_bar, color='black', size=4)
+```
+
+Um die beiden Gruppen miteinander vergleichen zu können, müssen wir die Unterschiede in den Mittelwerten der Kovariaten korrigieren um die Gruppen miteinander vergleichbar zu machen. D.h. wie würden die Unterschied aussehen, wenn beide Gruppen die gleiche Verteilung in der Kovariaten hätten.
+
+```{r}
+#| fig-cap: "Vergleich der Gruppen bei koorigierten Kovariaten"
+#| label: fig-ed-ancova-05
+
+ggplot(dat_1, aes(x, y, color=trt_f)) +
+  geom_point(size=3) +
+  geom_abline(slope = slope, linetype='dashed') +
+  geom_abline(slope = slope, intercept = trt, linetype='dashed') +
+  scale_x_continuous("Kovariate", labels = NULL) +
+  scale_y_continuous("DV", labels = NULL, limits = c(0,25)) +
+  scale_color_discrete("Treatment") +
+  geom_point(data = dat_1 |> group_by(trt_f) |>
+    summarize(y = mean(y), x = mean(x)), color='black', size=4) +
+  annotate(geom = 'segment', x = dat_1_bar$x[1], xend = dat_1_bar$x[1],
+          y = dat_1_bar$y[1], yend = dat_1_bar$y[1]+7,
+          arrow = arrow(type = 'closed', length=unit(.15,'inch'))) +
+  annotate(geom = 'segment', x = dat_1_bar$x[2], xend = dat_1_bar$x[2],
+          y = dat_1_bar$y[2], yend = dat_1_bar$y[2]-7,
+          arrow = arrow(type = 'closed', length=unit(.15,'inch')))
+```
+
+In @fig-ed-ancova-05 sind die eigentlich sinnvollen Vergleiche angezeigt. Dabei wird auch noch einmal klar, dass in diesem Modell sobald wir für die Werte der Kovariaten kontrolliert haben, die Position des Vergleichs unerheblich ist, da wir von einem Modell ausgehen, bei dem der Effekt der Kovariaten in beiden Gruppen gleich ist. Dies führt zu den parallelen Linien.
+
+## Das Modell
+
+Übertragen wir die Beispiele nun wieder in eine Modellformulierung. Letztendlich können wir, wie bereits angemerkt, das uns schon bekannte Modell aus der multiple linearen Regression anwenden.
+
+\begin{equation}
+Y_{it} = \mu + \tau_i + \beta x_{it} + \epsilon_{it} \quad \epsilon_{it} \sim \mathcal{N}(0,\sigma^2), i = 1,\ldots,K
+\label{eq-ed-ancova-model}
+\end{equation}
+
+In Model \eqref{eq-ed-ancova-model} kommt dementsprechend nichts Neues dazu, sondern unser bekanntes lineares Modell. Der einzige Unterschied besteht in der Terminologie, während wir vorher $\alpha_i$ für die nominale Variable verwendet haben, wird der nominale Faktor im ANCOVA-Modell $\tau_i$ bezeichnet. Das sind aber nur Unterschiede in den Buchstaben die leider auch in der Literatur unterschiedlich verwendet werden.
+
+Um die spätere Interpretation der Koeffizienten zu vereinfachen, wird auch oft ein in der Kovariaten zentriertes Modell verwendet. Dies hat jedoch keine Auswirkung auf das Ergebnis. Von den Werten der Kovariate wird dazu der Gesamtmittelwert $\bar{x}_{..}$ der Kovariatenwerten abgezogen.
+
+\begin{equation}
+Y_{it} = \mu + \tau_i + \beta (x_{it} - \bar{x}_{..}) + \epsilon_{it}
+\label{eq-ed-ancova-model-c}
+\end{equation}
+
+Ein interessante Interpretation der ANCOVA erhalten wir, wenn wir in Formel \eqref{eq-ed-ancova-model-c} auf beiden Seiten $\mu + \tau_i$ abziehen (siehe [@casella2008, p.65]).
+
+\begin{equation*}
+Y_{it} - \beta (x_{it} - \bar{x}_{..}) = \mu + \tau_i + \epsilon_{it}
+\end{equation*}
+
+Auf der linken Seite stehen die Residuen einer einfachen Regression, die Differenz der beobachteten Werte $Y_{it}$ von denen mittels der Regression auf die Kovariate vorhergesagten Werten $\beta (x_{it} - \bar{x}_{..}$. Auf der rechten Seite haben wir das Modell der CRD. D.h. durch die ANCOVA werden die beobachteten Werte $Y_{it}$ korrigiert und dadurch deren Varianz reduziert. 
+
+Da es sich bei der ANCOVA aber insgesamt wieder nur um eine Variante des linearen Modell handelt, ergeben sich entsprechend auch keine unbekannten Voraussetzungen:
+
+- Experimental units sind randomisiert den $K$ Gruppen zugewiesen worden
+- Varianz $\sigma^2$ ist konstant über Gruppen und Werte der Kovariate
+- Die Kovariate und das Treatment sind statistisch unabhängig voneinander
+
+Der letzte Punkte, die Unabhängigkeit zwischen dem Treatment und der Kovariate ist wichtig. Dies bedeutet, dass der Einfluss der Kovariaten sind nicht im Zusammenhang mit dem Treatment verändert. Der der ANCOVA zugrundeliegende Test beruht dann wie immer auf einen  Modellvergleich eines vollen Modell (Model \eqref{eq-ed-ancova-model}) mit einem reduzierten Modell. Das reduzierte Modell beinhaltet dann nur die Kovariate, da wir den Unterschied in Bezug auf den Effekt der Primärvariable überprüfen wollen.
+
+\begin{align*}
+y_{ij} &= \mu + \tau_{j} + \beta X_{ij} + \epsilon_{ij} \quad \text{full} \\
+y_{ij} &= \mu + \beta X_{ij} + \epsilon_{ij} \quad \text{reduced}
+\end{align*}
+
+Die $H_0$ für den Treatmenteffekt ist:
+
+\begin{equation*}
+H_0: \tau_1 = \tau_2 = \cdots = tau_K = 0
+\end{equation*}
+
+Der Unterschied zwischen den Treatmentstufen wird dabei für den Wert $\bar{x}_{..}$, als den Mittelwert der Kovariate über alle Gruppenhinweg bestimmt.
+
+Die $H_0$ für die Kovariate ist:
+
+\begin{equation*}
+H_0: \beta = 0
+\end{equation*}
+
+Das Ergebnis der Analyse wird oft auch in Form einer Varianz-Tabelle dargestellt (siehe @tbl-ed-ancova-ssq).
+
+| Term | $df$ | $SSQ$ | $MSQ$ | F |
+| --- | --- | --- | --- | --- |
+| $T|\beta$ | $K-1$ | $ss(T|\beta)$ | $\frac{ss(T|\beta)}{K-1}$ | $\frac{ms(T|\beta)}{msE}$ |
+| $\beta|T$ | $1$ | $ss(\beta|T)$ | $\frac{ss(\beta|T)}{1}$ | $\frac{ms(\beta|T)}{msE}$ |
+| Error | $N-K-1$ | $ssE$ | $msE$ |  |
+
+: Varianztabelle der ANCOVA {#tbl-ed-ancova-ssq} 
+
+Die Schreibweise $T|\beta$ bezeichnet den Effekt des Treatments nachdem für die Kovariate kontrolliert wurde während $\beta|T$ den Effekt der Kovariate nachdem für das Treatment kontrolliert wurde beschreibt. Hier tritt eine Besonderheit auf, die Summe der Quadratsummen addiert sich nicht zur totalen Varianz von $Y$. Dies kommt dadurch zustande das die Quadratsummen nicht der Hierarchie folgend vom einfachsten zum vollen Modell gebildet werden, sondern Vergleiche zwischen dem vollen Modell und jeweils einem Modell bei dem die andere Variable bereits vorhanden ist durchgeführt werden. Diese Quadratsummen werden als korrigierte Quadratsummen (adjusted sums of squares) [@christensen2018, p.362] oder auch Type-II Quadratsummen bezeichnet. Dadurch verlieren die Quadratsummen ihre additive Eigenschaft. Im Spezialfall wenn beide Gruppen den gleichen Mittelwert in der Kovariaten $X$ haben, sind die Quadratsummen dann doch wieder additive. Die beiden Effekt Treatment und Kovariate sind dann orthogonal zueinander.
+
+Schauen wir uns die Analyse in einem Spielzeugbeispiel an. In @tbl-ed-ancova-max-01 ist ein Beispieldatensatz aus @maxwell2004 abgebildet.
+
+```{r}
+#| tbl-cap: "Ein einfacher ANCOVA-Datensatz"
+#| label: tbl-ed-ancova-max-01
+bw <- tibble(
+  id = paste0('S', 1:6),
+  group = rep(c('TRT','CON'), each=3),
+  x = c(1,2,3,3,4,5),
+  y = c(4,9,8,12,11,16)
+)
+bw |> kable(
+  col.names=c('ID','Gruppe','x','y'),
+  caption="Beispieldaten",
+  linesep = "",
+  booktabs = TRUE
+)
+```
+
+Wir haben zwei Gruppen (TRT und CON) mit jeweils $N = 3$ mit einer Kovariate $x$.
+
+Ein Vergleich des vollen und des reduzierten Modells führt zu folgendem Ergebnis:
+
+```{r}
+#| tbl-cap: "Vergleich full vs. reduced model."
+#| label: tbl-ed-ancova-toy-1
+
+mod_0 <- lm(y ~ x, bw)
+mod_1 <- lm(y ~ x + group, bw)
+broom::tidy(anova(mod_0, mod_1)) |>
+  knitr::kable(booktabs=T,
+               digits=3)
+```
+
+Wie wir @tbl-ed-ancova-toy-1 sehen können finden wir keinen statistisch signifikanten Effekt für das Treatment nachdem wir für die Kovariate $X$ kontrolliert haben. Dargestellt als Varianztabelle erhalten wir die folgende Dokumentation (siehe @tbl-ed-ancova-ex-01):
+
+```{r}
+#| label: tbl-ed-ancova-ex-01
+#| tbl-cap: "Varianztabelle"
+
+car::Anova(mod_1) |> broom::tidy() |>
+  dplyr::mutate(MSQ = sumsq/df, .before=4) |> 
+  kable(booktabs = TRUE,
+  digits = 3,
+  col.names = c("Term", "SSQ","df","MSQ","F","p-Wert"))
+```
+
+Hier finden wir ebenfalls keinen statisch signifikaten Effekt für beide Variablen, die Wert für die Treatmentvariable sind in beiden Tabellen gleich. Schauen wir uns die Summe der Quadratsummen an.
+
+```{r}
+ssq <- car::Anova(mod_1) |> broom::tidy() |> dplyr::pull(sumsq)
+```
+$$
+SSQ_x + SSQ_{\text{group}} + SSE = `r paste(ssq, collapse="+")` = `r sum(ssq)`
+$$
+
+Aber die totale Quadratsumme von $y$ ist $SST = `r var(bw$y)*5`$. D.h. die Summer der Quadratsummen addiert sich nicht zu $SST$.
+
+Schauen wir aber rein interessehalber an, was passiert wenn wir den Treatmenteffekt gegen ein auf den $y$-Achsenabschnitt reduziertes Modell testen. Wir ignorieren die Information aus der Kovariate.
+
+```{r}
+#| label: tbl-ed-ancova-mod00
+#| tbl-cap: "Modellvergleich von $y_i = \\beta_0 + \\epsilon_i$ gegen $y_i = \\beta_0 + \\tau_i + \\epsilon_i$" 
+
+mod_0a <- lm(y ~ 1, bw)
+mod_1a <- lm(y ~ group, bw)
+anova(mod_0a, mod_1a) |> broom::tidy() |> 
+  kable(
+    booktabs = TRUE,
+    digits = 4)
+```
+
+In @tbl-ed-ancova-mod00 haben wir nun einen statistisch signifikanten Effekt gefunden. Wie kann das denn sein? Schauen wir uns dazu eine graphische Darstellung der Daten an (siehe @fig-ed-ancova-mod01).
+
+```{r}
+#| fig-cap: "Streudiagramm der Rohdaten"
+#| label: fig-ed-ancova-mod01
+
+ggplot(bw, aes(x, y)) +
+  geom_point(aes(pch=group), size=4) +
+  scale_shape_discrete('Gruppe') +
+  scale_x_continuous("Kovariate x")
+```
+
+In @fig-ed-ancova-mod01 können wir sehen, dass die beiden Gruppen sich deutlich in der Kovariate $x$ voneinander unterscheiden. Dies führt dazu, dass die Mittelwerte der beiden Gruppen auch entsprechend unterschiedlich voneinander sind. Dadurch führt ein Test für den Unterschied zwischen den beiden Gruppen dazu, dass es zu einem statistisch signifikanten Ergebnis für das Treatment kommt. Letztendlich wird dieser Unterschied nur durch die Kovariate verursacht. Wird für die Kovariate kontrolliert, dann verschwindet der Effekt (siehe @fig-ed-ancova-mod02).
+
+```{r}
+#| fig-cap: "Streudiagramm der Rohdaten mit den Geraden aus dem ANCOVA-Modell"
+#| label: fig-ed-ancova-mod02
+
+ggplot(bw, aes(x,y,color=group)) +
+  geom_point(size=4) +
+  geom_smooth(method='lm', se=F) +
+  scale_color_discrete("Gruppe") +
+  scale_x_continuous("Kovariate x")
+```
+
+In @fig-ed-ancova-mod02 sehen wir, dass wenn die beiden parallen Geraden für die Kovariate auf Basis des ANCOVA-Modells eingefügt werden, dann ist der Unterschied zwischen den beiden Gruppen deutlich geringer. Dies betont noch einmal, dass ein Vergleich nur sinnvoll ist, wenn das level der Kovariaten zwischen den beiden Gruppen gleich ist. Es wird in diesem Fall dann von adjusted means $\bar{Y}_l'$ \index{adjusted means} gesprochen. Dazu wird der Mittelwert $\bar{X}_{..}$ der Kovariaten $X$ über alle Gruppen gebildet und dann der Effekt der Gruppe berechnet.
+
+\begin{equation*}
+E[\bar{Y}_{i.}] = \mu + \tau_i + \beta\bar{x}_{..}
+\label{eq-ed-ancova-adjusted-mean}
+\end{equation*}
+
+Im Beispiel werden die Gruppen daher wie folgt miteinander verglichen (siehe @fig-ed-ancova-adjusted-means)
+
+```{r}
+#| fig-cap: "Korrigierte Mittelwerte der Gruppen bei $\\bar{x}$."
+#| label: fig-ed-ancova-adjusted-means
+
+x_new <- tibble(x = mean(bw$x), group=c('TRT','CON'))
+y_bar_j <- predict(mod_1, newdata = x_new)
+mod_slopes <- tibble(
+  x = rep(coef(mod_1)[2],2),
+  y = c(coef(mod_1)[1] + c(0, coef(mod_1)[3])),
+  group = c('CON','TRT'))
+x_new <- x_new |> dplyr::mutate(y = y_bar_j)
+ggplot(bw, aes(x,y,shape=group)) +
+  geom_point(size=4) +
+  geom_abline(data = mod_slopes, aes(slope=x, intercept=y),
+              linetype='dashed') +
+  geom_point(data = x_new, size=4, col='red') +
+  annotate(geom = 'segment', x=x_new$x[1], y=x_new$y[1],
+                             xend=x_new$x[2], yend=x_new$y[2],
+            arrow=arrow(length=unit(0.1,"inch"), type='closed', ends='both')) +
+  scale_shape_discrete("Gruppe") 
+```
+
+Wie wir an dem Beispiel sehen konnten, führt die Kombination von Mittelwerten in der Kovariaten $X$ dazu, dass der Effekt kleiner wird nachdem für die Kovariate kontrolliert wurde. Dies ist nicht immer der Fall sondern hängt davon ab, wie groß der Effekt ist und wie die Anordnung der Mittelwerte $\bar{X}_j$ in den Gruppen ist.
+
+In @fig-ed-ancova-adjusted-means-2 ist der Fall noch mal etwas klarer dargestellt.
+
+```{r}
+#| fig-cap: "Zusammenhang zwischen der Kovariate und dem Gruppen Effekt, der sich verkleinert."
+#| label: fig-ed-ancova-adjusted-means-2
+
+gg_adjust <- function(y_1=1) {
+df_g <- tibble(
+  x = c(1,2,2,3),
+  y = c(y_1,y_1+1,3,4),
+  g = rep(letters[1:2],each=2),
+  Typ = c('roh','korrigiert','korrigiert','roh'),
+  xend = 1:4,
+  yend = 1:4
+)
+df_g_2 <- tibble(
+  x = 1:3, xend=1:3,
+  y = rep(0,3), yend=c(y_1,max(y_1+1,3),4),
+  g = letters[4:6]
+)
+df_g_3 <- tibble(
+  x = c(0,0),
+  xend = c(1,3),
+  y = c(y_1,4),
+  yend = c(y_1,4),
+  g = letters[7:8]
+)
+ggplot(df_g, aes(x,y,groups=g,xend=xend,yend=yend)) +
+  geom_segment(data = df_g_2, 
+               linetype='dashed') +
+  geom_segment(data = df_g_3) +
+  geom_hline(yintercept=c(y_1+1,3), col='red', linetype='dashed') +
+  geom_line(linewidth=2) +
+  geom_point(mapping=aes(color = Typ), size=4) +
+  scale_x_continuous("", breaks=1:3,
+                     labels=c(expression(bar(X)[1]),
+                              expression(bar(X)),
+                              expression(bar(X)[2]))) +
+  scale_y_continuous("", labels=NULL) 
+}
+gg_adjust()
+```
+
+Wir haben einerseits die einfachen, rohen Gruppenmittelwerte und die korrigierten Mittelwerte. In @fig-ed-ancova-adjusted-means-2 sind die einfachen Mittelwerte weiter auseinander entfernt als die korrigierten Mittelwerte. Daher wird der Effekt nach der Korrektur kleiner. Es kann aber auch der gegensätzliche Effekt eintreten. In @fig-ed-ancova-adjusted-means-3 ist dafür ein vereinfachtes Beispiel dargestellt.
+
+```{r}
+#| fig-cap: "Zusammenhang zwischen der Kovariate und dem Gruppen Effekt, der sich vergrößert."
+#| label: fig-ed-ancova-adjusted-means-3
+
+gg_adjust(3.5)
+```
+
+In @fig-ed-ancova-adjusted-means-3 sind die einfachen Gruppenmittelwerte näher zusammen als dies der Fall bei den korrigierten Mittelwerten der Fall. Darin können wir sehen, dass nicht immer direkt klar ist in welche Richtung sich die Effekte verändern, wenn für eine Kovariate kontrolliert wird. Die Veränderung des Effekts hängt mit dem Zusammenhang zwischen der Kovariate und der abhängigen Variable $\beta$, dem Abstand der Mittelwerte der Kovariate $\bar{X}_i$ in den Gruppen und natürlich dem tatsächlichen Effekt $\tau_i$ zusammen.
+
+## Analyse einer ANCOVA in `R`
+
+Für die Analyse in `R` können wir die üblichen Herangehensweise mittels `lm()` verwenden. Einzig, wenn wir die Varianztabelle nach dem Muster in @tbl-ed-ancova-ssq erzeugen wollen und nicht von Hand die Modellvergleiche durchführen wollen, müssen wir auf die Funktion `ANOVA()` aus dem package `car` zurückgreifen. Beispielweise für das Spielzeugbeispiel (Daten sind im `tibble` `bw`) ergibt sich der folgende Code:
+
+```{r}
+#| echo: true
+
+mod <- lm(y ~ group + x, bw)
+car::Anova(mod)
+```
+
+Über die Modellvergleiche:
+
+```{r}
+#| echo: true
+
+mod_full <- lm(y ~ group + x, bw)
+mod_r1 <- lm(y ~ group, bw)
+mod_r2 <- lm(y ~ x, bw)
+anova(mod_r1, mod_full)
+anova(mod_r2, mod_full)
+```
+
+Wenn wir die Standard-`anova()`-Funktion auf das `lm`-Modell anwenden erhalten wir einen sequentiellen Modellvergleich bei dem es darauf ankommt in welcher Reihenfolge wir die unabhängigen Variablen in das Modell eingefügt haben.
+
+```{r}
+#| echo: true
+
+mod_g_x <- lm(y ~ group + x , bw)
+mod_x_g <- lm(y ~ x + group , bw)
+anova(mod_g_x)
+anova(mod_x_g)
+```
+
+## Effektstärke bei der ANCOVA
+
+Für die ANCOVA können wir natürlich auch wieder eine Effektstärke berechnen. Wir verwenden wieder eine $\Omega^2$-Typ Effektstärke für den Gesamteffekt des Modells (siehe Formel \eqref{ed-ancova-omega_sqr}.
+
+\begin{equation}
+\hat{\omega}^2=\frac{df_{\text{effect}}(MS_{\text{effect}}-MS_{\text{error}})}{SS_{\text{total}}+MS_{\text{error}}}
+\label{ed-ancova-omega_sqr}
+\end{equation}
+
+Für das Spielzeugbeispiel erhalten wir den folgenden Wert:
+
+$$
+\hat{\omega}^2 = \frac{1(2.4 - 4)}{82 + 4} = `r round(1*(2.4-4)/(82+4),2)`
+$$
+
+Per Konvention wird bei $\hat{\omega}^2 < 0$ der Wert auf $0$ gekappt. D.h. in diesem Fall ist die Effektstärke gleich $0$. Die Effektstärke wird dabei bei Vernachlässigung der Kovariaten bestimmt. Die Kovariate wird als intrinsische Variable betrachtet und daher gehört die durch die Kovariate verursachte Varianz zur Varianz der abhängigen Variablen. Daher wird bei der ANCOVA der Gesamteffekt unter Einbeziehung der Kovariatenvarianz berechnet. D.h. es wird nicht der partielle Effekt bestimmt.
+
+Wenn wir die Effektstärke in `R` berechnen wollen, können wir wieder auf das package `effectsize` zurückgreifen und die `omega_squared()` Funktion anwenden. Hierbei sollte der Parameter `partial` wieder auf `FALSE` gesetzt werden um den globalen Effekt zu berechnen. 
+
+```{r}
+#| echo: true
+
+effectsize::omega_squared(mod_1, partial=F)
+```
+
+## Mehrfachvergleiche bei der ANCOVA
+
+Sollten wir einen statistisch signifikanten Effekt für die Treatmentvariable gefunden haben, dann können wir, wie üblich, auch Mehrfachvergleiche über Kontraste $\Psi_i$ berechnen. Dies macht nur Sinn wenn $K>2$ gilt, da ansonsten der einzelne $\tau_i$-Koeffizient im Modell direkt den Vergleich der beiden Gruppen gibt. Auf die Herleitung der Varianz der Kontraste verzichten wir hier, da sich außer umfangreicher Algebra nichts grundlegendes Neues ergibt. Die Varianz für einen Kontrast $\Psi_i$ besitzt einen zusätzlichen Term für den Einfluss der Kovariate $X$.
+
+$$
+Var\left(\sum_{i}c_i \hat{\tau_i}\right) = MSE\left(\sum_i\frac{c_i^2}{r_i} + \frac{(\sum_i c_i \bar{x}_{i.})^2}{\sum_{i=1}^K \sum_{t=1}^{r_i} (x_{it}-\bar{x}_{i.})^2} \right)
+$$
+Der interessante Punkte hier, das die Varianz mit dem Abstand der Mittelwerte der Kovariate in den Gruppen $\bar{x}_{i.}$ größer wird. Deshalb ist eine möglichst ähnliche Verteilung der Kovariaten in den Gruppen zu bevorzugen. Um das nominelle Signifikanzniveau dann wieder für Mehrfachtestung zu kontrollieren können entweder eine Bonferroni- (pre-planned) oder die die Scheffé-Methode verwendet werden. Für die Tukey-Methode gibt es keinen geschlossenen Beweis, obwohl wahrscheinlich auch die Tukey-Methode möglich ist [vgl. @dean1999, p.294].
+
+## Mehrfachvergleiche in `R`
+
+Um Mehrfachvergleiche in `R` durchzuführen, verwenden wir wieder das `emmeans`-package. Schauen wir uns dazu ein Beispiel hypothetisches Beispiel aus [@maxwell2004, p.429] mit drei Stufen für die Treatmentvariable an (siehe @fig-ed-ancova-max-01). Es wurde drei Patientengruppen mit Depression in drei Gruppen unterteilt. Eine Gruppe fungierte als Kontrollgruppe (`wait list`), eine Gruppe bekam ein Medikament (SSRI) und eine Gruppe bekam ein Placebo. Die Patienten wurde vor und nach dem Treatment auf einer Depressionskala (BDI depression score) getestet.
+
+```{r}
+#| fig-cap: "Depression Beispiel aus Maxwell et al. (2004, p.429)"
+#| label: fig-ed-ancova-max-01
+
+tbl_97 <- readr::read_delim('data/maxwell_tbl_9_7.csv',
+                     delim = ',', trim_ws = TRUE) |> 
+  mutate(Condition = factor(Condition,
+                            levels = 1:3,
+                            labels = c('SSRI','Placebo','Wait list'))) |> 
+  mutate(id = paste0('P',1:n()), .before = 1) |> 
+  pivot_longer(-c(id, Condition), names_to = 'time', values_to = 'bdi') |> 
+  mutate(time = factor(time, levels = c('Pre','Post')))
+ggplot(tbl_97, aes(Condition, bdi, fill=time)) + 
+  geom_boxplot() +
+  scale_fill_discrete('Zeit') +
+  labs(x = 'Kondition', y = 'BDI depression score')
+```
+
+Da davon auszugehen ist, dass die Schwere der Depression vor Beginn der Untersuchung einen Einfluss auf das Ergebnis hat, wurde die Eingangsmessung als eine Kovariate behandelt (commensurate covariate). Die Analyse der Daten (in `tibble` `bdi_w`) führte zu folgendem Ergebnis:
+
+```{r}
+bdi_w <-tbl_97 |>
+  pivot_wider(id_cols = c(id,Condition), names_from=time, values_from=bdi) 
+```
+
+```{r}
+#| echo: true
+#| lst-label: lst-ed-ancova-max-ex
+#| lst-cap: "Ergebnis der ANCOVA-Analyse"
+
+mod_bdi <- lm(Post ~ Pre + Condition, bdi_w)
+car::Anova(mod_bdi)
+```
+
+Es wurde ein statistisch signifikanter Effekt für die Gruppenzugehörigkeit gefunden. Den nachfolgenden Mehrfachvergleich können wir für die paarweisen Vergleiche wie folgt wieder mittels `emmeans()` berechnen.
+
+```{r}
+#| echo: true
+
+bdi_em <- emmeans(mod_bdi, ~Condition)
+pairs(bdi_em, infer=T, adjust='scheffe')
+```
+
+D.h. wir finden nur für den Kontrast zwischen der medikamentös behandelten Gruppe und der Kontrollgruppe einen statistisch signifikanten Effekt. An dem Beispiel können wir auch schön sehen, wie das ANCOVA-Modell eine Alternative darstellt um Daten zu analysieren die traditionell eher unter Repeated measures Designs fallen. Tatsächlich lässt sich zeigen, dass unter relativ milden, realistischen Annahmen die ANCOVA eine hohe Power für diese Designs besitzt [siehe @wan2021; @wan2020].
+
+### Effektstärken für paarweise Vergleiche
+
+Oft möchten wir für paarweise Vergleiche eine Cohen's D-artige Effektstärke berechnen. Dazu werden die sogenannte standardized differences between means \index{standardized differences between means} verwendet. Der einzige Schritt der etwas problematischer ist, ist die Berechnung der Standardabweichung. Hier wird auch wieder die Restvarianz $MS_W$ ohne die Reduktion durch die Kovariate $X$ verwendet.
+
+\begin{equation}
+\hat{d} = \frac{\bar{Y}_l' - \bar{Y}_m'}{\sqrt{MS_W}}
+\label{eq-ed-ancova-sdbw}
+\end{equation}
+
+Für die Berechnung von $MS_W$ muss ein lineares Modell ohne die Kovariate $X$ gefittet werden und der Term $MSE$ aus diesem Modell wird als $MS_W$ verwendet. Alternativ kann mit Hilfe der Werte aus dem ANCOVA Modell die folgende Formel verwendet werden: $MS_W = \sqrt{(SS_X + SS_{\text{error}})/(N-K)}$.
+
+In `R` kann dies wie folgt mittels der Funktion `eff_size()` wieder aus dem package `emmeans` berechnet werden:
+
+```{r}
+#| echo: true
+
+y_bars <- emmeans(mod_bdi, ~Condition)
+mod_r <- lm(Post ~ Condition, bdi_w)
+eff_size(y_bars, sigma = sigma(mod_r), edf = df.residual(mod_r))
+```
+
+Unter Verwendung der Varianztabelle (siehe @lst-ed-ancova-max-ex) aus der ANCOVA können die standardized differences between means äquivalent wie folgt berechnet werden.
+
+```{r}
+#| echo: true
+
+df_W <- 30 - 3
+MS_W <- sqrt((756.33 + 313.37)/df_W)
+eff_size(y_bars, sigma = MS_W, edf = df_W)
+```
+
+## Bestimmung der Anzahl der Replikationen 
+
+Der Vorteil der ANCOVA besteht nun darin, dass durch die Korrelation der Kovariate mit der abhängigen Variable zusätzliche Varianz aufgeklärt werden kann. Daher umso stärker der Zusammenhang ist zwischen $X$ und der abhängigen Variable umso mehr Varianz in $Y$ kann aufgeklärt werden und umso höher ist die Power des Modells. Dementsprechend kann im Prinzip die gleiche Berechnung wie beim CRD angewendet werden wobei die Residualvarianz um Korrelation $\rho_{xy}$ zwischen der Kovariate $X$ und $Y$ vermindert wird. Formal folgt:
+
+\begin{align*}
+\sigma_{\epsilon(\text{ANCOVA})}^2 &= \sigma_{\epsilon(\text{CRD})}^2(1-\rho_{xy}^2) \\
+f_{\text{ANCOVA}} &= \frac{\sigma_{\text{btw}}}{\sigma_{\epsilon(\text{CRD})}}\frac{1}{\sqrt{1-\rho_{xy}^2}} = \frac{f_{\text{CRD}}}{\sqrt{1-\rho_{xy}^2}} 
+\end{align*}
+
+Um den gleichen Ansatz wie beim CRD zu verwenden müssen dann lediglich noch die Freiheitsgrade angepasst werden mittels $df_{\text{Residual}} = N - K - 1$ aus dem ANCOVA-Modell.
+
+::: {#exm-ed-ancova-sample-size} 
+Also beispielsweise in einer CRD-Studie wurde eine Effektstärke für den Unterschied zwischen drei Gruppen ($K = 3$) von $f = 0.41$ gefunden. Wie verändert sich die notwendige Stichprobengröße wenn eine Kovariate mit einer Korrelation von $\rho_{xy} = 0.5$ mit der abhängigen Variable hinzugenommen wird? Um eine power von $pow = 0.8$ zu erreichen wird im CRD zunächst die folgende Stichprobengröße benötigt:
+
+```{r}
+#| echo: true
+
+pwr::pwr.anova.test(k=3, f=0.41, sig.level=0.05, power=0.8)$n
+```
+
+D.h. es ist eine Stichprobengröße von $N_i = 21$ pro Gruppe notwendig um im CRD eine Power von $pow = 0.8$ zu erreichen. Wenn nun die Kovariate $X$ in das Modell integriert wird, erhöht sich die Effektstärke von $f = 0.41$ auf $f = 0.41/\sqrt{1-0.5^2} = 0.47$. Daraus resultiert dann eine reduzierte Stichprobengröße von:
+
+```{r}
+#| echo: true
+
+pwr::pwr.anova.test(k=2, f=0.47, sig.level=0.05, power=0.8)$n
+```
+
+D.h. im ANCOVA-Modell wird nur noch eine Stichprobengröße von $N_i = 19$ pro Gruppe benötigt. 
+:::
+
+Das Prinzip sollte daher eigentlich einleuchtend sein, durch die Modellierung der Kovariate $X$ vermindert sich Residualvarianz was dann bei einer gegebenen Effektstärke zu einer Vergrößerung der standardisierten Effektstärke führt.
+
+::: {#exm-ed-ancova-fien-02}
+Schließen wir die ANCOVA noch einmal mit einer Reproduktion der Ergebnisse aus @fien2019 ab und versuchen die Ergebnisse in Tabelle 4 zu replizieren. Die Daten aus der Publikation sind in der Datei `fien_2019_part.txt` gespeichert.
+
+```{r}
+#| echo: true
+
+df_small <- readr::read_delim('data/fien_2019_parts.txt', delim = '\t')
+mod <- lm(gaitspeed24week ~ gaitspeedbaseline + chronicdiseases + exercise,
+          data = df_small)
+summary(mod)
+confint(mod) |> round(3)
+```
+
+Wenn wir die berechneten Werte mit denen aus Tabelle 4 aus @fien2019 vergleichen, sehen wir, dass wir zum gleichen Ergebnis kommen.
+:::
+
+## ANCOVA mit Interaktionseffekt 
+
+Tatsächlich kann es auch vorkommen, dass der Einfluss der Kovariaten $X$ in den Gruppen nicht gleich ist. D.h. das Treatment und die Kovariate nicht unabhänngig voneinander sind. In diesem Fall könnte z.B. der folgende Effekt eintreten (siehe @fig-ed-ancova-inter-01).
+
+```{r}
+#| fig-cap: "Beispiel für einen Interaktionseffekt zwischen der Treatmentvariablen und der Kovariate"
+#| label: fig-ed-ancova-inter-01 
+
+n <- 60
+set.seed(1)
+foo <- function(x,g) 3 + 2*g + 3*x + g*x 
+df_i <- tibble(
+  x = runif(n, -3, 3),
+  g = sample(-1:1, n, replace=T),
+  y = foo(x,g) + rnorm(length(x)),
+  gruppe = LETTERS[1:3][g+2]
+)
+p_1 <- ggplot(df_i, aes(x,y,color=gruppe)) + 
+  geom_point(size=2) +
+  geom_smooth(method='lm', se=F, formula=y~x) +
+  scale_color_manual('Gruppe', values=c('dark red','green','blue')) +
+  labs(x = 'X', y = 'Y') 
+print(p_1)
+```
+
+Hier sehen wir, dass die Steigungen in den drei Gruppen unterschiedlich sind. Das Modell haben wir schon vorher bei der multiplen linearen Regression gesehen, wir haben ein Interaktionsmodell.
+
+\begin{equation}
+y_{it} = \beta_0 + \tau_i + \beta \cdot x_{it} + (\tau\beta)_{it}x_{it} + \epsilon_{it}
+\label{eq-ed-ancova-inter}
+\end{equation}
+
+Im Prinzip bleibt bei der Analyse alles gleich. Es ergibt sich aber ein Problem wenn die Unterschied zwischen den drei Gruppen untersucht werden, da diese davon abhängigen für welchen Wert der Kovariate der Unterschied untersucht wird. In @fig-ed-ancova-inter-02 ist dieser Fall angezeigt.
+
+```{r}
+#| fig-cap: "Vergleiche der Gruppe A mit Gruppe C für verschiedene Werte der Kovariaten $X$"
+#| label: fig-ed-ancova-inter-02
+
+p_1 +
+  annotate(geom = 'segment',
+            x=c(-1,-1), xend=c(-1,-1),
+            y=foo(c(-1,-1),-1), yend=foo(c(-1,-1),1),
+            arrow = arrow(type = 'closed', length=unit(.1,'inch'),
+                    ends='both')) +
+  annotate(geom = 'segment',
+            x=c(2,2), xend=c(2,2),
+            y=foo(c(2,2),-1), yend=foo(c(2,2),1),
+            arrow = arrow(type = 'closed', length=unit(.1,'inch'),
+                    ends='both')) 
+```
+
+In @fig-ed-ancova-inter-02 ist klar zu erkennen, dass in Abhängigkeit vom Wert der Kovariaten $X$ der Unterschied zwischen den Gruppen sehr unterschiedlich ausfällt. Wollten wir zum Beispiel die Unterschiede zwischen den Gruppen für die Werte der Kovariaten $X$ für $X = [-2,0,2]$ berechnen dann könnten wir das in `R` mittels `emmeans()` wie folgt durchführen:
+
+```{r}
+#| echo: true
+ 
+mod <- lm(y ~ x*gruppe, df_i)
+mod_ems <- emmeans(mod, ~gruppe|x, at=list(x=c(-2,0,2)))
+pairs(mod_ems, adjust='bonferroni')
+```
+
+Damit solche Vergleiche sinnvoll sind, müssten die jeweiligen Werte für die Kovariaten schon im voraus möglichst bekannt sein bzw. festgelegt worden sein.
+
+## Zusammenfassung
+
+In der Herleitung und den Beispielen haben wir ANCOVAs mit nur einer Kovariate $X$ und einem Treatmentfaktor $\tau_i$ uns angeschaut. Die ANCOVA ist aber nicht nur auf diesen Fall beschränkt sondern es können problemlos auch mehrere Kovariaten $X_i, \ldots, X_p$ in das Modell nach dem genau gleichen Prinzip intergriert werden. Genauso kann die ANCOVA auch mit einem CRFD kombiniert werden und es kann eine kompliziertere Treatmenstruktur mit mehreren Faktoren verwendet werden. Ein Beispiel ist in @duncan2017 zu finden wo mehrere ANCOVAs gerechnet wurden um Körperkomposition in Abhängigkeit von Gender und Bewegungsfertigkeiten (high, medium, low) zu modellieren mit Alter, Alter beim maximalen Wachstumsschub und körperliche Aktivität als Kovariaten. Diese flexiblen Möglichkeiten machen die ANCOVA zu einem sehr mächtigen Verfahren. Wie schon mehrfach betont, ist die ANCOVA dabei nichts anderes als ein allgemeines lineares Modell.
+
+## Zum Nach- und Weiterlesen
+
+Ein gute Quelle um noch einmal die Grundlagen zur ANCOVA zu verstehen ist @maxwell2004. Genauere Information zur ANCOVA für pre-post Untersuchungen sind in @wan2021 und @wan2020 zu finden.
+
+
+
+## Blocked Designs
+
+
+```{r defs_aov_blocking}
+#source(filep('/resources/nice_format_helper_fcn.R'))
+# Datensatz für t-test
+set.seed(123)
+n <- 6
+df_dep <- tibble::tibble(
+  id = rep(paste0('P',1:n), each=2),
+  y = rep(sample(runif(n, 10,15)), each=2) +
+    rep(c(0,3), n) + rnorm(2*n),
+  condition = rep(c('A','B'), n) 
+)
+# Resting metabolic rate
+rmr <- readr::read_delim(
+  "subject;protocol;rate\n1;1;7131\n1;2;6846\n1;3;7095\n2;1;8062\n2;2;8573\n2;3;8685\n3;1;6921\n3;2;7287\n3;3;7132\n4;1;7249\n4;2;7554\n4;3;7471\n5;1;9551\n5;2;8866\n5;3;8840\n6;1;7046\n6;2;7681\n6;3;6939\n7;1;7715\n7;2;7535\n7;3;7831\n8;1;9862\n8;2;10087\n8;3;9711\n9;1;7812\n9;2;7708\n9;3;8179\n",
+  delim = ';', col_types = 'ddd'
+)
+rmr <- rmr |> dplyr::mutate(subject = paste0('P',subject),
+                             protocol = factor(protocol, levels=1:3,
+                                               labels=c('A','B','C')))
+```
+
+## Completely randomized block designs
+
+Nachdem wir CRD and die Verallgemeinerung die CRFD kennengelernt haben um den Einfluss von Variablen auf eine abhängige Variable für die wir uns interessieren zu untersuchen gab uns der Ansatz der ANCOVA eine Möglichkeit Varianz in der abhängigen Variablen mittels einer Kovariaten aus dem Modell rauszurechnen. Der Einfluss der Kovariaten ist für uns dabei per-se nicht von Interesse, sondern wir sehen die Kovariate vor allem als Möglichkeit an um Varianz zu kontrollieren. Diesen Ansatz werden in dem vorliegenden Kapitel weiter ausbauen und uns anschauen wie wir mittels sogenannter Blockfaktoren weitere Varianz aus der abhänigen Variable isolieren können. Dies hilft uns wieder dabei den Einfluss derjenigen unabhängigen Variablen für die wir uns primär interessieren genauer zu schätzen.
+
+Fangen wir mit einem Beispiel an, das zunächst einmal nichts mit sportlicher Leistung zu tun hat. In einem Experiment wollen wir vier verschiedene Backmischung für Brötchen hinsichtlich ihrer Eigenschaften untersuchen. Bezeichnen wir diese Backmischung mit $I, II, III$ und $IV$. Nun haben wir nur einen Ofen zur Verfügung und wir wollen in einem Backgang natürlich so viele Brötchen wie möglich backen. In den Ofen können wir vier Bleche gleichzeitig backen (siehe @fig-ed-crdb-oven). Wie sollten wir die Brötchen auf diese vier Backbleche verteilen? 
+
+```{r}
+#| fig-cap: "Untersuchung verschiedener Teigmischungen."
+#| label: fig-ed-crdb-oven
+#| fig-height: 2 
+
+include_graphics('pics/oven.png')
+```
+
+Wir könnten mit einer einfachen Randomisierung anfangen. Wir nummerieren die Plätze auf allen Backblechen der Reihe nach durch und weisen die Teigmischungen zufällig den Platznummern zu. Nun, da wir alle ständig Backsendungen schauen, wissen wir, dass die Höhe der Blechs im Ofen einen Einfluss auf die Temperatur hat. Darauf folgt, dass alle Brötchen die auf einem Blech angeordnet sind, alle wenn nicht der Gleiche dann doch einer sehr ähnliche Temperatur ausgesetzt sind. Dabei werden die Temperaturvariationen innerhalb eines Bleches geringer als zwischen den Blechen sein. Wenn nun der Fall eintritt, dass alle Brötchen der Teigmischung $I$ auf dem tiefsten Blech sind, alle Brötchen $II$ auf dem Zweitniedrigsten uns so weiter, dann bekommen wir ein Problem. Wenn wir Unterschiede zwischen den Backmischungen finden dann können wir nicht ausschließen das die Unterschiede auf die Bleche anstatt die Backmischungen zurück zu führen sind. Der Effekt des Blechs und der Effekt der Backmischung sind miteinander konfundiert (engl. confounder \index{confounder}). Letztendlich hat das Problem dadurch eine ähnliche Struktur wie wir das in der ANCOVA kennengelernt haben. Wir sind nicht an den Unterschieden zwischen den Blechen interessiert und wollen für deren Einfluss kontrollieren. Wie könnten wir in diesem Fall vorgehen? Eine direkte Möglichkeit ist, dass wir jeweils die gleich Anzahl an Backmischungen jedem Blech zuweisen. Danach weisen wir die Position der Backmischungen auf dem Blech dann wieder randomisiert. Die Bleche werden unter dieser Perspektive als Blöcke bezeichnet. Durch die nachfolgende Randomisierung erklärt sich auch der Begriff completely randomized block design (CRBD). 
+
+::: {#def-ed-crbd-block}
+## Blockdesign \index{Blockdesign}
+
+In einem statistischen Design, wir als ein Block eine Gruppe von experimentellen Einheiten bezeichnet, die sich hinsichtlich bestimmter Merkmale ähneln. Diese Merkmale können äußere Einflüsse sein, die die Ergebnisse des Experiments beeinflussen könnten.
+:::
+
+Das Ziel des Blockens ist es also, Einflussfaktoren, die nicht von Interesse sind, zu kontrollieren und so ähnlich wie bei der ANCOVA die Genauigkeit und Präzision des Experiments zu erhöhen. Durch das Blocken werden die Einheiten innerhalb eines Blocks homogenisiert, während Unterschiede zwischen den Blöcken kontrolliert und gemessen werden können. So können Blockeffekte isoliert und statistisch berücksichtigt werden. Zusammengefasst können wir die Varianz in der abhängigen Variable $\sigma_{Y}^2$ somit in vier verschiedene Komponenten unterteilen:
+
+1. Systematische Varianz auf Grund des Treatments
+2. Varianz auf Grund von **Kovariaten**
+3. Varianz auf Grund von **Blockeffekten**
+4. Unsystematische oder Residualvarianz $\epsilon$ 
+
+Umformuliert als Pseudogleichung erhalten wir:
+
+\begin{equation*}
+\sigma_{Y}^2 = \sigma_{\text{Effekt(e)}}^2 + \sigma_{\text{Kovariate}}^2 + \sigma_{\text{Block}}^2 + \sigma_{\epsilon}^2
+\end{equation*}
+
+## Der abhängige t-Test als Blockdesign
+
+Tatsächlich ist das Konzept eines Blockfaktors nichts Neues sondern wir haben Prinzip wahrscheinlich schon früher einmal im Zusammenhang mit dem abhängigen t-Test kennengelernt. Schauen wir uns ein hypothetisches Beispiel mit $N = 6$ Personen an, die wir unter zwei Konditionen $A$ und $B$ beobachtet haben. Der Datensatz ist in @fig-ed-crbd-ttest abgebildet.
+
+```{r}
+#| fig-cap: "Hypothetisches Experiment mit zwei Konditionen und $n = 6$"
+#| label: fig-ed-crbd-ttest
+
+ggplot(df_dep, aes(condition,y,group=id)) +
+  geom_point(size=4) +
+  geom_line(size=1.3) +
+  labs(x = 'Kondition', y = 'Messwert') +
+  geom_label(data = df_dep |> dplyr::filter(condition == 'A'),
+              aes(label = id), alpha = 0.8, nudge_x = -0.2, size = 2) +
+  scale_y_continuous(breaks=NULL, limits=c(5,20)) 
+```
+
+Standardmäßig würden wir dieses Design mit einem abhängigen t-Test analysieren. In `R` würde dies beispielsweise zu folgendem Code führen (Daten in `df_dep`).
+
+```{r}
+#| echo: true
+
+mod_ttest <- t.test(y ~ condition, data = df_dep, paired=T)
+mod_ttest
+```
+
+Wir sehen, dass wir ein statistisch signifikantes Ergebnis für den Unterschied zwischen den beiden Konditionen erhalten haben. Konzeptionell können wir die Personen als Blöcke ansehen. Wir betrachten jede Person unter beiden Konditionen. Dabei gehen wir davon aus, dass es Unterschiede zwischen den Personen gibt, die uns aber nicht wirklich interessieren. Dadurch das wir beide Konditionen in den gleichen Personen beobachten, können wir diese Unterschiede von dem Effekt der Konditionen isolieren. Hätten wir unterschiedliche Personen für die beiden Gruppen genommen, dann hätten wir zu dem potentiellen Unterschieden zwischen den Konditionen auch noch die Unterschiede zwischen den Personen. Dadurch, dass wir eine Blockstruktur nehmen sind wir also wieder in der Lage Varianzkomponenten zu isolieren.
+
+Schauen wir uns als nächstes an, ob wir den abhängigen t-Test auch in die Form eines linearen Modells bekommen. Wenn wir parallel zum Ansatz in der ANCOVA vorgehen, dann sehen wir Unterschiede zwischen den Personen als Störvariable respektive Kovariate an. D.h. wir möchten die Unterschiede zwischen den Personen modellieren. Eine direkte Möglichkeit ist daher die Personen `id` als eine nominale Variable zu identifizieren und Dummy-Variablen für die Personen in das Modell zu integrieren. Als `lm`-Modell formuliert erhalten wir den folgenden Code:
+
+```{r}
+#| echo: true
+
+mod_lm <- lm(y ~id + condition, df_dep)
+summary(mod_lm)$coefficients
+```
+
+Wir sehen, dass `P1` als Referenzstufe modelliert wurde und die $\beta$s für die `id` jeweils die Abweichung der Personen von `P1` darstellen. Als letzten Koeffizienten haben wir den Effekt der Kondition, bzw. den Unterschied zwischen von Kondition $B$ zu Kondition $A$. Wenn wir die Werte mit denjenigen im abhängigen t-Test vergleichen, dann sehen das exakt die gleichen Werte geschätzt wurden. Lediglich das Vorzeichen ist anders herum auf Grund der Wahl von `R` für die Referenzstufe. Schauen wir uns die Konfidenzintervalle für die $\beta$s an.
+
+```{r}
+#| echo: true
+
+confint(mod_lm)
+```
+
+Wieder erhalten wir exakt die gleichen Werte für den für uns relevanten Effekt der Kondition. Insgesamt sehen wir, dass wir wieder ein zunächst als getrennt behandeltes Verfahren, der abhängige t-Test, in das allgemeine lineare Modell integriert werden kann. Weiterhin kann der Ansatz Varianz in der abhängigen Variable mit Hilfe von Blockeffekten zu erklären auf direkte und uns schon bekannte Art und Weise in das Modell integriert werden. Wir gewinnen dadurch wiederum Flexibilität bei der Erstellung und Analyse von Experimenten. Letztendlich können wir, wie auch bei der ANCOVA, durch die geschickte Wahl von Blöcken, die Power unseres Untersuchungsdesigns erhöhen.
+
+Bezogen auf die Designstruktur stellen die einzelnen Personen die EUs. Die Randomisierung findet in diesem Fall auf der Ebene der Blöcke statt. Innerhalb jeder Person wir die Abfolge der Konditionen randomisiert.
+
+## Varianten von Blockdesigns
+
+Im Rahmen des Skripts unterscheiden wir drei grundsätzliche Designs. Führen wir aber zunächst einmal erst wieder etwas Terminologie ein:
+
+| B = Anzahl der Blöcke 
+| M = Anzahl der Messungen in einem Block (block size) 
+| K = Anzahl der Treatments 
+| n = Anzahl der Repetitionen
+
+Ausgehend auf dem Verhältnis von der Anzahl der Messungen in einem Block $M$ und der Anzahl der Treatments $K$ ergeben sich unter anderem die folgenden drei Blockdesigns (siehe @tbl-ed-crbd-overview}:
+
+- Randomized complete block design (RCBD) $M = K$ 
+- General complete block design (GCBD) $M = n \times K$ \index{General complete block design}
+- Incomplete block design (IBD) $M < K$ \index{Incomplete block design}
+
+### Layout 
+
+::: {#tbl-ed-crbd-overview layout-ncol=3}
++------+----+----+----+
+|B     | A1 | A2 | A3 |
++======+:==:+:==:+:==:+
+| I    | X  | X  | X  |
++------+----+----+----+
+| II   | X  | X  | X  |
++------+----+----+----+
+| III  | X  | X  | X  |
++------+----+----+----+
+
+: CRBD {#tbl-ed-crbd-crbd}
+
++------+----+----+-----+
+|B     | A1 | A2 | A3  |
++======+:==:+:==:+:===:+
+| I    | XX | XX | XX  |
++------+----+----+-----+
+| II   | XX | XX | XX  |
++------+----+----+-----+
+| III  | XX | XX | XX  |
++------+----+----+-----+
+
+: GCBD {#tbl-ed-crbd-gcbd}
+
++------+----+----+----+
+|B     | A1 | A2 | A3 |
++======+:==:+:==:+:==:+
+| I    | X  | X  |    |
++------+----+----+----+
+| II   | X  |    | X  |
++------+----+----+----+
+| III  |    | X  | X  |
++------+----+----+----+
+
+: IBD {#tbl-ed-crbd-ibd}
+
+Übersicht über verschiedene Blockdesigns (X: Beobachtung)
+:::
+
+Die Unterschiede zwischen den drei Designs beziehen sich hauptsächlich darauf wie oft das Treatment mit dem Block gekreuzt ist. Im CRBD haben wir pro Block jede Treatmentkondition genau einmal, während beim GCBD jede Treatmentkondition mehrmals pro Block beobachtet wird. Im Gegensatz dazu werden beim IBD nicht alle Treatmentkondition in jedem Block beobachtet.
+
+Beginnen wir mit einem CRBD.
+
+## Completely Randomized Block Design
+
+Beim Completely Randomized Block Design \index{Blockdesign!Randomized complete block design} wird jede Treatmentkondition genau einmal pro Block beobachtet. D.h. die Anzahl der Messungen pro Block $M$ sind gleich der Anzahl der Treatmentkonditionen $K$. Da die Blöcke vom Prinzip her genauso wie andere nominale Faktoren zu behandeln sind, entspricht das dazugehörige Modell einer zweifaktoriellen CRFD ohne Interaktionseffekte. Entsprechend erhalten wir ein Modell mit einem Blockfaktor $\theta_h$ mit $h = 1,2,\ldots,M$ und einem Effekt $\alpha_i, i=1,2,\ldots,K$ für die $K$ Treatmentkonditionen. Das entsprechende Modell können wir folgt formulieren (siehe Formel \eqref{eq-ed-crbd-crbd}):
+
+\begin{equation}
+Y_{hi} = \mu + \theta_h + \tau_i + \epsilon_{hi}
+\label{eq-ed-crbd-crbd}
+\end{equation}
+
+| $\mu$ = Gesamtmittelwert
+| $\theta_h$ = Blockeffekt der $h$-ten Stufe, $h = 1, \ldots, B$
+| $\tau_i$ = Faktoreffekt der $i$-ten Stufe, $i = 1, \ldots, K$
+| $e_{hi} \sim \mathcal{N}(0,\sigma^2)$, paarweise unabhängig
+
+Da wir nur eine Kombination von Treatmentfaktor und Blockfaktor haben, können wir keine Interaktionseffekte zwischen $\theta$ und $\alpha_i$ bestimmen, da diese mit den Residualfaktoren konfundiert sind. Daraus folgt, wir mit unserem Modellvergleichansatz das volle Modell mit beiden Faktoren mit einem reduzierten Modell mit nur den Blockfaktoren vergleichen, bzw. wenn es gewollt ist den Blockeffekt zu überprüfen entsprechend ein weiteres reduziertes Modell mit nur einen $y$-Achsenabschnitt.
+
+\begin{align*}
+Y_{hi} &= \mu + \theta_h + \tau_i + \epsilon_{hi} & \text{full} \\
+Y_{hi} &= \mu + \theta_h + \epsilon_{hi} & \text{reduced 1} \\
+Y_{hi} &= \mu + \epsilon_{hi}  & \text{reduced 2}
+\end{align*}
+
+
+Dementsprechend bezieht sich die Haupthypothese auf den Effekt des Treatmentfaktors.
+
+\begin{align*}
+H_0 &: \tau_1 = \tau_2 = \ldots = \tau_v = 0 \\
+H_1 &: \tau_i \neq \tau_j, i \neq j
+\end{align*}
+
+Wie immer können die Ergebnisse auch mittels einer ANOVA-Tabelle dokumentiert werden (siehe @tbl-ed-crbd-crbd}.
+
+$F$-Tabelle
+
+| Term | $df$ | $SS$ | $MS$ | Test |
+| --- | ----- | ----- | --- | -- |
+| Block | $B-1$ | $ss\theta$| $\frac{ss\theta}{B-1}$ | - |
+| Treatment | $K-1$ | $ssT$| $\frac{ssT}{K-1}$ | $\frac{msT}{msE}$ |
+| Error | $KB-B-K+1$ | $ssE$ | $\frac{ssE}{KB-B-K+1}$ |
+| Total | $KB-1$ | $sstot$|  |  |
+
+: Varianzanalyse beim CRBD {#tbl-ed-crbd-crbd}
+
+| $ss\theta = K\sum_h \bar{y}_{h.}^2-KB\bar{y}_{..}^2$ 
+| $ssT = B\sum_i \bar{y}_{.i}^2-KB\bar{y}_{..}^2$
+| $ssE = sstot - ssB - ssT$
+| $sstot = \sum_h\sum_i y_{hi}^2-KB\bar{y}_{..}^2$ 
+
+Schauen wir uns dazu ein Beispiel @dean1999 an.
+ 
+::: {#exm-ed-crbd-rmr}
+Bei $N = 9$ Patienten wurde der Ruheumsatz am Morgen in Abhängigkeit von drei verschiedenen Konditionen untersucht. Unter Kondition $A$ haben die Patienten im Krankhaus übernachtet und gefrühstückt, unter Kondition $B$ zu Hause geschlafen und im Krankenhaus gefrühstückt und unter Kondition $C$ beides zu Hause durchgeführt. Die Reihenfolge der Konditionen wurde zwischen den Patienten randomisiert. In @fig-ed-crbd-rmr sind die Rohdaten abgebildet.
+
+```{r}
+#| fig-cap: "Liniendiagramm der Ruheumsatzdaten am Morgen. A: Im Krankenhaus geschlafen und gefrühstück, B: zu Hause geschlafen und im Krankenhaus gefrühstückt, C: beides zu Hause durchgeführt. (rot: Mittelwert)"
+#| label: fig-ed-crbd-rmr
+
+rmr_m <- rmr |> group_by(protocol) |> summarize(rate = mean(rate)) |> 
+  mutate(subject = 'P10')
+ggplot(rmr, aes(protocol, rate)) + 
+  geom_point() +
+  geom_point(data = rmr_m,
+             color = 'red', size = 4) +
+  geom_line(data = rmr_m, aes(group = subject), color = 'red', linewidth=2) +
+  geom_line(aes(group = subject)) +
+  labs(x = 'Protocol', y = 'RMR') 
+```
+In @fig-ed-crbd-rmr ist kein klarer Trend zu erkennen, was bei $N=9$ auch nicht weiter verwunderlich ist. Dargestellt als ANOVA-Tabelle ergibt sich das folgende Ergebnis.
+
+```{r}
+lm(rate ~ subject + protocol, rmr) |> 
+  anova() |> 
+  broom::tidy() |> 
+  kable(
+    booktabs=TRUE,
+    col.names=c("Term","df","SS","MS","F","p-value"),
+    digits = 3)
+```
+D.h. wir finden keinen Einfluss des Treatments auf den Ruheumsatz basierend auf der vorliegenden Stichprobe.
+:::
+
+### CRBD in `R`
+
+Wir haben verschiedene Ansätze um die Analyse durchzuführen. Zunächst mittels Modelverlgeichen mit `lm()`
+
+```{r}
+#| echo: true
+
+mod_full <- lm(rate ~ subject + protocol, rmr)
+mod_reduced <- lm(rate ~ subject, rmr)
+anova(mod_reduced,mod_full)
+```
+
+Alternativ können wir auch wieder `aov()` verwenden.
+
+```{r}
+#| echo: true
+
+mod_aov_1 <- aov(rate ~ subject + protocol, data = rmr)
+summary(mod_aov_1)
+```
+
+Als weitere Alternative mit `aov()` und der Zusatzfunktion `Error()`
+
+```{r}
+#| echo: true
+
+mod_aov_2 <- aov(rate ~ protocol + Error(subject), data = rmr)
+summary(mod_aov_2)
+```
+
+Dies führt zu der Unterteilung der Effekte in zwei Strata wie sie bei Repeated Measures ANOVA verwendet werden. Einmal in die Zwischenblockeffekte die allerdings mangels Fehlerterm nicht analysisert werden und die Innerblockeffekte. Die Innerblockeffekte sind gleich dem in SPSS üblichen Ansatz mit Innersubjekteffekten.
+
+### Feste versus zufällige Effekte
+
+Für die weiteren Ausführung bei Blockeffekten müssen wir zunächst ein neues Konzept kennenlernen: den Unterschied zwischen festen und zufälligen Effekten. Wir beschränken uns zunächst auf nominale Faktoren die Verallgemeinerung folgt dann aber auf natürliche Weise. Bei einem festen Effekte sind wir im Rahmen der Untersuchung nur an denen im Experiment verwendeten Faktorstufen interessiert. D.h wir möchten keine  Rückschlüsse über Faktorstufen ziehen die über diejenigen im Experiment verwendeten Stufen hinaus gehen. Dies bedeutet auch, dass bei einer Wiederholung des Experiments die genau gleichen Stufen verwendet werden. Im Gegensatz zu festen Effekten werden die Stufen bei einem zufälligen Effekt als eine Stichprobe aus einer größeren Grundgesamtheit von Faktorstufen angesehen. In diesem Fall sind wir nicht an denen im Experiment konkrete beobachteten Faktorstufen interessiert, sondern wollen einen Rückschluss über die Grundgesamtheit des Faktorstufen ziehen.
+
+In Bezug auf das vorhergehende Beispiel lässt sich unter diesem Aspekt der Blockeffekt der Probanden betrachten. Wollen wir die beobachteten Effekte nur auf die in der Stichprobe vorkommenden Menge von Personen beziehen, dann werden die Blockeffekte (Personen) als feste Effekte interpretiert. Sehen wir dagegen, was in den meisten Fällen zutreffen wird, die Probanden als eine *Stichprobe* aus einer größeren Population von Probanden an, dann stellt der Personeneffekt der Blöcke einen Zufallseffekt dar.
+
+Eine weitere Interpretation von festen Effekten im Gegensatz zufälligen Effekten bezieht sich auf die Präzision der Variable. Kann eine Variable ohne Fehler gemessen werden kann, dann stellt Sie einen festen Effekt dar. Bezogen auf das Beispiel der Probandenstichprobe trifft diese Bedingung allerdings zu, wir können die Identität der Person perfekt bestimmen, trotzdem wird der Personeneffekt üblicherweise als Zufallseffekt interpretiert. Ein weiteres Beispiel könnten die Trainingsintensität bei einem RCT sein. Seien eine Kontrollgruppe und eine Interventionsgruppe gegeben. Die Trainingsintensität zeichnet wir in der Studie als zweimal 30 Minuten pro Woche definiert. Da die Trainingsintensität nur eine einzige Ausprägung hat, ist es nicht möglich auf eine mögliche Population von Trainingsintensität zurück zu schließen. D.h. die Studie kann nicht über die verabreichte Intensität hinaus generalisieren. Daher wird die Intensität als fester Effekt modelliert. Andererseits könnte aber auch eine Population von Trainingsintensitäten angenommen werden und Probanden bekommen randomisiert unterschiedliche Intensitäten verabreicht. Bei einer Wiederholung des Experiments würden dann nicht die gleichen Trainingsintensitäten verabreicht werdend und die Trainingsintensität könnte als Zufallseffekt modelliert werden. Tatsächlich gibt es immer wieder Grenzfälle bei denen nicht eindeutig klar ist, wie ein Effekt modelliert werden soll und beide Ansätze sind möglich bzw. plausibel.
+
+::: {#def-fixed-effects}
+### Feste Effekte
+
+Feste Effekte\index{Feste Effekte} (engl. fixed effects \index{fixed effects}) beziehen sich auf Variablen, deren Einflüsse bestimmter bekannter und interessierender Faktoren auf die abhängige Variable modellieren. Die Faktoren stammen aus einer endlichen Menge von möglichen Faktoren und die Effekte sind konstant für alle Beobachtungen. Bei einer Wiederholung des Experiments werden die gleichen Faktoren wiederverwendet und die spezifischen Stufen werden verwendet wiel sie von Interesse für die Studie sind. Feste Effekte erlauben keine Generalisierung über die verwendeten Stufen hinweg.
+:::
+
+::: {#def-random-effects}
+### Zufallseffekte
+
+Zufallseffekte\index{Zufallseffekte} (engl. random effects\index{random effects}) beziehen sich auf Variablen, deren Einflüsse als zufällig angesehen werden und die aus einer größeren Population von (meistens endlich vielen) möglichen Werten stammen. Die Population ist oft hypothetisch. Zufallseffekte erlauben es, die Variabilität zu modellieren, die durch zufälligen Unterschiede zwischen den Einheiten in der Studie eingeführt wird. Bei einer Wiederholung des Experiments kommen nicht die gleichen Stufen zum Einsatz. Zufallseffekte erlauben eine Generalisierung über die beobachteten Stufen hinaus.
+:::
+
+Eine weitere vereinfachte Arbeitsdefinition von [@casella2008,p.99, übersetzt] liest sich:
+
+::: {def-random-fixed-working}
+Ein Faktor ist ein fester Faktor, wenn alle interessierenden Faktorstufen im Experiment enthalten sind. Ein Faktor ist ein Zufallsfaktor, wenn nicht alle interessierenden Faktorstufen in den Versuch einbezogen werden und diejenigen, die einbezogen werden, als zufällig aus allen interessierenden Faktorstufen ausgewählt werden.
+:::
+
+Durch die Kombination von Modellen können nun verschiedene Arten von Modell identifziert werden: Modelle mit festen Effekten (engl. fixed effects model) \index{fixed effects model}, Modelle mit Zufallseffekten (engl. random effects model) \index{random effects model} und gemischte Modelle mit beiden Effekten (engl. mixed effects model) \index{mixed effects model} [@dean1999].
+
+### Effektstärken $\omega^2$ und $f$ beim CRBD
+
+\begin{align*}
+\omega^2 &= \frac{df_{\mathrm{effect}} \times (MS_{\mathrm{effect}} - MS_{\mathrm{error}})}{SS_{\mathrm{total}} + MS_{\mathrm{subjects}}} \\
+f^2 &=\frac{\omega^2}{1-\omega^2}
+\end{align*}
+
+\begin{table}[]
+\centering
+\caption{Einordnung}
+\begin{tabular}{lll}
+\toprule
+ & $f$ & $\omega^2$ \\
+\midrule
+ klein & 0.1 & 0.01  \\
+ mittel & 0.25 & 0.06 \\
+ groß & 0.40 & 0.14 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+### $\omega^2$ im Beispiel
+
+
+```{r}
+omega_sqr = 2 * (17947 - 77218) / (2889683 + 17974 + 77218 + 2889683)
+```
+
+$$
+\omega^2 = \frac{2 \times (17974 - 77219)}{\underbrace{23117462 + 35949 + 1235483}_{SS_{\mathrm{total}}} + 2889683} = `r round(omega_sqr,2)` \approx 0
+$$
+
+Effektstärke CRBD in `R`
+
+## General complete block design GCBD
+
+```{r}
+include_graphics('pics/golf_driver_1.jpg')
+```
+
+```{r}
+#| tbl-cap: "adaptiert nach (Lawson, 2014, S. 140)"
+data('rcb', package='daewr')
+golf <- rcb |> mutate(id = paste0('G',id),
+                      teehgt = factor(teehgt, levels=1:3,
+                                      labels = c('low','normal','high'))) |> 
+  as_tibble()
+with(golf, table(id, teehgt))[-c(7:9),] |> kable(booktabs = T)
+```
+
+### Model
+
+\begin{equation}
+y_{hij} = \mu + \theta_{h} + \tau_i + (\theta\tau)_{hi} + \epsilon_{hij}
+\end{equation}
+
+Abfolge der Abschlaghöhen ist randomisiert innerhalb eines Golfers (Blocks)
+
+| B = 9 Golfer 
+| M = 5 Repetitions (block size) 
+| K = 3 different factor levels
+
+### Analyse GCBD in `R`
+
+```{r}
+#| echo: true
+
+mod_gcbd <- aov(cdistance ~ teehgt + Error(id/teehgt), golf)
+summary(mod_gcbd)
+```
+
+### Mehrfachvergleiche in CRBD
+
+Allgemein Kontraste
+
+\begin{equation}
+\hat{\psi} = \sum_{i=1}^Kc_i \hat{\tau_i} = \sum_{i=1}^K \bar{Y}_{.i}
+\end{equation}
+
+und Standardfehler 
+
+\begin{equation*}
+s_{\psi} = MSE\sum_{i=1}^K c_i^2/B
+\end{equation*}
+
+
+Kritische Werte $w$
+\begin{align*}
+w_{\text{Bonferroni}} &= t_{KV-B-K+1,\alpha/(2m)} \\
+w_{\text{Scheffé}} &= \sqrt{(K-1)F_{K-1,KB-B-K+1,\alpha}} \\
+w_{\text{Tukey}} &= q_{K,BV-B-V+1,\alpha}/\sqrt{2} \\
+\end{align*}
+
+### z.B. Paarvergleiche Tukey
+
+$$
+(\bar{y}_{.i} - \bar{y}_{.j}) \pm w_T \sqrt{MS_{\mathrm{error}}\times2/b}
+$$
+
+
+$w_T = q_{\alpha/\sqrt{2},v, bv-b-v+1}$ = Quantile der Studentized Range Distribution. In `R` mit `qtukey(alpha/sqrt(2), v, b*v-b-b+1)`.
+
+### Mehrfachvergleiche in `R`
+
+```{r}
+#| echo: true
+#| eval: false
+
+y_bars <- emmeans::emmeans(mod_aov_1, ~protocol)
+pairs(y_bars, infer=T)
+```
+```{r}
+y_bars <- emmeans::emmeans(mod_aov_1, ~protocol)
+pairs(y_bars, infer=c(T,T)) %>% as_tibble() %>% 
+  knitr::kable(booktabs = T, digits=2,
+               caption="Post-hoc Ergebnisse") %>% 
+  kableExtra::footnote(general="Tukey adjusted at $\\\\alpha=0.95$",
+                       escape=F)
+```
+
+
+### Bestimung der Anzahl der Blöcke a-priori 
+
+Direkt über den $F$-Test per trial-and-error
+
+Nichtzentralitätsparameter $\lambda$
+\begin{equation*}
+\lambda = \frac{B}{\sigma^2}\sum_{i=1}^K \tau_i^2
+\end{equation*}
+
+| $\text{df}_1 = K - 1$
+| $\text{df}_2 = (B-1)(K-1)$
+| $\alpha$
+
+### Beispiel RMR
+```{r}
+K <- 3
+alpha <- 0.05
+css <- 35949
+MSE <- 77217.7
+rmr_pow <- tibble(
+  B = seq(20,24,1),
+  df_1 = K - 1,
+  df_2 = (B-1)*(K-1),
+  lambda = B/MSE*css,
+  q_H0 = qf(1-alpha, df_1, df_2),
+  p_H1 = 1-pf(q_H0, df_1, df_2, lambda)
+)
+```
+
+| $\hat{\sigma}^2 = `r round(MSE,2)`$
+| $\sum_{i=1}^K \tau_i^2 = `r round(css, 2)`$
+| $df_1 = K-1 = 3$
+| $df_2 = (B-1)(K-1)$ 
+
+```{r}
+#| tbl-cap: "Powertabelle"
+
+rmr_pow |> kable(booktabs=T, digits=2, linesep='',
+                 col.names=c('B','$df_1$','$df_2$','$\\lambda$',
+                             '$q_{H_0}$', 'power'),
+                 escape=F)
+```
+
+## Balanced incomplete block design (IBD)
+
+:::: {.columns}
+::: {.column}
+| $K$ = Anzahl der Faktorstufen
+| $B$ = Anzahl der Blöcke
+| $k$ = Größe der Blöcke 
+| $r$ = Anzahl der Replikationen
+
+Beim IBD $k < K$.
+:::
+::: {.column}
++------+----+----+----+
+|B     | A1 | A2 | A3 |
++======+:==:+:==:+:==:+
+| I    | X  | X  |    |
++------+----+----+----+
+| II   | X  |    | X  |
++------+----+----+----+
+| III  |    | X  | X  |
++------+----+----+----+
+
+: IBD
+:::
+::::
+
+### Beispiel incomplete block design mit $B=8,k=3,K=8,r=3$
+
+```{r}
+#| label: bibd_01
+#| tbl-cap: "Beispiel IBD" 
+
+de_1 <- tibble(
+  Block = as.character(as.roman(1:8)),
+  s_1 = 1:8,
+  s_2 = c(3:8,1:2),
+  s_3 = c(8,1:7)
+)
+de_1 |> knitr::kable(
+  booktabs = TRUE,
+  col.names = c('Block', '', '', ''),
+  linesep = '',
+  label = 'bibd_01',
+)
+```
+
+### Welche Paarvergleiche können geschätzt werden?
+
+:::: {.columns}
+::: {.column}
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \tikzstyle{every node} = [circle, fill=gray!30]
+        \node (a) at (0, 0) {1};
+        \node (b) at (1, 1) {2};
+        \node (c) at (2, 0) {3};
+        \node (d) at (0,-1) {6};
+        \node (e) at (1,-2) {5};
+        \node (f) at (2,-1) {4};
+        \foreach \from/\to in {a/b, b/c, c/a, d/e, e/f, f/d}
+            \draw (\from) -- (\to);
+    \end{tikzpicture}
+    \caption{Disconnected design}
+    \label{fig:network_01}
+\end{figure}
+:::
+::: {.column}
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \tikzstyle{every node} = [circle, fill=gray!30]
+        \node (a) at (0, 0) {1};
+        \node (b) at (1, 1) {2};
+        \node (c) at (2, 0) {3};
+        \node (d) at (0,-1) {6};
+        \node (e) at (1,-2) {5};
+        \node (f) at (2,-1) {4};
+        \foreach \from/\to in {a/b, b/c, c/a, d/e, e/f, f/d,
+        a/d, a/e, e/f, b/d, b/e, b/f, c/d, c/e, c/f}
+            \draw (\from) -- (\to);
+    \end{tikzpicture}
+    \caption{Connected design}
+    \label{fig:network_02}
+\end{figure}
+:::
+::::
+
+### Balanced incomplete block design (BIBD)
+
+\begin{align*}
+B &\geq K \\
+Kr &= Bk \\
+\lambda(K-1) &= r(k-1)
+\end{align*}
+
+^[$\lambda$ =  Anzahl der paarweisen Vergleiche der Stufen. Für alle gleich!]
+
+- Alle paarweisen Vergleiche haben den gleichen Standardfehler
+- Power für die Detektion von Paarunterschieden ist für alle Paare gleich
+
+### Design erstellen mittels Optimierung
+
+```{r}
+#| echo: true
+K <- 6
+B <- 8 
+k <- 3
+bib_des <- AlgDesign::optBlock(~.,
+                               withinData = factor(1:K),
+                               blocksize = rep(k,B))
+```
+
+Alternativen: `ibd`, `agricolae`
+
+
+```{r}
+#| tbl-cap: "Beispiel IBD, $K=6,B=8,k=3$"
+
+des_02 <- t(table(bib_des$rows, rep(1:B,each=3)))
+row.names(des_02) <- as.character(as.roman(1:B))
+des_02 |> knitr::kable(
+  booktabs = TRUE,
+  col.names = LETTERS[1:K],
+  linesep=''
+)
+```
+
+Modell
+
+\begin{gather*}
+Y_{hi} = \mu + \theta_h + \tau_i + \epsilon_{hi} \\
+\epsilon_{hi} \sim \mathcal{N}(0,\sigma^2) \\
+h = i, \ldots, b; i = 1,\ldots,t; (h,i) \text{ in the design}
+\end{gather*}
+
+Achtung - Treatmentmittelwerte sind biased
+
+\begin{equation*}
+E[\tau_i - \tau_j] \neq \bar{Y}_{.i} - \bar{Y}_{.j}
+\end{equation*}
+
+```{r}
+#| tbl-cap: "Beispiel der Vermischung von Block- und Treatmenteffekten, $\\Delta_{B-A}=2, \\Delta_{C-A}=3, \\Delta_{D-A}=5$"
+
+foo <- function(x) mean(x, na.rm=T)
+mat <- addmargins(matrix(
+  c(25,27,NA,NA,
+    10,NA,13,NA,
+    NA,35,36,NA,
+    NA,NA,10,12),byrow=T, nrow=4, ncol=4
+),1:2, foo, quiet=T) 
+rownames(mat) <- c(as.character(as.roman(1:4)),"$\\bar{Y}_{.i}$")
+knitr::kable(mat,
+  booktabs=T,
+  col.names=c(LETTERS[1:4],"$\\bar{Y}_{h.}$"),
+  linesep="",
+  digits=1,
+  escape=F
+)
+```
+
+### Beispiel IBD-Daten
+
+```{r}
+#| tbl-cap: "Taste Experiment adaptiert nach Lawson (2015) von Moskowitz (1988). Werte sind scores zum Geschmack verschiedener Rezepte."
+
+taste <- readr::read_delim("id;recipe;score\n1;A;5\n2;A;7\n3;A;5\n4;B;6\n5;B;6\n6;C;8\n7;A;6\n8;A;5\n9;A;4\n10;B;7\n11;B;6\n12;C;7\n1;B;5\n2;C;6\n3;D;4\n4;C;7\n5;D;4\n6;D;6\n7;B;7\n8;C;8\n9;D;5\n10;C;7\n11;D;5\n12;D;4\n", delim=';')
+taste <- taste |> dplyr::mutate(id = factor(id))
+
+taste |> tidyr::pivot_wider(id, names_from=recipe, values_from=score) |> 
+  knitr::kable(
+    booktabs=T,
+    col.names=c("Person", "A", "B", "C", "D"),
+    linesep = ''
+  )
+```
+
+Beispiel - Modellfit mit `lm()`
+
+```{r}
+#| echo: true
+#| eval: false
+
+mod <- lm(score ~ id + recipe, data = taste)
+anova(mod) 
+```
+```{r}
+#| tbl-cap: "ANOVA der Geschmacksdaten" 
+mod <- lm(score ~ id + recipe, data = taste)
+anova(mod) |> broom::tidy() |> 
+  knitr::kable(
+    booktabs = TRUE,
+    linesep = '',
+    col.names = c('Term', 'df', 'SSQ', 'MSQ', 'F-Wert', 'p-Wert'),
+    digits = 3,
+  )
+```
+
+Beispiel - Mehrfachvergleiche 
+
+```{r, echo=T}
+emmeans::emmeans(mod, pairwise ~ recipe)
+```
+
+
+## Zum Nachlesen
+
+@pos_blocking
+
+Feste Effekte und Zufallseffekte @searle1992
+
+
+## Split-Plot Designs
+
+## Repeated Measures Designs
+
+## Cross-Over Designs

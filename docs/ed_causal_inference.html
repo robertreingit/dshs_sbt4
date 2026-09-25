@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>10&nbsp; Kausale Inferenz – Skriptum - SBT4 Quantitatitve Methoden</title>
+<title>12&nbsp; Kausale Inferenz – Skriptum - SBT4 Quantitatitve Methoden</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -36,8 +36,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./ed_reliability.html" rel="next">
-<link href="./ed_basics.html" rel="prev">
+<link href="./references.html" rel="next">
+<link href="./ed_types.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -101,7 +101,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ed_title.html">Experimentelles Design</a></li><li class="breadcrumb-item"><a href="./ed_causal_inference.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Kausale Inferenz</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ed_title.html">Experimentelles Design</a></li><li class="breadcrumb-item"><a href="./ed_causal_inference.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Kausale Inferenz</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Suchen" onclick="window.quartoOpenSearch();">
@@ -225,31 +225,25 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./ed_basics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Einführung</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./ed_causal_inference.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Kausale Inferenz</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Grundlagen</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./ed_reliability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Messfehler und Reliabilität</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Messfehler und Reliabilität</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ed_factorial.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Faktorielle Untersuchungsdesigns</span></span></a>
+  <a href="./ed_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Experimentelle Designs</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ed_misc.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Weitere Untersuchungsdesigns</span></span></a>
+  <a href="./ed_causal_inference.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Kausale Inferenz</span></span></a>
   </div>
 </li>
       </ul>
@@ -281,17 +275,17 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Inhaltsverzeichnis</h2>
    
   <ul>
-  <li><a href="#experimentelle-untersuchungen" id="toc-experimentelle-untersuchungen" class="nav-link active" data-scroll-target="#experimentelle-untersuchungen"><span class="header-section-number">10.1</span> Experimentelle Untersuchungen</a></li>
-  <li><a href="#beobachtungsstudien" id="toc-beobachtungsstudien" class="nav-link" data-scroll-target="#beobachtungsstudien"><span class="header-section-number">10.2</span> Beobachtungsstudien</a></li>
+  <li><a href="#experimentelle-untersuchungen" id="toc-experimentelle-untersuchungen" class="nav-link active" data-scroll-target="#experimentelle-untersuchungen"><span class="header-section-number">12.1</span> Experimentelle Untersuchungen</a></li>
+  <li><a href="#beobachtungsstudien" id="toc-beobachtungsstudien" class="nav-link" data-scroll-target="#beobachtungsstudien"><span class="header-section-number">12.2</span> Beobachtungsstudien</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ed_title.html">Experimentelles Design</a></li><li class="breadcrumb-item"><a href="./ed_causal_inference.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Kausale Inferenz</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ed_title.html">Experimentelles Design</a></li><li class="breadcrumb-item"><a href="./ed_causal_inference.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Kausale Inferenz</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Kausale Inferenz</span></h1>
+<h1 class="title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Kausale Inferenz</span></h1>
 </div>
 
 
@@ -308,11 +302,11 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="experimentelle-untersuchungen" class="level2" data-number="10.1">
-<h2 data-number="10.1" class="anchored" data-anchor-id="experimentelle-untersuchungen"><span class="header-section-number">10.1</span> Experimentelle Untersuchungen</h2>
+<section id="experimentelle-untersuchungen" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="experimentelle-untersuchungen"><span class="header-section-number">12.1</span> Experimentelle Untersuchungen</h2>
 </section>
-<section id="beobachtungsstudien" class="level2" data-number="10.2">
-<h2 data-number="10.2" class="anchored" data-anchor-id="beobachtungsstudien"><span class="header-section-number">10.2</span> Beobachtungsstudien</h2>
+<section id="beobachtungsstudien" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="beobachtungsstudien"><span class="header-section-number">12.2</span> Beobachtungsstudien</h2>
 
 
 </section>
@@ -720,13 +714,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./ed_basics.html" class="pagination-link" aria-label="Einführung">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Einführung</span></span>
+      <a href="./ed_types.html" class="pagination-link" aria-label="Experimentelle Designs">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Experimentelle Designs</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./ed_reliability.html" class="pagination-link" aria-label="Messfehler und Reliabilität">
-        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Messfehler und Reliabilität</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./references.html" class="pagination-link" aria-label="Literatur">
+        <span class="nav-page-text">Literatur</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

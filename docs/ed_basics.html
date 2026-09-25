@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>9&nbsp; Einführung – Skriptum - SBT4 Quantitatitve Methoden</title>
+<title>9&nbsp; Grundlagen – Skriptum - SBT4 Quantitatitve Methoden</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -55,7 +55,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./ed_causal_inference.html" rel="next">
+<link href="./ed_reliability.html" rel="next">
 <link href="./ed_title.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -149,7 +149,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ed_title.html">Experimentelles Design</a></li><li class="breadcrumb-item"><a href="./ed_basics.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Einführung</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ed_title.html">Experimentelles Design</a></li><li class="breadcrumb-item"><a href="./ed_basics.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Grundlagen</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Suchen" onclick="window.quartoOpenSearch();">
@@ -273,31 +273,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./ed_basics.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Einführung</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./ed_causal_inference.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Kausale Inferenz</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Grundlagen</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./ed_reliability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Messfehler und Reliabilität</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Messfehler und Reliabilität</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ed_factorial.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Faktorielle Untersuchungsdesigns</span></span></a>
+  <a href="./ed_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Experimentelle Designs</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ed_misc.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Weitere Untersuchungsdesigns</span></span></a>
+  <a href="./ed_causal_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Kausale Inferenz</span></span></a>
   </div>
 </li>
       </ul>
@@ -335,16 +329,15 @@ window.Quarto = {
   <li><a href="#beispiele" id="toc-beispiele" class="nav-link" data-scroll-target="#beispiele"><span class="header-section-number">9.2.1</span> Beispiele</a></li>
   </ul></li>
   <li><a href="#implikationen" id="toc-implikationen" class="nav-link" data-scroll-target="#implikationen"><span class="header-section-number">9.3</span> Implikationen</a></li>
-  <li><a href="#übersicht-über-verschiedene-designs" id="toc-übersicht-über-verschiedene-designs" class="nav-link" data-scroll-target="#übersicht-über-verschiedene-designs"><span class="header-section-number">9.4</span> Übersicht über verschiedene Designs</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ed_title.html">Experimentelles Design</a></li><li class="breadcrumb-item"><a href="./ed_basics.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Einführung</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ed_title.html">Experimentelles Design</a></li><li class="breadcrumb-item"><a href="./ed_basics.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Grundlagen</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Einführung</span></h1>
+<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Grundlagen</span></h1>
 </div>
 
 
@@ -361,125 +354,19 @@ window.Quarto = {
 </header>
 
 
-<p>Im Folgenden beschäftigen wir uns mit experimentellen Design. D.h. wir untersuchen wie wir ein Experiment aus statistischer Sicht erstellen sollten um die Wahrscheinlichkeit einen bestimmten Effekt zu beobachten möglichst Effizient zu erhöhen. Eine zentrale Größe wird dabei immer wieder der Standardfehler <span class="math inline">\(\sigma_e\)</span> der jeweiligen Statistik spielen die wählen um einen bestimmten Effekt zu untersuchen. Daher fangen wir erst einmal mit einem einfachen Beispiel an.</p>
+<p>Im folgenden Abschnitt beschäftigen wir uns mit experimentellen Design. Dazu gehört eine Betrachtung wie beobachtete Effekte überhaupt auf Ursachen zurück geführt werden können und welche Möglichkeiten in Form von verschiedenen Experimentellen Designs zur Verfügung stehen, gewünschte Effekte möglichst effektiv zu identifizieren. D.h. es geht unter anderem darum, wie ein Experiment aus statistischer Sicht so konzipiert werden kann, um die Wahrscheinlichkeit einen bestimmten Effekt zu beobachten möglichst groß zu machen. Dazu schauen wir uns zunächst ein einfaches Beispiel an. Eine zentrale Größe wird dabei immer wieder der Standardfehler <span class="math inline">\(\sigma_e\)</span> spielen.</p>
 <section id="zuteilung-der-stichprobengrößen-in-zwei-gruppen" class="level2" data-number="9.1">
 <h2 data-number="9.1" class="anchored" data-anchor-id="zuteilung-der-stichprobengrößen-in-zwei-gruppen"><span class="header-section-number">9.1</span> Zuteilung der Stichprobengrößen in zwei Gruppen</h2>
-<p>Die folgenden Beispiele sind alle aus <span class="citation" data-cites="goos2011">Goos und Jones (<a href="references.html#ref-goos2011" role="doc-biblioref">2011</a>)</span> entnommen. Wir möchten Mittelwertsunterschied zwischen zwei Gruppen, Gruppe <span class="math inline">\(1\)</span> und Gruppe <span class="math inline">\(2\)</span>, untersuchen. In Gruppe <span class="math inline">\(1\)</span> haben wir eine Stichprobengröße von <span class="math inline">\(n_1\)</span> und entsprechend eine Stichprobegröße <span class="math inline">\(n_2\)</span> in Gruppe <span class="math inline">\(2\)</span>.</p>
-<p>Um den Unterschied zwischen den beiden Gruppenmittelwerten zu berechnen, verwenden wir den unspektakulär:</p>
-<p><span class="math display">\[\begin{equation}
+<p>Das folgenden Beispiel ist aus <span class="citation" data-cites="goos2011">Goos und Jones (<a href="references.html#ref-goos2011" role="doc-biblioref">2011</a>)</span> entnommen. Es soll ein Mittelwertsunterschied zwischen zwei Gruppen, Gruppe <span class="math inline">\(1\)</span> und Gruppe <span class="math inline">\(2\)</span>, untersucht werden. In Gruppe <span class="math inline">\(1\)</span> haben wir eine Stichprobengröße von <span class="math inline">\(n_1\)</span> und entsprechend eine Stichprobegröße <span class="math inline">\(n_2\)</span> in Gruppe <span class="math inline">\(2\)</span>. Wir interessieren uns nun für den Unterschied <span class="math inline">\(D\)</span> zwischen den beiden Gruppen.</p>
+<p><span class="math display">\[
 D = \bar{X}_1 - \bar{X}_2
-\end{equation}\]</span></p>
-<p>Der Unterschied <span class="math inline">\(D\)</span> für sich ist noch relativ wenig informativ, da er mit den Einheiten und vor allem vor dem Hintergrund der Streuung der Werte zu betrachten ist. D.h. wir benötigen auch ein Maß um die Unsicherheit <span class="math inline">\(\widehat{=}\)</span> Streuung um einen gegebenen Unterschied zu bewerten. Den Standardfehler können wir mit den uns bekannten Rechenregeln für die Varianz relativ einfach herleiten und erhalten:</p>
-<p><span class="math display">\[\begin{equation}
+\]</span></p>
+<p>Der Unterschied <span class="math inline">\(D\)</span> alleine für sich ist noch relativ wenig informativ, da er mit den Einheiten und vor allem vor dem Hintergrund der <em>Streuung</em> der Werte zu betrachten ist. D.h. wir benötigen auch ein Maß für die Unsicherheit von <span class="math inline">\(D\)</span>. Dies ist wie bereits mehrmals besprochen der Standardfehler. Wenn wir eine lineares Modell ansetzen würden und Stift-und-Papier zücken würden, dann würde sich zeigen, dass der Standardfehler<span class="math inline">\(\sigma^(D)\)</span> von <span class="math inline">\(D\)</span> die folgende Form hat:</p>
+<p><span class="math display">\[
 \sigma^2(D) = \frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2}
-\end{equation}\]</span></p>
-<p>Um die Wahrscheinlichkeit zu erhöhen einen relevanten Unterschied <span class="math inline">\(D\)</span> zwischen den Gruppen zu finden wählen wir nun ein Design des Experiments, dass die Varianz <span class="math inline">\(\sigma^2(D)\)</span> bzw. den Standardfehler <span class="math inline">\(\sigma_e(D)\)</span> von <span class="math inline">\(D\)</span> möglichst klein werden lässt. Denn, umso kleiner der Standardfehler umso geringer sind die Streuungen der Stichprobenverteilung und umso geringer unsere Unsicherheit.</p>
-<p>Schauen wir uns an, was dies in einem konkreten Fall bedeutet. Gehen wir, der Übersichtlichkeit halber, von einer Gesamtstichprobengröße <span class="math inline">\(N = 12\)</span> aus mit Standardabweichungen in beiden Population von <span class="math inline">\(\sigma^2_1 = \sigma^2_2 = \sigma^2 = 1\)</span>. D.h. wir nehmen an, dass in beiden Stichproben die gleiche Streuung vorliegt.</p>
-<div class="cell">
-<div id="tbl-ed-basics-sample-01" class="cell quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ed-basics-sample-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Tabelle&nbsp;9.1: Abhängigkeit der Varianz und des Standardfehler von <span class="math inline">\(D\)</span> mit der Stichprobenverteilung bei gleicher Varianz
-</figcaption>
-<div aria-describedby="tbl-ed-basics-sample-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output-display">
-<table class="cell caption-top table table-sm table-striped small">
-<thead>
-<tr class="header">
-<th style="text-align: right;"><span class="math inline">\(n_1\)</span></th>
-<th style="text-align: right;"><span class="math inline">\(n_2\)</span></th>
-<th style="text-align: right;"><span class="math inline">\(\sigma^2(D)\)</span></th>
-<th style="text-align: right;"><span class="math inline">\(\sigma_e(D)\)</span></th>
-<th style="text-align: right;">Effizienz</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">11</td>
-<td style="text-align: right;">1.09</td>
-<td style="text-align: right;">1.04</td>
-<td style="text-align: right;">0.31</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">0.60</td>
-<td style="text-align: right;">0.77</td>
-<td style="text-align: right;">0.56</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">9</td>
-<td style="text-align: right;">0.44</td>
-<td style="text-align: right;">0.67</td>
-<td style="text-align: right;">0.75</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">0.38</td>
-<td style="text-align: right;">0.61</td>
-<td style="text-align: right;">0.89</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">0.34</td>
-<td style="text-align: right;">0.59</td>
-<td style="text-align: right;">0.97</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">0.33</td>
-<td style="text-align: right;">0.58</td>
-<td style="text-align: right;">1.00</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">0.34</td>
-<td style="text-align: right;">0.59</td>
-<td style="text-align: right;">0.97</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">0.38</td>
-<td style="text-align: right;">0.61</td>
-<td style="text-align: right;">0.89</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">9</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">0.44</td>
-<td style="text-align: right;">0.67</td>
-<td style="text-align: right;">0.75</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">0.60</td>
-<td style="text-align: right;">0.77</td>
-<td style="text-align: right;">0.56</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">11</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1.09</td>
-<td style="text-align: right;">1.04</td>
-<td style="text-align: right;">0.31</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</figure>
-</div>
-</div>
-<p>In <a href="#tbl-ed-basics-sample-01" class="quarto-xref">Tabelle&nbsp;<span>9.1</span></a> sind die Varianz <span class="math inline">\(\sigma^2(D)\)</span> und der Standardfehler <span class="math inline">\(\sigma_e(D)\)</span> gegen die Stichprobenverteilung abgetragen. Wir können sehen, dass bei gleicher Stichprobenanzahl in beiden Gruppen die Varianz und somit auch der Standardfehler den kleinsten Wert annehmen. In der fünften Spalte von <a href="#tbl-ed-basics-sample-01" class="quarto-xref">Tabelle&nbsp;<span>9.1</span></a> ist ein Wert Effizient eingetragen. Dieser Wert berechnet sich aus dem Verhältnis der kleinstmöglichen Varianz zur jeweiligen Varianz. Wir können an diesem Wert abschätzen, das ein Design bei dem in einer der Gruppen nur eine einzige Person ist, die Effizienz nur noch ein Drittel dessen ist, was bei einer gleichmäßigen Stichprobenverteilung zu errreichen ist. D.h. so weit ist die übliche Herangehensweise, beide Gruppen möglichst gleichgroß zu gestalten vollkommmen sinnvoll.</p>
-<p>Schauen wir uns als Nächstes an, wie das aussieht wenn die Stichprobengröße <span class="math inline">\(N\)</span> anwächst. In <a href="#fig-ed-basics-sample-01" class="quarto-xref">Abbildung&nbsp;<span>9.1</span></a> ist der Standardfehler <span class="math inline">\(\sigma_e(D)\)</span> gegen verschiedene Zuteilungen der Stichproben in die beiden Gruppen für verschiedene Stichprobengrößen abgebildet.</p>
+\]</span></p>
+<p>Sei nun der Unterschied <span class="math inline">\(D\)</span> gegeben. Zum Beispiel wollen wir eine Verbesserung in der Lebensqualität betrachten und dann wäre eine Verbesserung von einer Einheit als relevant zu betrachten. Um nun die Wahrscheinlichkeit zu erhöhen einen relevanten Unterschied <span class="math inline">\(D\)</span> zwischen den beiden Gruppen zu finden, wählen wir nun ein experimentelles Design, dass die Varianz <span class="math inline">\(\sigma^2(D)\)</span> bzw. den Standardfehler <span class="math inline">\(\sigma_e(D)\)</span> von <span class="math inline">\(D\)</span> möglichst klein werden lässt. Umso kleiner der Standardfehler umso geringer sind die Streuungen der Stichprobenverteilung und umso geringer unsere Unsicherheit.</p>
+<p>Seien wir in unseren Ressourcen beschränkt und wir haben ein <em>Budget</em>, dass es uns erlaubt nur insgesamt <span class="math inline">\(N = 12\)</span> Personen in unser <em>Experiment</em> einzuschließen. Eine weitere Vereinfachung sei, dass die Standardabweichungen in beiden Population gleich sind, also <span class="math inline">\(\sigma^2_1 = \sigma^2_2 = \sigma^2 = 1\)</span>. Die zentrale Frage ist nun: <strong>Wie können wird diese <span class="math inline">\(N = 12\)</span> Personen auf die beiden Gruppen verteilen, um den Standardfehler möglichst klein zu halten?</strong> In <a href="#fig-ed-basics-sample-01" class="quarto-xref">Abbildung&nbsp;<span>9.1</span></a> sind die Varianz <span class="math inline">\(\sigma^2(D)\)</span> und der Standardfehler <span class="math inline">\(\sigma_e(D)\)</span> gegen die möglichen Verteilungen der Probanden abgetragen.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-ed-basics-sample-01" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -488,231 +375,35 @@ Tabelle&nbsp;9.1: Abhängigkeit der Varianz und des Standardfehler von <span cla
 <img src="ed_basics_files/figure-html/fig-ed-basics-sample-01-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ed-basics-sample-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Abbildung&nbsp;9.1: Zusammenhang zwischen den Standardfehler und Verteilung der Stichproben in die Gruppen für verschiedene Stichprobengrößen
+Abbildung&nbsp;9.1: Abhängigkeit des Standardfehlers von <span class="math inline">\(D\)</span> mit der Stichprobenverteilung bei gleicher Varianz
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>In <a href="#fig-ed-basics-sample-01" class="quarto-xref">Abbildung&nbsp;<span>9.1</span></a> ist zu sehen, das das bei gleichen Varianzen die gleichmäßige Verteilung der Stichprobe in die beiden Gruppen immer diejenige mit dem kleinsten Standardfehler ist. Der Standardfehler nimmt natürlich mit der Größe der Stichprobe ab. Allerdings nimmt auch die Größe der Verschlechterung bei ungleicher Verteilung mit der Größe der Stichprobe ab. Daher, wenn wir eine große Stichprobe haben, dann ist die gleichmäßige Verteilung der Stichproben weniger wichtig als bei kleinen Stichprobengrößen.</p>
-<p>Schauen wir uns daher als nächsten Fall an, was passiert wenn die Varianzen in den beiden Gruppen nicht mehr gleich sind. Sei zum Beispiel <span class="math inline">\(\sigma^2 = 1\)</span> und <span class="math inline">\(\sigma^2 = 9\)</span>. Also ein recht extremer Unterschied zwischen den beiden Gruppen.</p>
+<p>Wir können sehen, dass bei gleicher Stichprobenanzahl in beiden Gruppen der Standardfehler den kleinsten Wert annimmt. D.h. bei gleicher Varianz ist die übliche Herangehensweise, beide Gruppen möglichst gleichgroß zu gestalten sinnvoll, aber nicht zwingend. Schauen wir uns daher als nächsten Fall an, was passiert wenn die Varianzen in den beiden Gruppen nicht mehr gleich sind. Sei zum Beispiel <span class="math inline">\(\sigma^2 = 1\)</span> und <span class="math inline">\(\sigma^2 = 9\)</span>. Also ein recht extremer Unterschied zwischen den beiden Gruppen. In <a href="#fig-ed-basics-sample-02" class="quarto-xref">Abbildung&nbsp;<span>9.2</span></a> sind wieder die verschiedenen Werte <span class="math inline">\(\sigma_e(D)\)</span> gegen die Gruppengröße von Gruppe 1 abgetragen.</p>
 <div class="cell">
-<div id="tbl-ed-basics-sample-02" class="cell quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ed-basics-sample-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Tabelle&nbsp;9.2: Abhängigkeit der Varianz und des Standardfehler von <span class="math inline">\(D\)</span> mit der Stichprobenverteilung bei ungleicher Varianz <span class="math inline">\(\sigma_1^2 = 1, \sigma_2^2=9\)</span>
-</figcaption>
-<div aria-describedby="tbl-ed-basics-sample-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<table class="cell caption-top table table-sm table-striped small">
-<thead>
-<tr class="header">
-<th style="text-align: right;"><span class="math inline">\(n_1\)</span></th>
-<th style="text-align: right;"><span class="math inline">\(n_2\)</span></th>
-<th style="text-align: right;"><span class="math inline">\(\sigma^2(D)\)</span></th>
-<th style="text-align: right;"><span class="math inline">\(\sigma_e(D)\)</span></th>
-<th style="text-align: right;">Effizienz</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">11</td>
-<td style="text-align: right;">1.82</td>
-<td style="text-align: right;">1.35</td>
-<td style="text-align: right;">0.73</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">1.40</td>
-<td style="text-align: right;">1.18</td>
-<td style="text-align: right;">0.95</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">9</td>
-<td style="text-align: right;">1.33</td>
-<td style="text-align: right;">1.15</td>
-<td style="text-align: right;">1.00</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">1.38</td>
-<td style="text-align: right;">1.17</td>
-<td style="text-align: right;">0.97</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">1.49</td>
-<td style="text-align: right;">1.22</td>
-<td style="text-align: right;">0.90</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">1.67</td>
-<td style="text-align: right;">1.29</td>
-<td style="text-align: right;">0.80</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">1.94</td>
-<td style="text-align: right;">1.39</td>
-<td style="text-align: right;">0.69</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">2.38</td>
-<td style="text-align: right;">1.54</td>
-<td style="text-align: right;">0.56</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">9</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">3.11</td>
-<td style="text-align: right;">1.76</td>
-<td style="text-align: right;">0.43</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">4.60</td>
-<td style="text-align: right;">2.14</td>
-<td style="text-align: right;">0.29</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">11</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">9.09</td>
-<td style="text-align: right;">3.02</td>
-<td style="text-align: right;">0.15</td>
-</tr>
-</tbody>
-</table>
+<div id="fig-ed-basics-sample-02" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ed-basics-sample-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="ed_basics_files/figure-html/fig-ed-basics-sample-02-1.png" class="img-fluid figure-img" width="672">
 </div>
-</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ed-basics-sample-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;9.2: Abhängigkeit der Varianz und des Standardfehler von <span class="math inline">\(D\)</span> mit der Stichprobenverteilung bei ungleicher Varianz <span class="math inline">\(\sigma_1^2 = 1, \sigma_2^2=9\)</span>
+</figcaption>
 </figure>
 </div>
 </div>
-<p>In <a href="#tbl-ed-basics-sample-02" class="quarto-xref">Tabelle&nbsp;<span>9.2</span></a> sind wieder die verschiedenen Werte für <span class="math inline">\(\sigma^2(D)\)</span>, <span class="math inline">\(\sigma_e(D)\)</span> und die Effizienz berechnet worden. Wir können sehen, dass jetzt nicht mehr das Design mit gleich großen Stichproben optimal ist, sondern das Design mit <span class="math inline">\(n_1 = 3\)</span> und <span class="math inline">\(n_2 = 9\)</span>. Die ungleiche Varianz in den beiden Gruppen hat dazu geführt, dass der minimale Standardfehler dann eingenommen wird, wenn wir eine größere Stichprobe aus Gruppe <span class="math inline">\(2\)</span> als aus Gruppe <span class="math inline">\(1\)</span> ziehen.</p>
-<p>Wenn wir diese nicht gewusst hätten und in beiden Gruppen wieder mit <span class="math inline">\(n_i = 6\)</span> gearbeitet hätten, hätten wir somit <span class="math inline">\(20\%\)</span> Effizienz eingebüßt. Intuitiv macht diese ungleiche Verteilung auch Sinn. Da die Varianz in Gruppe <span class="math inline">\(2\)</span> größer ist, ist auch unserer Unsicherheit über den Mittelwert in dieser Gruppe größer. Um diese Unsicherheit auszugleichen erhöhen wir die Stichprobenanzahl im Verhältnis zu Gruppe <span class="math inline">\(1\)</span> um mehr Information über diese Gruppe zu erhalten.</p>
-<p>Schauen wir uns ein Beispiel an, bei dem der Unterschied der Varianzen in den beiden Gruppen nicht ganz so extrem ist (siehe <a href="#tbl-ed-basics-sample-03" class="quarto-xref">Tabelle&nbsp;<span>9.3</span></a>).</p>
-<div class="cell">
-<div id="tbl-ed-basics-sample-03" class="cell quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ed-basics-sample-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Tabelle&nbsp;9.3: Abhängigkeit der Varianz und des Standardfehler von <span class="math inline">\(D\)</span> mit der Stichprobenverteilung bei ungleicher Varianz <span class="math inline">\(\sigma_1^2 = 1, \sigma_2^2=2\)</span>
-</figcaption>
-<div aria-describedby="tbl-ed-basics-sample-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output-display">
-<table class="cell caption-top table table-sm table-striped small">
-<thead>
-<tr class="header">
-<th style="text-align: right;"><span class="math inline">\(n_1\)</span></th>
-<th style="text-align: right;"><span class="math inline">\(n_2\)</span></th>
-<th style="text-align: right;"><span class="math inline">\(\sigma^2(D)\)</span></th>
-<th style="text-align: right;"><span class="math inline">\(\sigma_e(D)\)</span></th>
-<th style="text-align: right;">Effizienz</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">11</td>
-<td style="text-align: right;">1.18</td>
-<td style="text-align: right;">1.09</td>
-<td style="text-align: right;">0.41</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">0.70</td>
-<td style="text-align: right;">0.84</td>
-<td style="text-align: right;">0.69</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">9</td>
-<td style="text-align: right;">0.56</td>
-<td style="text-align: right;">0.75</td>
-<td style="text-align: right;">0.87</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">0.50</td>
-<td style="text-align: right;">0.71</td>
-<td style="text-align: right;">0.97</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">0.49</td>
-<td style="text-align: right;">0.70</td>
-<td style="text-align: right;">1.00</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">0.50</td>
-<td style="text-align: right;">0.71</td>
-<td style="text-align: right;">0.97</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">0.54</td>
-<td style="text-align: right;">0.74</td>
-<td style="text-align: right;">0.89</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">0.62</td>
-<td style="text-align: right;">0.79</td>
-<td style="text-align: right;">0.78</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">9</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">0.78</td>
-<td style="text-align: right;">0.88</td>
-<td style="text-align: right;">0.62</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1.10</td>
-<td style="text-align: right;">1.05</td>
-<td style="text-align: right;">0.44</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">11</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2.09</td>
-<td style="text-align: right;">1.45</td>
-<td style="text-align: right;">0.23</td>
-</tr>
-</tbody>
-</table>
 </div>
-</div>
-</figure>
-</div>
-</div>
-<p>In <a href="#tbl-ed-basics-sample-03" class="quarto-xref">Tabelle&nbsp;<span>9.3</span></a> sehen wir wieder, das das effizienteste Design nicht gleich große Stichproben in den beiden Gruppen hat, sondern hier würde das Design mit <span class="math inline">\(n_1 = 5\)</span> und <span class="math inline">\(n_2 = 7\)</span> den niedrigsten Standardfehler zeigen. Der Verlust an Effizienz bei gleich großen Gruppen wäre hier praktisch zu vernachlässigen. D.h. wenn wir keine genauen Information haben wie sich die Varianzen in den beiden Gruppen verhalten, aber wir keine großen Unterschiede erwarten, dann sind wir mit gleichgroßen Gruppen wahrscheinlich oft gut bedient.</p>
+<p>Wir können sehen, dass jetzt nicht mehr das Design mit gleich großen Stichproben optimal ist, sondern das Design mit <span class="math inline">\(n_1 = 3\)</span> und <span class="math inline">\(n_2 = 9\)</span>. Die ungleiche Varianz in den beiden Gruppen hat dazu geführt, dass der minimale Standardfehler dann eingenommen wird, wenn wir eine größere Stichprobe aus Gruppe <span class="math inline">\(2\)</span> als aus Gruppe <span class="math inline">\(1\)</span> ziehen. Wenn wir diese nicht gewusst hätten und in beiden Gruppen wieder mit <span class="math inline">\(n_i = 6\)</span> gearbeitet hätten, hätten wir somit Effizienz eingebüßt. Intuitiv macht diese ungleiche Verteilung auch Sinn. Da die Varianz in Gruppe <span class="math inline">\(2\)</span> größer ist, ist auch unserer Unsicherheit über den Mittelwert in dieser Gruppe größer. Um diese Unsicherheit auszugleichen erhöhen wir die Stichprobenanzahl im Verhältnis zu Gruppe <span class="math inline">\(1\)</span> um mehr Information über diese Gruppe zu erhalten.</p>
 <p>Untersuchen wir die Effizienz noch einmal aus einer anderen Perspektive, nämlich des Budget das uns zur Verfügung steht. Nehmen wir an wir müssen die Untersuchung in einem Speziallabor durchführen und wir haben nur eine begrenzte Zeit zur Verfügung. Wir untersuchen wieder zwei Gruppen bei denen aber die Vorbereitung des Experiment doppelt solange für Gruppe <span class="math inline">\(2\)</span> dauert im Vergleich zu Gruppe <span class="math inline">\(1\)</span>. Zum Beispiel in Gruppe <span class="math inline">\(1\)</span> benötigen wir das Labor für eine Stunde während wir für Teilnehmerinnen und Teilnehmer aus Gruppe <span class="math inline">\(2\)</span> zwei Stunden benötigen. In Gruppe <span class="math inline">\(2\)</span> ist vielleicht eine spezielle Patientenpopulation bei der wir mehr Zeit einplanen müssen. Wir haben aber nur insgesamt <span class="math inline">\(24\)</span> Stunden das Labor zu Verfügung. Wir setzen wieder <span class="math inline">\(\sigma^2 = 1\)</span> an. Wie sollten wir die Gruppengrößen zuteilen?</p>
-<p>Wir können jetzt nicht einfach die gleiche Tabelle wie in den obigen Fällen benutzen, da wir unser Zeitbudget beachten müssen. Mit etwas ausprobieren kommen wir zu folgendem Ergebnis.</p>
+<p>Wir können jetzt nicht einfach den gleichen Graphen wie in den obigen Fällen benutzen, da wir unser Zeitbudget beachten müssen. Mit etwas ausprobieren kommen wir zu folgendem Ergebnis.</p>
 <div class="cell">
 <div id="tbl-ed-basics-sample-04" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ed-basics-sample-04-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Tabelle&nbsp;9.4: Abhängigkeit der Varianz und des Standardfehler von <span class="math inline">\(D\)</span> bei <span class="math inline">\(\sigma_i^2 = 1\)</span> und Budgetbeschränkungen von <span class="math inline">\(24\)</span> Stunden
+Tabelle&nbsp;9.1: Abhängigkeit der Varianz und des Standardfehler von <span class="math inline">\(D\)</span> bei <span class="math inline">\(\sigma_i^2 = 1\)</span> und Budgetbeschränkungen von <span class="math inline">\(24\)</span> Stunden
 </figcaption>
 <div aria-describedby="tbl-ed-basics-sample-04-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -823,8 +514,8 @@ Tabelle&nbsp;9.4: Abhängigkeit der Varianz und des Standardfehler von <span cla
 </figure>
 </div>
 </div>
-<p>Wir sehen wieder in <a href="#tbl-ed-basics-sample-04" class="quarto-xref">Tabelle&nbsp;<span>9.4</span></a>, dass eine ungleiche Verteilung in die Gruppen die höchste Effizienz hat. Der Effekt hier, ist dass wir hier eine Balance finden müssen zwischen der größten Anzahl an Teilnehmerinnen und Teilnehmer und der Ungleichheit der Stichprobengrößen.</p>
-<p>Zusammenfassend lässt sich sagen, dass bei Vergleichen zwischen zwei Gruppen das Design mit gleich großen Stichproben in beiden Gruppen oft die Beste Wahl ist. In Abhängigkeit davon wie sich die Varianzen zwischen den Gruppen verhalten und oder auch welche Randbedingungen für die Durchführung des Experiment bestehen, kann ein optimales Design jedoch auch sehr unterschiedlich ausfallen. Daher macht es Sinn für den jeweiligen speziellen Fall sich Gedanken zu machen welches Design den bestmöglichen Output liefert und vielleicht nicht einfach nur ein Standarddesign aus der Schublade zu nehmen. Die Problematik eine informierte Entscheidung diesbezüglich zu treffen wird in den folgenden Kapitel immer wieder aufgegriffen.</p>
+<p>Wir sehen wieder in <a href="#tbl-ed-basics-sample-04" class="quarto-xref">Tabelle&nbsp;<span>9.1</span></a>, dass eine ungleiche Verteilung in die Gruppen die höchste Effizienz hat. Der Effekt hier, ist dass wir hier eine Balance finden müssen zwischen der größten Anzahl an Teilnehmerinnen und Teilnehmer und der Ungleichheit der Stichprobengrößen.</p>
+<p>Zusammenfassend lässt sich sagen, dass bei Vergleichen zwischen zwei Gruppen das Design mit gleich großen Stichproben in beiden Gruppen oft die Beste Wahl ist. In Abhängigkeit davon wie sich die Varianzen zwischen den Gruppen verhalten und oder auch welche Randbedingungen für die Durchführung des Experiment bestehen, kann ein optimales Design jedoch auch sehr unterschiedlich ausfallen. Daher macht es Sinn für den jeweiligen speziellen Fall sich Gedanken zu machen welches Design den bestmöglichen Output liefert und vielleicht nicht einfach nur ein Standarddesign aus der Schublade zu nehmen.</p>
 </section>
 <section id="terminologie" class="level2" data-number="9.2">
 <h2 data-number="9.2" class="anchored" data-anchor-id="terminologie"><span class="header-section-number">9.2</span> Terminologie</h2>
@@ -847,11 +538,11 @@ Tabelle&nbsp;9.4: Abhängigkeit der Varianz und des Standardfehler von <span cla
 </div>
 <section id="beispiele" class="level3" data-number="9.2.1">
 <h3 data-number="9.2.1" class="anchored" data-anchor-id="beispiele"><span class="header-section-number">9.2.1</span> Beispiele</h3>
-<p>In <a href="#tbl-ed-basics-ex-01" class="quarto-xref">Tabelle&nbsp;<span>9.5</span></a> ist ein Beispiel für ein einfaches experimentelles Design dargestellt. Es wurden insgesamt <span class="math inline">\(9\)</span> TeilnehmerInnen zufällig auf <span class="math inline">\(3\)</span> Konditionen <span class="math inline">\(A_1, A_2, A_3\)</span> verteilt. Auf jeder Person wurde eine Messung unter der entsprechenden Kondition durchgeführt und jede Person ist einzeln untersucht worden.</p>
+<p>In <a href="#tbl-ed-basics-ex-01" class="quarto-xref">Tabelle&nbsp;<span>9.2</span></a> ist ein Beispiel für ein einfaches experimentelles Design dargestellt. Es wurden insgesamt <span class="math inline">\(9\)</span> TeilnehmerInnen zufällig auf <span class="math inline">\(3\)</span> Konditionen <span class="math inline">\(A_1, A_2, A_3\)</span> verteilt. Auf jeder Person wurde eine Messung unter der entsprechenden Kondition durchgeführt und jede Person ist einzeln untersucht worden.</p>
 <div id="tbl-ed-basics-ex-01" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ed-basics-ex-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Tabelle&nbsp;9.5: Beispiel für ein experimentelles Design (X: OU)
+Tabelle&nbsp;9.2: Beispiel für ein experimentelles Design (X: OU)
 </figcaption>
 <div aria-describedby="tbl-ed-basics-ex-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="caption-top table">
@@ -930,11 +621,11 @@ Tabelle&nbsp;9.5: Beispiel für ein experimentelles Design (X: OU)
 </figure>
 </div>
 <p>Was sind in diesem Fall die EU und OUs und was ist der Replikationsfaktor und der Wiederholungsfaktor? Die Personen sind randomisiert den verschiedenen Konditionen zugewiesen worden und das <em>treatment</em> erfolgt unabhängig von allen anderen Personen. Daher stellen die Versuchspersonen die EUs dar. Somit folgt <span class="math inline">\(N = 9\)</span>. Da auf jeder Person nur eine Messung erfolgt, resultieren daraus insgesamt <span class="math inline">\(9\)</span> OUs. D.h. die experimentellen Einheiten und die Beobachtungseinheiten sind in diesem Design identisch. Jede Kondition wurde dreimal durch unabhängige EUs repliziert, daher ist der Replikationsfaktor <span class="math inline">\(3\)</span>. Es wurde keine Wiederholungen auf den EUs durchgeführt, daher ist der Wiederholungsfaktor gleich eins. Dadurch das drei Replikationen für jede Kondition vorhanden sind, kann die Residualvarianz von der Treatmentvarianz unterschieden werden.</p>
-<p>In <a href="#tbl-ed-basics-ex-02" class="quarto-xref">Tabelle&nbsp;<span>9.6</span></a> ist ein ähnliches Untersuchungsdesign dargstellt. Im Unterschied zu <a href="#tbl-ed-basics-ex-01" class="quarto-xref">Tabelle&nbsp;<span>9.5</span></a> sind auf jeder Person nun zwei Messungen durchgeführt worden.</p>
+<p>In <a href="#tbl-ed-basics-ex-02" class="quarto-xref">Tabelle&nbsp;<span>9.3</span></a> ist ein ähnliches Untersuchungsdesign dargstellt. Im Unterschied zu <a href="#tbl-ed-basics-ex-01" class="quarto-xref">Tabelle&nbsp;<span>9.2</span></a> sind auf jeder Person nun zwei Messungen durchgeführt worden.</p>
 <div id="tbl-ed-basics-ex-02" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ed-basics-ex-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Tabelle&nbsp;9.6: Beispiel für ein experimentelles Design mit zwei Messungen (X: OU)
+Tabelle&nbsp;9.3: Beispiel für ein experimentelles Design mit zwei Messungen (X: OU)
 </figcaption>
 <div aria-describedby="tbl-ed-basics-ex-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="caption-top table">
@@ -1013,11 +704,11 @@ Tabelle&nbsp;9.6: Beispiel für ein experimentelles Design mit zwei Messungen (X
 </figure>
 </div>
 <p>Dadurch sind immer noch die <span class="math inline">\(EU = 9\)</span> aber der Replikationsfaktor ist nun gleich zwei. Die Beobachtungseinheiten sind jetzt verdoppelt daraus folgt <span class="math inline">\(OU = 18\)</span> und ein Pseudoreplikationsfaktor von zwei. Dadurch, dass auf jeder EU zwei Messungen durchgeführt wurden, kann die Präzision der Gesamtmessungen auf den einzelnen EUs erhöht werden. Dadurch wird sich die Varianz die auf die Messmethode zurück zu führen ist reduzieren und es können kleinere Unterschiede zwischen den Treatments identifiziert werden.</p>
-<p>Im nächsten Design wird es nun etwas komplizierter. Es sollen drei verschiedene Treatments <span class="math inline">\(A_1, A_2\)</span> und <span class="math inline">\(A_3\)</span> mit insgesamt neun Studienteilnehmern untersucht werden. Die Teilnehmer wurden aus drei verschiedenen Vereinen akquiriert. Als Randbedingung die Treatments immer nur einheitlich pro Verein angewendet werden. D.h. alle Teilnehmer aus einem Verein erhalten das gleiche Treatment. Die Zuordnung der Treatments auf die Vereine erfolgt jedoch randomisiert. Es ergibt sich die folgende Designstruktur <a href="#tbl-ed-basics-ex-03" class="quarto-xref">Tabelle&nbsp;<span>9.7</span></a>.</p>
+<p>Im nächsten Design wird es nun etwas komplizierter. Es sollen drei verschiedene Treatments <span class="math inline">\(A_1, A_2\)</span> und <span class="math inline">\(A_3\)</span> mit insgesamt neun Studienteilnehmern untersucht werden. Die Teilnehmer wurden aus drei verschiedenen Vereinen akquiriert. Als Randbedingung die Treatments immer nur einheitlich pro Verein angewendet werden. D.h. alle Teilnehmer aus einem Verein erhalten das gleiche Treatment. Die Zuordnung der Treatments auf die Vereine erfolgt jedoch randomisiert. Es ergibt sich die folgende Designstruktur <a href="#tbl-ed-basics-ex-03" class="quarto-xref">Tabelle&nbsp;<span>9.4</span></a>.</p>
 <div id="tbl-ed-basics-ex-03" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ed-basics-ex-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Tabelle&nbsp;9.7: Beispiel für ein experimentelles Design mit einer Gruppierungstruktur (X: OU)
+Tabelle&nbsp;9.4: Beispiel für ein experimentelles Design mit einer Gruppierungstruktur (X: OU)
 </figcaption>
 <div aria-describedby="tbl-ed-basics-ex-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="caption-top table">
@@ -1102,11 +793,11 @@ Tabelle&nbsp;9.7: Beispiel für ein experimentelles Design mit einer Gruppierung
 </div>
 <p>In diesem Fall erfolgt die Zuweisung der Treatments also nicht auf dem Level der Teilnehmer, sondern auf dem Level der drei Vereine. Dies führt nun dazu, da die experimentellen Einheiten laut der Definition die Treatment randomisiert zugewiesen bekommen müssen, dass die Vereine zu den experimentellen Einheiten werden und nicht mehr die einzelnen Teilnehmer. Folgerichtig ist <span class="math inline">\(N\)</span> ist diesem Fall <span class="math inline">\(N = 3\)</span> und nicht <span class="math inline">\(N = 9\)</span> wie in den beiden vorhergehenden Fällen. Dies führt weiterhin dazu, dass <strong>keine</strong> Replikation der experimentellen Einheiten vorliegt, da jede Kondition nur einmal unter eine experimentellen Einheit beobachtet wurde. Daraus folgt, dass es nicht mehr möglich ist die Ergebnisse über die Studiengruppe hinaus zu generalisieren, da keine ausreichend große Stichprobe gezogen wurde. Zusätzlich und noch wichtiger, da nur eine einzelne experimentelle Einheit beobachtet wurde, können keine Aussagen über die Varianz zwischen experimentellen Einheiten getroffen werden. Die Unterschiede zwischen den Kondition können nicht von der Residualvarianz getrennt werden. Die drei Teilnehmer innerhalb der jeweiligen Vereine werden als Pseudoreplikationen mit einem Faktor von <span class="math inline">\(3\)</span> interpretiert. Da insgesamt neun Messungen beobachten werden, resultieren daraus neun Beobachtungseinheiten.</p>
 <p>Um aus den Teilnehmern tatsächlich auch neun experimentelle Einheiten zu machen, müssen die Treatments unabhängig von den Vereinen auf die Personen randomisiert werden. Zusätzlich muss auch noch sichergestellt werden, das das Treatment in Isolation durchgeführt wird. Der Definition folgend, das jeweilige Treatment muss unabhängig von den anderen experimentellen Einheiten durchgeführt werden. D.h. es können keine Gruppen gebildet werden die beispielsweise gemeinsam trainieren, da es dadurch auch wieder zu ungewollten Interaktionseffekten zwischen den experimentellen Einheiten kommen kann. Dies führt dann wieder dazu, dass jede Gruppe zu einer einzelnen experimentellen Einheit zusammengefasst wird mit der entsprechenden Reduktion in der Stichprobengröße. Die Nichtbeachtung von Abhängigkeiten zwischen experimentellen Einheiten führt in der Analyse zu fehlerhaften Ergebnisse die insbesondere zu einer Vergrößerung des Type-I Fehler führen. D.h. Ergebnisse werden zu oft als statistisch signifikant deklariert (<span class="citation" data-cites="hurlbert1984">Hurlbert (<a href="references.html#ref-hurlbert1984" role="doc-biblioref">1984</a>)</span>, <span class="citation" data-cites="lazic2018">Lazic u.&nbsp;a. (<a href="references.html#ref-lazic2018" role="doc-biblioref">2018</a>)</span>, <span class="citation" data-cites="silverman2004">Silverman (<a href="references.html#ref-silverman2004" role="doc-biblioref">2004</a>)</span>).</p>
-<p>In <a href="#tbl-ed-basics-ex-rm" class="quarto-xref">Tabelle&nbsp;<span>9.8</span></a> ist ein sogenanntes Repeated measures design. Hier wurden sechs Personen auf zwei Konditionen (CON und TRT) aufgeteilt.</p>
+<p>In <a href="#tbl-ed-basics-ex-rm" class="quarto-xref">Tabelle&nbsp;<span>9.5</span></a> ist ein sogenanntes Repeated measures design. Hier wurden sechs Personen auf zwei Konditionen (CON und TRT) aufgeteilt.</p>
 <div id="tbl-ed-basics-ex-rm" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ed-basics-ex-rm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Tabelle&nbsp;9.8: Beispiel für ein Repeated measures experimentelles Design (X: OU)
+Tabelle&nbsp;9.5: Beispiel für ein Repeated measures experimentelles Design (X: OU)
 </figcaption>
 <div aria-describedby="tbl-ed-basics-ex-rm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="caption-top table">
@@ -1182,27 +873,27 @@ Tabelle&nbsp;9.8: Beispiel für ein Repeated measures experimentelles Design (X:
 <p>Die Anzahl der Replikationen der EU bestimmt die Präzision des experimentellen Fehlers <span class="math inline">\(\sigma^2\)</span> in der jeweiligen Untersuchung. Seien zum Beispiel zwei EUs welche das gleiche Treatment zugewiesen bekommen haben, z.B. zwei Athletinnen. Wenn nun eine Messung durchgeführt wird, z.B. die Sprungleistung beim Counter Movement Jump wird bestimmt, dann wird sich die Sprungleistung zwischen den beiden Athletinnen üblicherweise einfach schon auf Grund der Inter-individuellen Unterschiede zwischen Personen unterscheiden. Es sei zunächst vernachlässigt, dass bei biologischen System selbst schon bei Wiederholung der gleichen Messung zum Teil bedeutsame Unterschiede auftreten können. Die Unterschiede zwischen den Messungen der beiden Athletinnen spiegeln den experimentellen Fehler wieder. Im Sinne des generellen linearen Modells ist dies der Residualfehler <span class="math inline">\(\epsilon_i\)</span>. Umso mehr <em>Replikationen</em> vorliegen, umso präziser kann dieser experimentelle Fehler bestimmt werden. D.h. mit Hilfe der Replikation wird versucht, die Präzision (<span class="math inline">\(\widehat{=}\)</span> Unsicherheit) in Bezug auf die Konditionen, die sich im Residualfehler ausdrückt, zu verkleinern.</p>
 <p>Dies ist grundsätzlich ein anderer Prozess, als derjenige, der durch die Anzahl der Wiederholungen adressiert wird. Die Wierholungen zielen im Gegensatz zur Replikationen dagegen darauf ab, die Streuung innerhalb der EUs zu minimieren. Zum Beispiel wenn die Athletinnen nicht nur einmal sondern mehrere Sprünge durchführen. Dadurch wir die Abschätzung der Sprungleistung der einzelnen Athletinnen verbessert.</p>
 <p>Versuchen wir diese beiden Beiträge etwas zu formalisieren. Seien drei verschiedene Varianzkomponenten gegeben. 1) die Varianz zwischen den Athletinnen <span class="math inline">\(\sigma_{\text{Person}}^2\)</span>, 2), die Varianz innerhalb der jeweiligen Athleting <span class="math inline">\(\sigma_{\text{innerhalb}}^2\)</span> und dann noch eine Residualstreuung die auf zufällige Einflüsse zurück zu führen ist <span class="math inline">\(\sigma_{\epsilon}^2\)</span>. Die Gesamtvarianz <span class="math inline">\(\sigma_{\text{total}}^2\)</span> die nun bei den Messungen der Sprunghöhen beobachten werden, können nun als die Summe dieser drei Komponenten interpretiert werden (Eine Annahme dabei ist, dass sich die Komponenten untereinander nicht beeinflussen also unabhängig voneinander sind).</p>
-<p><span class="math display">\[\begin{equation}
+<p><span class="math display">\[
 \sigma_{\text{total}}^2 = \sigma_{\text{Person}}^2 + \sigma_{\text{innerhalb}}^2 + \sigma_{\epsilon}^2
-\end{equation}\]</span></p>
+\]</span></p>
 <p>Diese Gleichung beschreibt die Varianzkomponenten innerhalb einer Treatmentstufe. Wenn nun EUs aus unterschiedlichen Treatmentstufen <span class="math inline">\(\tau_i\)</span> zusammengesteckt werden, dann wird die Gleichung entsprechend um diese zusätzliche Varianzkomponente <span class="math inline">\(\sigma_{\tau}^2\)</span> erweitert.</p>
-<p><span class="math display">\[\begin{equation}
+<p><span class="math display">\[
 \sigma_{\text{total}}^2 = \sigma_{\tau}^2 + \sigma_{\text{Person}}^2 + \sigma_{\text{innerhalb}}^2 + \sigma_{\epsilon}^2
-\end{equation}\]</span></p>
+\]</span></p>
 <p>Die Idee beim experimentellen Designs ist es nun, ein Design zu finden, dass es ermöglicht diese Komponenten durch eine intelligente Verteilung der Faktorstufen, Replikationen und Wiederholungen möglichst präzise zu bestimmen.</p>
 <p>Soll zum Beispiel der Einfluss des Treatment <span class="math inline">\(\tau_i\)</span> bestimmt werden, dann kann die durch das Treatment entstehende Varianz <span class="math inline">\(\sigma_{\tau}^2\)</span> mit dem experimentellen Fehler <span class="math inline">\(\sigma_{\epsilon}^2\)</span> verglichen werden, um zu entscheiden ob die Unterschiede zwischen den Faktorstufen auch wirklich bedeutsam sind. In Pseudoschreibweise:</p>
-<p><span class="math display">\[\begin{equation*}
+<p><span class="math display">\[
 \frac{\sigma_{\tau}^2}{\sigma_{\epsilon}^2}
-\end{equation*}\]</span></p>
+\]</span></p>
 <p>Wird nun aber ein Design gewählt, bei die Varianz innerhalb der Athletinnen <span class="math inline">\(\sigma_{\text{innerhalb}}^2\)</span> nicht isoliert bestimmen werden kann, dann geht <span class="math inline">\(\sigma_{\text{innerhalb}}^2\)</span> in <span class="math inline">\(\sigma_{\epsilon}^2\)</span> auf. D.h. die resultierende Residualvarianz <span class="math inline">\(\sigma_{\epsilon}^2\)</span> vergrößert sich um die Komponente <span class="math inline">\(\sigma_{\text{innerhalb}}^2\)</span>. Im englischen wird dies als <strong>confounded</strong> bezeichnet. Die beiden Varianzkomponenten können nicht voneinander getrennt werden. Wird nun wieder <span class="math inline">\(\sigma_{\tau}^2\)</span> mit <span class="math inline">\(\sigma_{\epsilon}^2\)</span> verglichen, dann fällt dass Verhältnis entsprechend kleiner aus.</p>
-<p><span class="math display">\[\begin{equation*}
+<p><span class="math display">\[
 \frac{\sigma_{\tau}^2}{\sigma_{\epsilon^*}^2} = \frac{\sigma_{\tau}^2}{\sigma_{\epsilon}^2 + \sigma_{\text{innerhalb}}^2}
-\end{equation*}\]</span></p>
-<p>Um diese Betrachtung etwas greifbarer zu machen sei ein einfaches Beispiel mit Zahlen gegeben. Es soll der Unterschied zwischen zwei Konditionen beim CMJ betrachtet, beispielsweise mit (Kondition <span class="math inline">\(A\)</span>) und ohne (Kondition <span class="math inline">\(B\)</span>) Vorermüdung. Aus der Literatur oder aus Voruntersuchungen seine die folgenden Werte abzuleiten (siehe <a href="#tbl-ed-basics-components" class="quarto-xref">Tabelle&nbsp;<span>9.9</span></a>}.</p>
+\]</span></p>
+<p>Um diese Betrachtung etwas greifbarer zu machen sei ein einfaches Beispiel mit Zahlen gegeben. Es soll der Unterschied zwischen zwei Konditionen beim CMJ betrachtet, beispielsweise mit (Kondition <span class="math inline">\(A\)</span>) und ohne (Kondition <span class="math inline">\(B\)</span>) Vorermüdung. Aus der Literatur oder aus Voruntersuchungen seine die folgenden Werte abzuleiten (siehe <a href="#tbl-ed-basics-components" class="quarto-xref">Tabelle&nbsp;<span>9.6</span></a>}.</p>
 <div id="tbl-ed-basics-components" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ed-basics-components-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Tabelle&nbsp;9.9: Beispielhafte Werte für die Varianzen bei einer CMJ-Untersuchung.
+Tabelle&nbsp;9.6: Beispielhafte Werte für die Varianzen bei einer CMJ-Untersuchung.
 </figcaption>
 <div aria-describedby="tbl-ed-basics-components-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="caption-top table">
@@ -1237,335 +928,11 @@ Tabelle&nbsp;9.9: Beispielhafte Werte für die Varianzen bei einer CMJ-Untersuch
 \frac{\sigma_{\tau}^2}{\sigma_{\epsilon}^2} = \frac{10}{2} = 5
 \end{equation*}\]</span></p>
 <p>Es folgt das die Varianz zwischen den Konditionen deutlich (fünfmal) größer ist als die Residualvarianz. Dies kann als ein deutliches <em>Signal</em> dafür betrachtet werden, dass bedeutsame Unterschiede zwischen den Kondition bestehen. Wird nun ein experimentelles Design gewählt, bei dem unabhängige Gruppen miteinander verglichen werden, d.h. die Unterschiede zwischen den Personen <span class="math inline">\(\sigma_{\text{Person}}^2\)</span> können nicht isoliert werden und es wurde nur eine einzelne Messung durchgeführt womit <span class="math inline">\(\sigma_{\text{Innerhalb}}^2\)</span> nicht identifizierbar ist, dann führt dies dazu, dass diese Komponenten in der Residualvarianz aufgehen. Es folgt somit wieder für den Vergleich.</p>
-<p><span class="math display">\[\begin{equation*}
+<p><span class="math display">\[
 \frac{\sigma_{\tau}^2}{\sigma_{\epsilon}^2} = \frac{\sigma_{\tau}^2}{\sigma_{\text{Person}}^2 + \sigma_{\text{Innerhalb}}^2 + \sigma_{\epsilon}^2} = \frac{10}{5+3+2} = 1
-\end{equation*}\]</span></p>
+\]</span></p>
 <p>Somit ist die beobachtete Varianz zwischen den Konditionen gleich der Varianz innerhalb der Konditionen, was eher nicht dazu führen würde, dass die Unterschiede zwischen den Konditionen als bedeutsam interpretiert werden würden</p>
-<p>Zusammenfassend sollten diese Betrachtung gezeigt haben, dass bei der Erstellung eines Untersuchungsdesign unterschiedliche Faktoren berücksichtigt werden müssen, um ein <em>optimales</em> experimentelles Design auszuwählen. Die Betrachtungen haben weiterhin gezeigt, dass der übliche Begriff der Stichprobe eigentlich etwas irreführend ist. Im Allgemeinen werden mit der Stichprobe <span class="math inline">\(N_s\)</span> die Anzahl der Personen die untersucht werden identifiziert. Wie aber durch die Unterscheidung in EU, OU, Replikation und Wiederholung gezeigt wurde, kann die <em>tatsächlich</em> Stichprobe <span class="math inline">\(N\)</span> je nach Durchführung des Experiment sich deutlich von <span class="math inline">\(N_s\)</span> unterscheiden. Am dramatischsten war dieser bei dem Beispiel mit den Vereinen zu sehen (siehe <a href="#tbl-ed-basics-ex-03" class="quarto-xref">Tabelle&nbsp;<span>9.7</span></a>), wo eine Erhöhung der Anzahl der Teilnehmerinnen pro Verein zu keine Vergrößerung der Stichprobe geführt hätte.</p>
-<p>Im Folgenden wird eine kurze Übersicht über verschiedene Standarddesigns gegeben.</p>
-</section>
-<section id="übersicht-über-verschiedene-designs" class="level2" data-number="9.4">
-<h2 data-number="9.4" class="anchored" data-anchor-id="übersicht-über-verschiedene-designs"><span class="header-section-number">9.4</span> Übersicht über verschiedene Designs</h2>
-<p>Das einfachste Design ist ein <em>completely randomized design</em> oder kurz <em>CRD</em>. Wir haben eine unabhängige, nominale Variable <span class="math inline">\(A\)</span> die verschiedene Faktorstufen (auch Levels) hat. Die EUs werden randomisiert auf die Faktorstufen verteilt und es wird nur eine Messung und somit eine Beobachtungseinheit bestimmt. In diesem Fall können wir auch nur eine Varianzkomponente <span class="math inline">\(\sigma_{\tau}^2\)</span> bestimmen. In <a href="#tbl-ed-basic-crd" class="quarto-xref">Tabelle&nbsp;<span>9.10</span></a> ist ein Beispiel mit drei Faktorstufen für <span class="math inline">\(A\)</span> und zwei Replikationen abgebildet.</p>
-<div id="tbl-ed-basic-crd" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ed-basic-crd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Tabelle&nbsp;9.10: Beispiel für ein Completely Randomized Design (X: OU).
-</figcaption>
-<div aria-describedby="tbl-ed-basic-crd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="caption-top table">
-<colgroup>
-<col style="width: 8%">
-<col style="width: 8%">
-<col style="width: 8%">
-<col style="width: 8%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>EU</th>
-<th style="text-align: center;"><span class="math inline">\(A_1\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(A_2\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(A_3\)</span></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="odd">
-<td>3</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">X</td>
-</tr>
-<tr class="even">
-<td>4</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="odd">
-<td>5</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="even">
-<td>6</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">X</td>
-</tr>
-</tbody>
-</table>
-</div>
-</figure>
-</div>
-<p>Wenn wir nicht mehr nur eine unabhängige Variablen mit verschiedenen Faktorstufen haben, sondern mehrere dann sprechen wir von einen <em>completely randomized factorial design (CRFD)</em>. In diesem Fall kommen noch weitere Varianzkomponenten für die jeweiligen unabhängigen Variablen hinzu, sowie mögliche Interaktioneffekte wie wir sie schon abhand der Interaktionen in der multiplen Regression kennengelernt haben. In <a href="#tbl-ed-basic-crfd" class="quarto-xref">Tabelle&nbsp;<span>9.11</span></a> ist eine einfacher Fall mit zwei unabhängigen Variablen <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> mit jeweils zwei Stufen dargestellt. Damit die Tabelle nicht zu groß wird, ist nur eine Replikation dargestellt.</p>
-<div id="tbl-ed-basic-crfd" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ed-basic-crfd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Tabelle&nbsp;9.11: Beispiel für ein Completely Randomized Factorial Design mit zwei Faktoren
-</figcaption>
-<div aria-describedby="tbl-ed-basic-crfd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="caption-top table">
-<colgroup>
-<col style="width: 8%">
-<col style="width: 8%">
-<col style="width: 8%">
-<col style="width: 8%">
-<col style="width: 8%">
-</colgroup>
-<thead>
-<tr class="header">
-<th></th>
-<th colspan="2" style="text-align: center;"><span class="math inline">\(A_1\)</span></th>
-<th colspan="2" style="text-align: center;"><span class="math inline">\(A_2\)</span></th>
-</tr>
-<tr class="even">
-<th>EU</th>
-<th style="text-align: center;"><span class="math inline">\(B_1\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(B_2\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(B_1\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(B_2\)</span></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="odd">
-<td>3</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="even">
-<td>4</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">X</td>
-</tr>
-</tbody>
-</table>
-</div>
-</figure>
-</div>
-<p>Eine weitere Variante ist das sogenannte Completely Randomized Block Design (CRBD). Hier lassen sich die EU in Blöcke gruppieren die ähnlich zueinander sind. In <a href="#tbl-ed-basic-crbd" class="quarto-xref">Tabelle&nbsp;<span>9.12</span></a> ist eine einfache Struktur mit vier Blöcken I, II, III und IV abgebildet. Dies könnten zum Beispiel Athleten die in Blöcken von drei aus dem gleichen Verein (Block) kommen. Die Annahme dahinter ist, dass die Vereine dazu führen, dass sich die Athleten aus dem gleichen Verein stärker ähneln als Athleten aus verschiedenen Vereinen. Ein Faktor A hat dabei drei Ausprägungen (A1, A2 und A3) und alle Stufen sind in allen Blöcken enthalten. Die EUs innerhalb eines Blocks werden dabei randomisiert auf die drei Stufen von A verteilt. Daher kommt das <em>randomized</em>.</p>
-<div id="tbl-ed-basic-crbd" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ed-basic-crbd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Tabelle&nbsp;9.12: Beispiel für ein Completely Randomized Block Design
-</figcaption>
-<div aria-describedby="tbl-ed-basic-crbd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="caption-top table">
-<colgroup>
-<col style="width: 8%">
-<col style="width: 8%">
-<col style="width: 8%">
-<col style="width: 8%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Block</th>
-<th style="text-align: center;"><span class="math inline">\(A_1\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(A_2\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(A_3\)</span></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>I</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;">X</td>
-</tr>
-<tr class="even">
-<td>II</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;">X</td>
-</tr>
-<tr class="odd">
-<td>III</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;">X</td>
-</tr>
-<tr class="even">
-<td>IV</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;">X</td>
-</tr>
-</tbody>
-</table>
-</div>
-</figure>
-</div>
-<p>Eine Variante des CRBD ist das Incomplete Block Design (siehe <a href="#tbl-ed-basic-ibd" class="quarto-xref">Tabelle&nbsp;<span>9.13</span></a>). Hier sind nicht alle Faktorstufen von A in jedem Block vorhanden sondern nur bestimmte Kombinationen die jedoch über die Gesamtzahl balanciert werden.</p>
-<div id="tbl-ed-basic-ibd" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ed-basic-ibd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Tabelle&nbsp;9.13: Beispiel für ein Incomplete Block Design
-</figcaption>
-<div aria-describedby="tbl-ed-basic-ibd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="caption-top table">
-<colgroup>
-<col style="width: 9%">
-<col style="width: 8%">
-<col style="width: 8%">
-<col style="width: 8%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Block</th>
-<th style="text-align: center;"><span class="math inline">\(A_1\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(A_2\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(A_3\)</span></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>I</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="even">
-<td>II</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">X</td>
-</tr>
-<tr class="odd">
-<td>III</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;">X</td>
-</tr>
-<tr class="even">
-<td>IV</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="odd">
-<td>V</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">X</td>
-</tr>
-<tr class="even">
-<td>VI</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;">X</td>
-</tr>
-</tbody>
-</table>
-</div>
-</figure>
-</div>
-<p>Als letztes Design dann noch das Split-Plot Design (SPD). Bei SPD werden ebenfalls zwei Faktoren betrachtet. Die Besonderheit ist hier allerdings, dass die Zuteilung der Faktorstufen bzw. deren Kombination unterschiedlich schwer sind. Im Beispiel lässt sich der Faktor B einfacher zuteilen, während Faktor A schwerer zuzuteilen ist.</p>
-<div id="tbl-ed-basic-spd" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ed-basic-spd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Tabelle&nbsp;9.14: Beispiel für ein Split-plot Design
-</figcaption>
-<div aria-describedby="tbl-ed-basic-spd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="caption-top table">
-<colgroup>
-<col style="width: 6%">
-<col style="width: 8%">
-<col style="width: 8%">
-<col style="width: 8%">
-<col style="width: 8%">
-<col style="width: 8%">
-<col style="width: 8%">
-</colgroup>
-<thead>
-<tr class="header">
-<th></th>
-<th colspan="3" style="text-align: center;"><span class="math inline">\(A_1\)</span></th>
-<th colspan="3" style="text-align: center;"><span class="math inline">\(A_2\)</span></th>
-</tr>
-<tr class="even">
-<th>EU</th>
-<th style="text-align: center;"><span class="math inline">\(B_1\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(B_2\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(B_3\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(B_1\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(B_2\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(B_3\)</span></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="odd">
-<td>3</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;">X</td>
-</tr>
-<tr class="even">
-<td>4</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;">X</td>
-<td style="text-align: center;">X</td>
-</tr>
-</tbody>
-</table>
-</div>
-</figure>
-</div>
-<p>Ein Beispiel für ein SPD ist eine Treatment-Control Studie. Hier wäre beispielsweise <span class="math inline">\(A_1\)</span> = Control, <span class="math inline">\(A_2\)</span> = Treatment und <span class="math inline">\(B_1\)</span> = pre, <span class="math inline">\(B_2\)</span> = post und <span class="math inline">\(B_3\)</span> = retention.</p>
-<p>Die verschiedenen Design haben jeweils Stärken und Schwächen wenn es darum geht unterschiedliche Varianzkomponenten zu isolieren die es dann möglich machen für ein gegebenes Problem ein effizientes Design auszuwählen bzw. anzupassen.</p>
+<p>Zusammenfassend sollten diese Betrachtung gezeigt haben, dass bei der Erstellung eines Untersuchungsdesign unterschiedliche Faktoren berücksichtigt werden müssen, um ein <em>optimales</em> experimentelles Design auszuwählen. Die Betrachtungen haben weiterhin gezeigt, dass der übliche Begriff der Stichprobe eigentlich etwas irreführend ist. Im Allgemeinen werden mit der Stichprobe <span class="math inline">\(N_s\)</span> die Anzahl der Personen die untersucht werden identifiziert. Wie aber durch die Unterscheidung in EU, OU, Replikation und Wiederholung gezeigt wurde, kann die <em>tatsächlich</em> Stichprobe <span class="math inline">\(N\)</span> je nach Durchführung des Experiment sich deutlich von <span class="math inline">\(N_s\)</span> unterscheiden. Am dramatischsten war dieser bei dem Beispiel mit den Vereinen zu sehen (siehe <a href="#tbl-ed-basics-ex-03" class="quarto-xref">Tabelle&nbsp;<span>9.4</span></a>), wo eine Erhöhung der Anzahl der Teilnehmerinnen pro Verein zu keiner Vergrößerung der Stichprobe geführt hätte.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
@@ -1992,8 +1359,8 @@ Silverman, S. 2004. <span>„Analyzing data from field research: the unit of ana
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./ed_causal_inference.html" class="pagination-link" aria-label="Kausale Inferenz">
-        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Kausale Inferenz</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./ed_reliability.html" class="pagination-link" aria-label="Messfehler und Reliabilität">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Messfehler und Reliabilität</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

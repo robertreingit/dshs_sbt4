@@ -28,10 +28,9 @@ book:
     - part: ed_title.qmd
       chapters:
         - ed_basics.qmd
-        - ed_causal_inference.qmd
         - ed_reliability.qmd
-        - ed_factorial.qmd
-        - ed_misc.qmd
+        - ed_types.qmd
+        - ed_causal_inference.qmd
   appendices:
     - references.qmd
 
